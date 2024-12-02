@@ -14,6 +14,7 @@ export default {
       },
       fontFamily: {
         cursive: "var(--font-island-moments)",
+        sans: "var(--font-afacad)",
       },
     },
   },
