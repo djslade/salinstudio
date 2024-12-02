@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -11,6 +12,12 @@ const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
+});
+
+const islandMoments = localFont({
+  src: "./fonts/IslandMoments.ttf",
+  variable: "--font-island-moments",
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -26,8 +33,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${islandMoments.variable} antialiased`}
       >
+        <header className="px-20 h-[156px] mt-[80px] w-full flex items-end justify-between font-cursive max-w-[1440px] my-0 mx-auto">
+          <img
+            src="/salinstudio-logo.svg"
+            alt="Salin studio"
+            className="h-full"
+          />
+          <div className="p-3 w-full max-w-[792px]">
+            <nav className="flex gap-3 text-[60px] w-full justify-evenly">
+              <Link href="/">Home</Link>
+              <Link href="/info">Info</Link>
+              <Link href="/info">Portfolio</Link>
+              <Link href="/info">Blog</Link>
+              <Link href="/info">Buy</Link>
+            </nav>
+            <hr className="bg-black h-0.5" />
+          </div>
+        </header>
         {children}
       </body>
     </html>
