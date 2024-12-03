@@ -1,18 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Link from "next/link";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 const islandMoments = localFont({
   src: "./fonts/IslandMoments.ttf",
@@ -24,6 +12,12 @@ const afacad = localFont({
   src: "./fonts/Afacad.ttf",
   variable: "--font-afacad",
   weight: "400 500 600 700",
+});
+
+const ibmPlexMono = localFont({
+  src: "./fonts/IBMPlexMono-Regular.ttf",
+  variable: "--ibm-plex-mono",
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -41,32 +35,7 @@ export default function RootLayout({
       <body
         className={`${afacad.variable} ${islandMoments.variable} antialiased`}
       >
-        <header className="px-20 h-[156px] mt-[80px] w-full flex items-end justify-between font-cursive max-w-[1440px] my-0 mx-auto">
-          <img
-            src="/salinstudio-logo.svg"
-            alt="Salin studio"
-            className="h-full"
-          />
-          <div className="p-3 w-full max-w-[800px]">
-            <nav className="flex gap-3 text-[60px] w-full justify-evenly">
-              <Link href="/">Home</Link>
-              <Link href="/info">Info</Link>
-              <Link href="/portfolio">Portfolio</Link>
-              <Link href="/blog">Blog</Link>
-              <Link href="/store">Buy</Link>
-            </nav>
-            <hr className="bg-black h-0.5" />
-          </div>
-        </header>
         {children}
-        <footer className="h-20 flex justify-center items-end text-[#666666] w-full text-[22px] flex-col px-20 max-w-[1440px] mx-auto my-0">
-          <div className="w-[800px] px-3">
-            <hr className="bg-black h-0.5 w-[800px] self-end" />
-          </div>
-          <div className="w-full text-center h-full flex justify-center items-center">
-            <span>salin.creativestudio@gmail.com</span>
-          </div>
-        </footer>
       </body>
     </html>
   );
