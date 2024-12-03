@@ -1,29 +1,13 @@
+import { Navbar } from "@/components";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <div className="min-h-screen w-full bg-[#232323] flex justify-center items-center py-6 relative overflow-hidden gap-32">
       <img src="/salinstudio-logo.svg" alt="Salin Studio" />
-      <section className="px-6 py-9 bg-[#2A2A2A] max-w-[600px] text-white flex flex-col">
-        <div className="flex w-full font-cursive justify-between text-[36px]">
-          <Link href="/" className="hover:scale-110 transition-all">
-            Home
-          </Link>
-          <Link href="/" className="hover:scale-110 transition-all">
-            Info
-          </Link>
-          <Link href="/" className="hover:scale-110 transition-all">
-            Portfolio
-          </Link>
-          <Link href="/" className="hover:scale-110 transition-all">
-            Blog
-          </Link>
-          <Link href="/" className="hover:scale-110 transition-all">
-            Buy
-          </Link>
-        </div>
-        <hr className="w-[90%] self-center" />
-        <div className="flex flex-col items-center gap-6 w-full font-sans p-16 text-[22px]">
+      <section className="px-6 py-9 bg-[#2A2A2A] w-[600px] aspect-[7:6] text-white flex flex-col">
+        <Navbar />
+        <div className="flex flex-col items-center gap-12 w-full font-sans p-16 text-[18px]">
           <p>
             Welcome to my studio, where you can see my artworks. I make
             creations for the public, for individuals, for YOU. I take every
@@ -37,7 +21,7 @@ export default function Home() {
         </div>
         <div className="px-16 py-2">
           <hr className="" />
-          <Link href="/" className="font-mono text-[#aaaaaa] text-[18px]">
+          <Link href="/" className="font-mono text-[#aaaaaa] text-[16px]">
             Contact me
           </Link>
         </div>
