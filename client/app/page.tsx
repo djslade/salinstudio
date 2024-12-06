@@ -5,9 +5,9 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-[#232323] flex justify-center items-center py-6 relative overflow-hidden gap-32">
       <img src="/salinstudio-logo.svg" alt="Salin Studio" />
-      <section className="px-6 py-9 bg-[#2A2A2A] w-[600px] aspect-[7:6] text-white flex flex-col">
+      <section className="px-6 py-9 bg-[#2A2A2A] w-[600px] h-[516px] text-white flex flex-col grow-0">
         <Navbar />
-        <div className="flex flex-col items-center gap-12 w-full font-sans p-16 text-[18px]">
+        <div className="flex flex-col items-center gap-16 w-full font-sans p-16 text-[18px]">
           <p>
             Welcome to my studio, where you can see my artworks. I make
             creations for the public, for individuals, for YOU. I take every

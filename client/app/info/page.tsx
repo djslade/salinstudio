@@ -1,6 +1,5 @@
 import { Navbar } from "@/components";
 import Link from "next/link";
-import React from "react";
 
 const Info = () => {
   return (
@@ -70,6 +69,7 @@ const Info = () => {
           />
         </div>
       </section>
+      <section className="min-h-[280px] bg-[#232323]" />
     </div>
   );
 };
