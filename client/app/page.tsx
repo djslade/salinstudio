@@ -12,8 +12,8 @@ export default function Home() {
             Welcome to my studio, where you can see my artworks. I make
             creations for the public, for individuals, for YOU. I take every
             order and job equally seriously and do my best following the
-            customer's wishes. You can send a message to my email if you have
-            any questions for me.
+            customer&apos;s wishes. You can send a message to my email if you
+            have any questions for me.
           </p>
           <Link href="/" className="bg-[#3A3A3A] px-6 py-1 rounded">
             Artworks

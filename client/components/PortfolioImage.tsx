@@ -8,6 +8,7 @@ interface PortfolioImageProps {
   left: number;
   onLoad: (index: number, height: number, width: number) => void;
   containerWidth: number;
+  onClick: () => void;
 }
 
 export const PortfolioImage = ({
@@ -17,12 +18,13 @@ export const PortfolioImage = ({
   left,
   onLoad,
   containerWidth,
+  onClick,
 }: PortfolioImageProps) => {
   const imageRef = useRef<HTMLImageElement>(null);
 
-  const [width, setWidth] = useState(0);
+  const [width, setWidth] = useState<number>(0);
 
-  const [height, setHeight] = useState(0);
+  const [height, setHeight] = useState<number>(0);
 
   const [loaded, setLoaded] = useState(false);
 
@@ -32,11 +34,15 @@ export const PortfolioImage = ({
     return (imageRef.current.naturalWidth / maxWidth) * 100;
   };
 
+  const getImageCurrentWidth = () => {
+    return (getImageWidth() * (containerWidth - 8 * 2)) / 100;
+  };
+
   const getImageHeight = () => {
     if (!imageRef || !imageRef.current) return 0;
     const ratio =
       imageRef.current.naturalWidth / imageRef.current.naturalHeight;
-    const currentWidth = (getImageWidth() * (containerWidth - 8 * 2)) / 100;
+    const currentWidth = getImageCurrentWidth();
     const height = currentWidth / ratio;
     return height;
   };
@@ -46,10 +52,16 @@ export const PortfolioImage = ({
     onLoad(index, imageRef.current.height, imageRef.current.width);
   };
 
-  useEffect(() => {
-    setWidth(getImageWidth());
+  const setImageDimensions = () => {
+    setWidth(getImageCurrentWidth());
     setHeight(getImageHeight());
-  }, []);
+  };
+
+  useEffect(() => {
+    setWidth(getImageCurrentWidth());
+    setHeight(getImageHeight());
+    setLoaded(false);
+  }, [containerWidth]);
 
   useEffect(() => {
     if (width !== 0 && height !== 0) {
@@ -64,17 +76,20 @@ export const PortfolioImage = ({
   }, [loaded]);
 
   return (
-    <img
-      ref={imageRef}
-      src={src}
-      alt=""
-      style={{
-        width: `${width}%`,
-        height: `${height}px`,
-        position: "absolute",
-        top: `${top}px`,
-        left,
-      }}
-    />
+    <button onClick={onClick}>
+      <img
+        ref={imageRef}
+        src={src}
+        alt=""
+        style={{
+          width: `${width}px`,
+          height: `${height}px`,
+          position: "absolute",
+          top: `${top}px`,
+          left: `${left}px`,
+        }}
+        onLoad={setImageDimensions}
+      />
+    </button>
   );
 };
