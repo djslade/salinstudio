@@ -1,32 +1,63 @@
+"use client";
 import { Navbar } from "@/components";
+import { languageAtom } from "@/state";
+import { useAtomValue } from "jotai";
 import Link from "next/link";
 
+const paragraphOne = {
+  en: "Welcome to my art studio! Here you can find artworks focusing on portraits, still life, surrealism, symbolism mixed with some cartoon and horror art. You can find rest of my works on instagram.",
+  fi: "Tervetuloa taide studiooni! Täältä löydät teoksia, jotka keskittyvät muotokuviin, asetelmiin, surrealismiin, symboliikkaan ja vähän sarjakuva- ja kauhuaiheista taidetta. Loput töistäni löydät instagramista.",
+};
+
+const paragraphTwo = {
+  en: "If you want to know more or ask me questions, please feel free to contact me.",
+  fi: "Jos haluat tietää lisää tai kysyä minulta jotain, ota rohkeasti yhteyttä.",
+};
+
+const button = {
+  en: "Artworks",
+  fi: "Taidetyöt",
+};
+
+const contact = {
+  en: "Contact me",
+  fi: "Ota yhteyttä",
+};
+
 export default function Home() {
+  const language = useAtomValue(languageAtom);
+
   return (
     <div className="min-h-screen w-full bg-[#232323] flex justify-center items-center py-6 relative overflow-hidden gap-32">
       <img src="/salinstudio-logo.svg" alt="Salin Studio" />
-      <section className="px-6 py-9 bg-[#2A2A2A] w-[600px] h-[516px] text-white flex flex-col grow-0">
+      <section className="px-6 pt-9 pb-9 bg-[#2A2A2A] w-[600px] h-[516px] text-white flex flex-col grow-0">
         <Navbar />
-        <div className="flex flex-col items-center gap-16 w-full font-sans p-16 text-[18px]">
-          <p>
-            Welcome to my studio, where you can see my artworks. I make
-            creations for the public, for individuals, for YOU. I take every
-            order and job equally seriously and do my best following the
-            customer&apos;s wishes. You can send a message to my email if you
-            have any questions for me.
-          </p>
-          <Link href="/" className="bg-[#3A3A3A] px-6 py-1 rounded">
-            Artworks
+        <div className="flex flex-col items-center gap-10 w-full font-sans px-16 pt-16 pb-12 text-[18px]">
+          <div className="flex flex-col gap-5 text-center">
+            <p>{language === "fi" ? paragraphOne.fi : paragraphOne.en}</p>
+            <p>{language === "fi" ? paragraphTwo.fi : paragraphTwo.en}</p>
+          </div>
+          <Link href="/" className="bg-[#3A3A3A] px-6 py-1 rounded self-center">
+            {language === "fi" ? button.fi : button.en}
           </Link>
         </div>
-        <div className="px-16 py-2">
-          <hr className="" />
-          <Link
-            href="/contact"
-            className="font-mono text-[#aaaaaa] text-[16px]"
-          >
-            Contact me
-          </Link>
+        <div className="px-16">
+          <hr className="mb-2" />
+          <div className="w-full flex justify-between">
+            <Link
+              href="/contact"
+              className="font-mono text-[#aaaaaa] text-[16px]"
+            >
+              {language === "fi" ? contact.fi : contact.en}
+            </Link>
+            <a
+              href="https://www.instagram.com/salinmiia/"
+              className="font-mono text-[#aaaaaa] text-[16px]"
+              target="_blank"
+            >
+              Instagram
+            </a>
+          </div>
         </div>
       </section>
       <div className="h-[29vh] w-[118vw] bg-[url('/salinstudio-home-reel-top.jpg')] -rotate-[21.8deg] absolute -top-[25vh] -left-[15vw] top-reel"></div>

@@ -68,17 +68,33 @@ input::placeholder {
   font-family: "Afacad";
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #3a3a3a inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
 textarea::placeholder {
   color: white;
   opacity: 1;
   font-family: "Afacad";
 }
 
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #3a3a3a inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
 .top-reel {
   background-repeat: repeat-x;
   background-size: contain;
   animation-name: top-reel;
-  animation-duration: 60s;
+  animation-duration: 6000s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
@@ -86,9 +102,8 @@ textarea::placeholder {
 .bot-reel {
   background-repeat: repeat-x;
   background-size: contain;
-  background-position: 0;
   animation-name: bot-reel;
-  animation-duration: 60s;
+  animation-duration: 8000s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
@@ -99,7 +114,7 @@ textarea::placeholder {
   }
 
   to {
-    background-position: -172%;
+    background-position: -15000vw;
   }
 }
 
@@ -109,6 +124,6 @@ textarea::placeholder {
   }
 
   to {
-    background-position: 230%;
+    background-position: 19000vw;
   }
 }

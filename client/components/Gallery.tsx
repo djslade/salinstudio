@@ -2,9 +2,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { PortfolioImage } from "./PortfolioImage";
 import { Modal } from "./Modal";
+import { GalleryImage } from "@/types";
 
 interface GalleryProps {
-  images: string[];
+  images: GalleryImage[];
 }
 
 interface ImageDimension {
@@ -163,8 +164,8 @@ export const Gallery = ({ images }: GalleryProps) => {
     >
       {images.map((image, idx) => (
         <PortfolioImage
-          src={image}
-          key={image}
+          src={image.src}
+          key={image.src}
           index={idx}
           top={calculateColumnHeight(idx)}
           left={calculateRowWidth(idx)}

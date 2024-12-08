@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { LanguageButton } from "@/components/LanguageButton";
 
 const islandMoments = localFont({
   src: "./fonts/IslandMoments.ttf",
@@ -33,9 +34,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${afacad.variable} ${islandMoments.variable} ${ibmPlexMono.variable} antialiased bg-[#232323]`}
+        className={`${afacad.variable} ${islandMoments.variable} ${ibmPlexMono.variable} antialiased bg-[#232323] relative`}
       >
-        {children}
+        <div className="relative">
+          <LanguageButton />
+          {children}
+        </div>
         <div id="modal"></div>
       </body>
     </html>
