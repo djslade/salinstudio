@@ -21,13 +21,16 @@ export default function Home() {
         </div>
         <div className="px-16 py-2">
           <hr className="" />
-          <Link href="/" className="font-mono text-[#aaaaaa] text-[16px]">
+          <Link
+            href="/contact"
+            className="font-mono text-[#aaaaaa] text-[16px]"
+          >
             Contact me
           </Link>
         </div>
       </section>
-      <div className="h-[29vh] w-[118vw] bg-[url('/salinstudio-home-reel-top.jpg')] -rotate-[21.8deg] absolute -top-[25vh] -left-[15vw]"></div>
-      <div className="h-[25vh] w-[118vw] bg-[url('/salinstudio-home-reel-bot.jpg')] rotate-[12.4deg] absolute -left-[10vw] -bottom-[20vh]"></div>
+      <div className="h-[29vh] w-[118vw] bg-[url('/salinstudio-home-reel-top.jpg')] -rotate-[21.8deg] absolute -top-[25vh] -left-[15vw] top-reel"></div>
+      <div className="h-[25vh] w-[118vw] bg-[url('/salinstudio-home-reel-bot.jpg')] rotate-[12.4deg] absolute -left-[10vw] -bottom-[20vh] bot-reel"></div>
     </div>
   );
 }

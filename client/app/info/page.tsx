@@ -38,7 +38,7 @@ const Info = () => {
             </p>
           </div>
           <div className="max-w-[580px] text-end">
-            <Link href="/" className="font-mono">
+            <Link href="/contact" className="font-mono">
               Contact me
             </Link>
           </div>

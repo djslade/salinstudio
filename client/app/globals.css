@@ -58,3 +58,57 @@
   align-items: center;
   gap: 16px;
 }
+
+textarea {
+  min-height: 120px;
+}
+input::placeholder {
+  color: white;
+  opacity: 1;
+  font-family: "Afacad";
+}
+
+textarea::placeholder {
+  color: white;
+  opacity: 1;
+  font-family: "Afacad";
+}
+
+.top-reel {
+  background-repeat: repeat-x;
+  background-size: contain;
+  animation-name: top-reel;
+  animation-duration: 60s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.bot-reel {
+  background-repeat: repeat-x;
+  background-size: contain;
+  background-position: 0;
+  animation-name: bot-reel;
+  animation-duration: 60s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes top-reel {
+  from {
+    background-position: 0;
+  }
+
+  to {
+    background-position: -172%;
+  }
+}
+
+@keyframes bot-reel {
+  from {
+    background-position: 0;
+  }
+
+  to {
+    background-position: 230%;
+  }
+}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import { InactiveLink } from "./InactiveLink";
 
 export const Navbar = () => {
   return (
@@ -14,12 +14,8 @@ export const Navbar = () => {
         <Link href="/portfolio" className="hover:scale-110 transition-all">
           Portfolio
         </Link>
-        <Link href="/" className="hover:scale-110 transition-all">
-          Blog
-        </Link>
-        <Link href="/" className="hover:scale-110 transition-all">
-          Buy
-        </Link>
+        <InactiveLink text="Blog" />
+        <InactiveLink text="Buy" />
       </div>
       <div className="px-16 w-full">
         <hr className="self-center" />
