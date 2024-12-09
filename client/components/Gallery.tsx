@@ -16,7 +16,7 @@ interface ImageDimension {
 }
 
 export const Gallery = ({ images }: GalleryProps) => {
-  const [containerWidth, setContainerWidth] = useState(1440);
+  const [containerWidth, setContainerWidth] = useState(1280);
 
   const [containerHeight, setContainerHeight] = useState(0);
 
@@ -29,6 +29,8 @@ export const Gallery = ({ images }: GalleryProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const [modalIndex, setModalIndex] = useState<number>(0);
+
+  const [imagesVisible, setImagesVisible] = useState<boolean>(false);
 
   const handleShowModal = (index: number) => {
     setModalIndex(index);
@@ -113,8 +115,8 @@ export const Gallery = ({ images }: GalleryProps) => {
     const handleContainerWidth = () => {
       if (!galleryRef || !galleryRef.current) return;
       setContainerWidth(
-        galleryRef.current.clientWidth > 1440
-          ? 1440
+        galleryRef.current.clientWidth > 1280
+          ? 1280
           : galleryRef.current.clientWidth
       );
     };
@@ -129,8 +131,8 @@ export const Gallery = ({ images }: GalleryProps) => {
   useEffect(() => {
     if (!galleryRef || !galleryRef.current) return;
     setContainerWidth(
-      galleryRef.current.clientWidth > 1440
-        ? 1440
+      galleryRef.current.clientWidth > 1280
+        ? 1280
         : galleryRef.current.clientWidth
     );
   }, [containerWidth, images]);
@@ -142,6 +144,7 @@ export const Gallery = ({ images }: GalleryProps) => {
   useEffect(() => {
     if (!loaded) return;
     setContainerHeight(calculateHighestColumn());
+    setImagesVisible(true);
   }, [loaded]);
 
   useEffect(() => {
@@ -157,7 +160,7 @@ export const Gallery = ({ images }: GalleryProps) => {
   return (
     <section
       ref={galleryRef}
-      className="w-full max-w-[1440px] mx-auto my-0 relative"
+      className="w-full max-w-[1280px] mx-auto my-0 relative"
       style={{
         minHeight: containerHeight,
       }}
@@ -172,6 +175,7 @@ export const Gallery = ({ images }: GalleryProps) => {
           onLoad={assignImageDimension}
           containerWidth={containerWidth}
           onClick={() => handleShowModal(idx)}
+          visible={imagesVisible}
         />
       ))}
       {showModal && (

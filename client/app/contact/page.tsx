@@ -61,8 +61,6 @@ const contact = {
 const Contact = () => {
   const language = useAtomValue(languageAtom);
 
-  const [_, reload] = useState(true);
-
   const [emailSent, setEmailSent] = useState<boolean>(false);
 
   let ContactSchema = Yup.object().shape({
@@ -111,8 +109,6 @@ const Contact = () => {
         language === "fi" ? required.fi : required.en
       ),
     });
-
-    reload((prev) => !prev);
   }, [language]);
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 interface PortfolioImageProps {
   src: string;
@@ -9,6 +10,7 @@ interface PortfolioImageProps {
   onLoad: (index: number, height: number, width: number) => void;
   containerWidth: number;
   onClick: () => void;
+  visible: boolean;
 }
 
 export const PortfolioImage = ({
@@ -19,6 +21,7 @@ export const PortfolioImage = ({
   onLoad,
   containerWidth,
   onClick,
+  visible,
 }: PortfolioImageProps) => {
   const imageRef = useRef<HTMLImageElement>(null);
 
@@ -27,6 +30,8 @@ export const PortfolioImage = ({
   const [height, setHeight] = useState<number>(0);
 
   const [loaded, setLoaded] = useState(false);
+
+  const [imageVisible, setImageVisible] = useState<boolean>(false);
 
   const getImageWidth = () => {
     if (!imageRef || !imageRef.current) return 0;
@@ -75,9 +80,19 @@ export const PortfolioImage = ({
     }
   }, [loaded]);
 
+  useEffect(() => {
+    if (visible) {
+      setImageVisible(true);
+    }
+  }, [visible]);
+
   return (
     <button onClick={onClick}>
-      <img
+      <Image
+        width={0}
+        height={0}
+        priority
+        className="gallery-image"
         ref={imageRef}
         src={src}
         alt=""
@@ -87,6 +102,7 @@ export const PortfolioImage = ({
           position: "absolute",
           top: `${top}px`,
           left: `${left}px`,
+          opacity: imageVisible ? "1" : "0",
         }}
         onLoad={setImageDimensions}
       />

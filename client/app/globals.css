@@ -127,3 +127,13 @@ textarea:-webkit-autofill:active {
     background-position: 19000vw;
   }
 }
+
+.gallery-image {
+  transition-property: opacity;
+  opacity: 0;
+  transition-duration: 0.2s;
+}
+
+.gallery-image.viisble {
+  opacity: 1;
+}

@@ -2,8 +2,10 @@
 import { Gallery, Navbar } from "@/components";
 import { languageAtom } from "@/state";
 import { useAtomValue } from "jotai";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import Head from "next/head";
+import Link from "next/link";
 
 const images = [
   {
@@ -339,6 +341,21 @@ const menuMixedMedia = {
   fi: "Muut Mediat",
 };
 
+const all = [...images, ...paintings, ...pastels, ...digitals, ...mixed];
+
+const PortfolioOuter = () => {
+  return (
+    <Suspense>
+      <Head>
+        {all.map((a) => (
+          <Link key={a.src} rel="preload" href={a.src} as="image" />
+        ))}
+      </Head>
+      <Portfolio />
+    </Suspense>
+  );
+};
+
 const Portfolio = () => {
   const searchParams = useSearchParams();
 
@@ -452,4 +469,4 @@ const Portfolio = () => {
   );
 };
 
-export default Portfolio;
+export default PortfolioOuter;
