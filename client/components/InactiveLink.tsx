@@ -16,7 +16,7 @@ export const InactiveLink = ({ text }: InactiveLinkProps) => {
         {text}
       </span>
       {isHovered && (
-        <div className="absolute -bottom-[30px] whitespace-nowrap bg-[#2A2A2A] px-3 font-sans text-[18px] left-1/2 -translate-x-1/2">
+        <div className="absolute -bottom-[30px] whitespace-nowrap bg-homeGray px-3 font-sans text-[18px] left-1/2 -translate-x-1/2">
           <span>Coming soon!</span>
         </div>
       )}

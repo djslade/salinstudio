@@ -57,7 +57,7 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
           />
           {images[modalIndex].name.en !== "" && (
             <div
-              className="w-full text-[22px] text-center py-3 px-12 bg-[#D9D9D9] max-w-fit"
+              className="w-full text-[22px] text-center py-3 px-12 bg-buttonGray max-w-fit"
               onClick={(e) => e.stopPropagation()}
             >
               <span className="font-mono font-bold">

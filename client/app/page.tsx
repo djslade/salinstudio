@@ -28,16 +28,25 @@ export default function Home() {
   const language = useAtomValue(languageAtom);
 
   return (
-    <div className="min-h-screen w-full bg-[#232323] flex justify-center items-center py-6 relative overflow-hidden gap-32">
-      <img src="/salinstudio-logo.svg" alt="Salin Studio" />
-      <section className="px-6 pt-9 pb-9 bg-[#2A2A2A] w-[600px] h-[516px] text-white flex flex-col grow-0">
+    <div className="min-h-screen w-full bg-darkest flex justify-center items-center py-6 relative overflow-hidden gap-32">
+      <Link href="/">
+        <img
+          src="/salinstudio-logo.svg"
+          alt="Salin Studio"
+          className="max-w-[300px]"
+        />
+      </Link>
+      <section className="px-6 pt-9 pb-9 bg-homeGray w-[600px] h-[516px] text-white flex flex-col grow-0">
         <Navbar />
         <div className="flex flex-col items-center gap-10 w-full font-sans px-16 pt-16 pb-12 text-[18px]">
           <div className="flex flex-col gap-5 text-center">
             <p>{language === "fi" ? paragraphOne.fi : paragraphOne.en}</p>
             <p>{language === "fi" ? paragraphTwo.fi : paragraphTwo.en}</p>
           </div>
-          <Link href="/" className="bg-[#3A3A3A] px-6 py-1 rounded self-center">
+          <Link
+            href="/portfolio"
+            className="bg-formGray px-6 py-1 rounded self-center"
+          >
             {language === "fi" ? button.fi : button.en}
           </Link>
         </div>
@@ -46,13 +55,13 @@ export default function Home() {
           <div className="w-full flex justify-between">
             <Link
               href="/contact"
-              className="font-mono text-[#aaaaaa] text-[16px]"
+              className="font-mono text-linkGray text-[16px]"
             >
               {language === "fi" ? contact.fi : contact.en}
             </Link>
             <a
               href="https://www.instagram.com/salinmiia/"
-              className="font-mono text-[#aaaaaa] text-[16px]"
+              className="font-mono text-linkGray text-[16px]"
               target="_blank"
             >
               Instagram

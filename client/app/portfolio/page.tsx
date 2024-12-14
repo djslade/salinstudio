@@ -1,5 +1,5 @@
 "use client";
-import { Gallery, Navbar } from "@/components";
+import { Gallery, Header, Navbar } from "@/components";
 import { languageAtom } from "@/state";
 import { useAtomValue } from "jotai";
 import { useSearchParams } from "next/navigation";
@@ -9,6 +9,7 @@ import Link from "next/link";
 
 const images = [
   {
+    index: 0,
     src: "/salinstudio-gallery-1.jpg",
     name: {
       en: '"Insurmountable"',
@@ -16,6 +17,7 @@ const images = [
     },
   },
   {
+    index: 1,
     src: "/salinstudio-gallery-2.jpg",
     name: {
       en: "Reference picture",
@@ -23,6 +25,7 @@ const images = [
     },
   },
   {
+    index: 2,
     src: "/salinstudio-gallery-3.jpg",
     name: {
       en: "Schoolwork",
@@ -30,6 +33,7 @@ const images = [
     },
   },
   {
+    index: 3,
     src: "/salinstudio-gallery-4.jpg",
     name: {
       en: 'Inktober 2023 "Golden"',
@@ -37,6 +41,7 @@ const images = [
     },
   },
   {
+    index: 4,
     src: "/salinstudio-gallery-5.jpg",
     name: {
       en: "Protect thy brother",
@@ -44,6 +49,7 @@ const images = [
     },
   },
   {
+    index: 5,
     src: "/salinstudio-gallery-6.jpg",
     name: {
       en: "Reference picture",
@@ -51,6 +57,7 @@ const images = [
     },
   },
   {
+    index: 6,
     src: "/salinstudio-gallery-7.jpg",
     name: {
       en: "Schoolwork",
@@ -58,6 +65,7 @@ const images = [
     },
   },
   {
+    index: 7,
     src: "/salinstudio-gallery-8.jpg",
     name: {
       en: '"Christina"',
@@ -65,6 +73,7 @@ const images = [
     },
   },
   {
+    index: 8,
     src: "/salinstudio-gallery-9.jpg",
     name: {
       en: "Schoolwork",
@@ -72,6 +81,7 @@ const images = [
     },
   },
   {
+    index: 9,
     src: "/salinstudio-gallery-10.jpg",
     name: {
       en: "Reference picture",
@@ -79,6 +89,7 @@ const images = [
     },
   },
   {
+    index: 10,
     src: "/salinstudio-gallery-11.jpg",
     name: {
       en: '"What could have been"',
@@ -86,6 +97,7 @@ const images = [
     },
   },
   {
+    index: 11,
     src: "/salinstudio-gallery-12.jpg",
     name: {
       en: "Reference picture",
@@ -93,6 +105,7 @@ const images = [
     },
   },
   {
+    index: 12,
     src: "/salinstudio-gallery-13.jpg",
     name: {
       en: "Reference picture",
@@ -100,6 +113,7 @@ const images = [
     },
   },
   {
+    index: 13,
     src: "/salinstudio-gallery-14.jpg",
     name: {
       en: '"Mother and son"',
@@ -107,6 +121,7 @@ const images = [
     },
   },
   {
+    index: 14,
     src: "/salinstudio-gallery-15.jpg",
     name: {
       en: "Reference picture",
@@ -114,6 +129,7 @@ const images = [
     },
   },
   {
+    index: 15,
     src: "/salinstudio-gallery-16.jpg",
     name: {
       en: '"Bella"',
@@ -121,6 +137,7 @@ const images = [
     },
   },
   {
+    index: 16,
     src: "/salinstudio-gallery-17.jpg",
     name: {
       en: '"HAN"',
@@ -128,6 +145,7 @@ const images = [
     },
   },
   {
+    index: 17,
     src: "/salinstudio-gallery-18.jpg",
     name: {
       en: "Reference picture",
@@ -135,6 +153,7 @@ const images = [
     },
   },
   {
+    index: 18,
     src: "/salinstudio-gallery-19.jpg",
     name: {
       en: "Reference picture",
@@ -142,6 +161,7 @@ const images = [
     },
   },
   {
+    index: 19,
     src: "/salinstudio-gallery-20.jpg",
     name: {
       en: '"You are my future"',
@@ -149,6 +169,7 @@ const images = [
     },
   },
   {
+    index: 20,
     src: "/salinstudio-gallery-21.jpg",
     name: {
       en: "Reference picture",
@@ -156,6 +177,7 @@ const images = [
     },
   },
   {
+    index: 21,
     src: "/salinstudio-gallery-22.jpg",
     name: {
       en: "Reference picture",
@@ -163,6 +185,7 @@ const images = [
     },
   },
   {
+    index: 22,
     src: "/salinstudio-gallery-23.jpg",
     name: {
       en: 'Inktober 2023 "Bounce"',
@@ -173,6 +196,7 @@ const images = [
 
 const paintings = [
   {
+    index: 0,
     src: "/salinstudio-painting-1.jpg",
     name: {
       en: "Schoolwork",
@@ -180,6 +204,7 @@ const paintings = [
     },
   },
   {
+    index: 1,
     src: "/salinstudio-painting-2.jpg",
     name: {
       en: "Schoolwork",
@@ -187,6 +212,7 @@ const paintings = [
     },
   },
   {
+    index: 2,
     src: "/salinstudio-painting-3.jpg",
     name: {
       en: "Schoolwork",
@@ -194,6 +220,7 @@ const paintings = [
     },
   },
   {
+    index: 3,
     src: "/salinstudio-painting-4.jpg",
     name: {
       en: 'Painted "Insurmountable"',
@@ -204,6 +231,7 @@ const paintings = [
 
 const pastels = [
   {
+    index: 0,
     src: "/salinstudio-pastel-1.jpg",
     name: {
       en: '"Red Apples"',
@@ -214,6 +242,7 @@ const pastels = [
 
 const digitals = [
   {
+    index: 0,
     src: "/salinstudio-digital-1.jpg",
     name: {
       en: '"Sense of stability"',
@@ -224,6 +253,7 @@ const digitals = [
 
 const mixed = [
   {
+    index: 0,
     src: "/salinstudio-mixed-1.jpg",
     name: {
       en: "Schoolwork",
@@ -231,6 +261,7 @@ const mixed = [
     },
   },
   {
+    index: 1,
     src: "/salinstudio-mixed-2.jpg",
     name: {
       en: "Poster for school",
@@ -238,6 +269,7 @@ const mixed = [
     },
   },
   {
+    index: 2,
     src: "/salinstudio-mixed-3.jpg",
     name: {
       en: "Poster for school",
@@ -245,6 +277,7 @@ const mixed = [
     },
   },
   {
+    index: 3,
     src: "/salinstudio-mixed-4.jpg",
     name: {
       en: "",
@@ -252,6 +285,7 @@ const mixed = [
     },
   },
   {
+    index: 4,
     src: "/salinstudio-mixed-5.jpg",
     name: {
       en: "",
@@ -259,6 +293,7 @@ const mixed = [
     },
   },
   {
+    index: 5,
     src: "/salinstudio-mixed-6.jpg",
     name: {
       en: "",
@@ -266,6 +301,7 @@ const mixed = [
     },
   },
   {
+    index: 6,
     src: "/salinstudio-mixed-7.jpg",
     name: {
       en: "",
@@ -273,6 +309,7 @@ const mixed = [
     },
   },
   {
+    index: 7,
     src: "/salinstudio-mixed-8.jpg",
     name: {
       en: "",
@@ -280,6 +317,7 @@ const mixed = [
     },
   },
   {
+    index: 8,
     src: "/salinstudio-mixed-9.jpg",
     name: {
       en: "",
@@ -287,6 +325,7 @@ const mixed = [
     },
   },
   {
+    index: 9,
     src: "/salinstudio-mixed-10.jpg",
     name: {
       en: "",
@@ -294,6 +333,7 @@ const mixed = [
     },
   },
   {
+    index: 10,
     src: "/salinstudio-mixed-11.jpg",
     name: {
       en: "",
@@ -301,6 +341,7 @@ const mixed = [
     },
   },
   {
+    index: 11,
     src: "/salinstudio-mixed-12.jpg",
     name: {
       en: "",
@@ -308,6 +349,7 @@ const mixed = [
     },
   },
   {
+    index: 12,
     src: "/salinstudio-mixed-13.jpg",
     name: {
       en: "",
@@ -341,16 +383,9 @@ const menuMixedMedia = {
   fi: "Muut Mediat",
 };
 
-const all = [...images, ...paintings, ...pastels, ...digitals, ...mixed];
-
 const PortfolioOuter = () => {
   return (
     <Suspense>
-      <Head>
-        {all.map((a) => (
-          <Link key={a.src} rel="preload" href={a.src} as="image" />
-        ))}
-      </Head>
       <Portfolio />
     </Suspense>
   );
@@ -382,18 +417,9 @@ const Portfolio = () => {
 
   return (
     <div className="">
-      <section className="bg-[#232323] w-full p-12 flex flex-col">
-        <img
-          src="/salinstudio-logo.svg"
-          alt="Salin Studio"
-          className="w-[200px] self-start"
-        />
-        <div className="w-[600px] text-white self-center flex flex-col">
-          <Navbar />
-        </div>
-      </section>
+      <Header />
       <section
-        className="px-2 py-12 bg-[#232323] flex flex-col gap-12"
+        className="px-2 py-12 bg-darkest flex flex-col gap-12"
         style={{ minHeight: "calc(100vh - 230px)" }}
       >
         {getActiveImage().length > 0 && (
@@ -401,7 +427,7 @@ const Portfolio = () => {
             <Link
               href="/portfolio?q=drawings"
               className={`${
-                getActiveImage() === images ? "bg-[#464646]" : ""
+                getActiveImage() === images ? "bg-activeGray" : ""
               } px-4 py-2 rounded-full`}
             >
               {language === "fi" ? menuDrawings.fi : menuDrawings.en}
@@ -409,7 +435,7 @@ const Portfolio = () => {
             <Link
               href="/portfolio?q=paintings"
               className={`${
-                getActiveImage() === paintings ? "bg-[#464646]" : ""
+                getActiveImage() === paintings ? "bg-activeGray" : ""
               } px-4 py-2 rounded-full`}
             >
               {language === "fi" ? menuPaintings.fi : menuPaintings.en}
@@ -417,7 +443,7 @@ const Portfolio = () => {
             <Link
               href="/portfolio?q=pastels"
               className={`${
-                getActiveImage() === pastels ? "bg-[#464646]" : ""
+                getActiveImage() === pastels ? "bg-activeGray" : ""
               } px-4 py-2 rounded-full`}
             >
               {language === "fi" ? menuPastels.fi : menuPastels.en}
@@ -425,7 +451,7 @@ const Portfolio = () => {
             <Link
               href="/portfolio?q=digital"
               className={`${
-                getActiveImage() === digitals ? "bg-[#464646]" : ""
+                getActiveImage() === digitals ? "bg-activeGray" : ""
               } px-4 py-2 rounded-full`}
             >
               {language === "fi" ? menuDigital.fi : menuDigital.en}
@@ -433,7 +459,7 @@ const Portfolio = () => {
             <Link
               href="/portfolio?q=mixed-media"
               className={`${
-                getActiveImage() === mixed ? "bg-[#464646]" : ""
+                getActiveImage() === mixed ? "bg-activeGray" : ""
               } px-4 py-2 rounded-full`}
             >
               {language === "fi" ? menuMixedMedia.fi : menuMixedMedia.en}

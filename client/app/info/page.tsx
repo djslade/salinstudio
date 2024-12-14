@@ -1,5 +1,5 @@
 "use client";
-import { Navbar } from "@/components";
+import { Header, Navbar } from "@/components";
 import { languageAtom } from "@/state";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
@@ -29,17 +29,8 @@ const Info = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <section className="bg-[#232323] w-full p-12 flex flex-col">
-        <img
-          src="/salinstudio-logo.svg"
-          alt="Salin Studio"
-          className="w-[200px] self-start"
-        />
-        <div className="w-[600px] text-white self-center flex flex-col">
-          <Navbar />
-        </div>
-      </section>
-      <section className="w-full bg-[#3a3a3a] font-sans font-[18px] flex flex-col items-center text-white p-24 flex-1">
+      <Header />
+      <section className="w-full bg-formGray font-sans font-[18px] flex flex-col items-center text-white p-24 flex-1">
         <div className="w-[600px] flex flex-col gap-6 relative">
           <div className="flex flex-col gap-8">
             <p className="max-w-[500px] ml-12">
@@ -84,7 +75,7 @@ const Info = () => {
           />
         </div>
       </section>
-      <section className="min-h-[280px] bg-[#232323]" />
+      <section className="min-h-[280px] bg-darkest" />
     </div>
   );
 };

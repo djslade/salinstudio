@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${afacad.variable} ${islandMoments.variable} ${ibmPlexMono.variable} antialiased bg-[#232323] relative`}
+        className={`${afacad.variable} ${islandMoments.variable} ${ibmPlexMono.variable} antialiased bg-darkest relative`}
       >
         <div className="relative">
           <LanguageButton />
