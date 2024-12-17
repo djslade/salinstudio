@@ -34,7 +34,7 @@ export const Gallery = ({ images }: GalleryProps) => {
       >
         {getColumnArrays(images, 3).map((column, idx) => (
           <div className="w-full flex-1" key={`column-${idx}`}>
-            {column.map((image, i) => (
+            {column.map((image) => (
               <PortfolioImage
                 key={image.src}
                 image={image}
@@ -50,7 +50,7 @@ export const Gallery = ({ images }: GalleryProps) => {
       >
         {getColumnArrays(images, 2).map((column, idx) => (
           <div className="w-full flex-1" key={`column-${idx}`}>
-            {column.map((image, i) => (
+            {column.map((image) => (
               <PortfolioImage
                 key={image.src}
                 image={image}

@@ -37,7 +37,7 @@ export default function Home() {
         <Header />
       </div>
       <div className="p-3">
-        <section className="px-6 pt-9 pb-9 bg-homeGray max-w-[600px] w-full text-white flex flex-col grow-0 relative z-[1] desktop:static bg-opacity-85">
+        <section className="px-6 pt-9 pb-9 bg-homeGray max-w-[600px] w-full text-white flex flex-col grow-0 relative z-[1] desktop:static bg-opacity-75">
           <div className="hidden tablet:flex">
             <Navbar />
           </div>

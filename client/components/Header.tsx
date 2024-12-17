@@ -32,11 +32,6 @@ const buy = {
   fi: "Osta",
 };
 
-const comingSoon = {
-  en: "Coming soon!",
-  fi: "Tulossa pian!",
-};
-
 export const Header = () => {
   const [language, setLanguage] = useAtom(languageAtom);
 
