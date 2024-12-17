@@ -1,5 +1,5 @@
 "use client";
-import { Header, Navbar } from "@/components";
+import { Header } from "@/components";
 import { languageAtom } from "@/state";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
@@ -28,18 +28,18 @@ const Info = () => {
   const language = useAtomValue(languageAtom);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="desktop:min-h-screen flex flex-col">
       <Header />
-      <section className="w-full bg-formGray font-sans font-[18px] flex flex-col items-center text-white p-24 flex-1">
-        <div className="w-[600px] flex flex-col gap-6 relative">
+      <section className="w-full bg-formGray font-sans font-[18px] flex flex-col items-center text-white py-12 tablet:py-24 desktop:px-24 px-3 flex-1">
+        <div className="max-w-[600px] w-full flex flex-col gap-6 relative">
           <div className="flex flex-col gap-8">
-            <p className="max-w-[500px] ml-12">
+            <p className="max-w-[500px] tablet:ml-12">
               {language === "fi" ? paragraphOne.fi : paragraphOne.en}
             </p>
-            <p className="max-w-[500px] ml-12">
+            <p className="max-w-[500px] tablet:ml-12">
               {language === "fi" ? paragraphTwo.fi : paragraphTwo.en}
             </p>
-            <p className="max-w-[500px] ml-12">
+            <p className="max-w-[500px] tablet:ml-12">
               {language === "fi" ? paragraphThree.fi : paragraphThree.en}
             </p>
           </div>
@@ -51,31 +51,30 @@ const Info = () => {
           <img
             src="/salinstudio-info-2.jpg"
             alt=""
-            className="top-[240px] w-[240px] -left-[270px] absolute"
+            className="top-[240px] w-[240px] -left-[270px] absolute hidden desktop:block"
           />
           <img
             src="/salinstudio-info-1.jpg"
             alt=""
-            className="-top-[25px] w-[200px] -left-[250px] absolute"
+            className="-top-[25px] w-[200px] -left-[250px] absolute hidden desktop:block"
           />
           <img
             src="/salinstudio-info-4.jpg"
             alt=""
-            className="-bottom-[350px] w-[300px] left-[150px] absolute"
+            className="-bottom-[350px] w-[300px] left-[150px] hidden absolute desktop:block"
           />
           <img
             src="/salinstudio-info-3.jpg"
             alt=""
-            className="-bottom-[300px] w-[208px] -left-[48px] absolute"
+            className="-bottom-[300px] w-[208px] -left-[48px] hidden absolute desktop:block"
           />
           <img
             src="/salinstudio-info-5.jpg"
             alt=""
-            className="-bottom-[330px] w-[220px] -right-[50px] absolute"
+            className="-bottom-[330px] w-[220px] -right-[50px] hidden absolute desktop:block"
           />
         </div>
       </section>
-      <section className="min-h-[280px] bg-darkest" />
     </div>
   );
 };

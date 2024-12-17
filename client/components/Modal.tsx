@@ -48,16 +48,16 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
         <button onClick={handlePrevious} className="w-10">
           <img src="/salinstudio-left.svg" alt="Left" />
         </button>
-        <div className="flex flex-col items-center gap-6 h-[80%]">
+        <div className="flex flex-col items-center justify-center gap-6 h-full w-full">
           <img
             src={images[modalIndex].src}
             alt="Image"
-            className="h-full w-auto"
+            className="max-w-full max-h-full"
             onClick={(e) => e.stopPropagation()}
           />
           {images[modalIndex].name.en !== "" && (
             <div
-              className="w-full text-[22px] text-center py-3 px-12 bg-buttonGray max-w-fit"
+              className="w-full text-[22px] text-center py-3 px-12 bg-buttonGray max-w-fit shrink-0"
               onClick={(e) => e.stopPropagation()}
             >
               <span className="font-mono font-bold">
@@ -71,6 +71,21 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
         <button onClick={handleNext} className="w-10">
           <img src="/salinstudio-right.svg" alt="right" />
         </button>
+      </div>
+      <div className="tablet:hidden w-full h-full flex flex-col justify-center gap-3">
+        <img
+          src={images[modalIndex].src}
+          alt=""
+          className="w-full"
+          onClick={(e) => e.stopPropagation()}
+        />
+        <div className="w-full text-center">
+          <span className="font-mono font-bold text-white">
+            {language === "fi"
+              ? images[modalIndex].name.fi
+              : images[modalIndex].name.en}
+          </span>
+        </div>
       </div>
     </div>,
     document.getElementById("modal")!

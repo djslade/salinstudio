@@ -21,32 +21,45 @@ export const Gallery = ({ images }: GalleryProps) => {
   const getColumnArrays = (array: GalleryImage[], columnCount: number) => {
     const columnsArray: GalleryImage[][] = [];
     for (let i = 0; i < columnCount; i++) {
-      if (array.length > i) {
-        columnsArray.push(array.filter((_, idx) => idx % columnCount === i));
-      }
+      columnsArray.push(array.filter((item) => item.index % columnCount === i));
     }
     return columnsArray;
   };
 
   return (
-    <section
-      className="w-full max-w-[1280px] mx-auto my-0 flex"
-      style={{
-        columnCount: "3",
-        columnGap: "8px",
-      }}
-    >
-      {getColumnArrays(images, 3).map((column, idx) => (
-        <div className="w-full max-w-[33%]" key={`column-${idx}`}>
-          {column.map((image, i) => (
-            <PortfolioImage
-              key={image.src}
-              image={image}
-              onClick={() => handleShowModal(image.index)}
-            />
-          ))}
-        </div>
-      ))}
+    <section className="w-full max-w-[1280px] mx-auto my-0">
+      <div
+        className="w-full hidden tablet:flex"
+        style={{ columnCount: "auto", columnGap: "8px" }}
+      >
+        {getColumnArrays(images, 3).map((column, idx) => (
+          <div className="w-full flex-1" key={`column-${idx}`}>
+            {column.map((image, i) => (
+              <PortfolioImage
+                key={image.src}
+                image={image}
+                onClick={() => handleShowModal(image.index)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div
+        className="w-full flex tablet:hidden"
+        style={{ columnCount: "auto", columnGap: "4px" }}
+      >
+        {getColumnArrays(images, 2).map((column, idx) => (
+          <div className="w-full flex-1" key={`column-${idx}`}>
+            {column.map((image, i) => (
+              <PortfolioImage
+                key={image.src}
+                image={image}
+                onClick={() => handleShowModal(image.index)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
       {showModal && (
         <Modal
           onClose={() => setShowModal(false)}

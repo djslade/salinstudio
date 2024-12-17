@@ -37,7 +37,9 @@ export default function RootLayout({
         className={`${afacad.variable} ${islandMoments.variable} ${ibmPlexMono.variable} antialiased bg-darkest relative`}
       >
         <div className="relative">
-          <LanguageButton />
+          <div className="absolute right-10 top-5 z-[1000]">
+            <LanguageButton />
+          </div>
           {children}
         </div>
         <div id="modal"></div>

@@ -5,19 +5,19 @@ interface LogoProps {
 }
 export const Logo = ({ size }: LogoProps) => {
   return size === "small" ? (
-    <Link href="/">
+    <Link href="/" className="w-fit">
       <img
         src="/salinstudio-logo.svg"
         alt="Salin Studio"
-        className="w-[200px] self-start"
+        className=" w-[150px] midTablet:w-[200px] self-start"
       />
     </Link>
   ) : (
-    <Link href="/">
+    <Link href="/" className="w-fit">
       <img
         src="/salinstudio-logo.svg"
         alt="Salin Studio"
-        className="w-[300px] self-start"
+        className="w-[200px] self-start desktop:w-[300px]"
       />
     </Link>
   );
