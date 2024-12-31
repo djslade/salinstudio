@@ -243,6 +243,22 @@ const pastels = [
 const digitals = [
   {
     index: 0,
+    src: "/digital-3.jpg",
+    name: {
+      en: '"An English New Year"',
+      fi: '"Englantilainen Uusi Vuosi"',
+    },
+  },
+  {
+    index: 1,
+    src: "/digital-2b.jpg",
+    name: {
+      en: '"Onwards"',
+      fi: '"Eteenpäin"',
+    },
+  },
+  {
+    index: 2,
     src: "/digital-1.jpg",
     name: {
       en: '"Sense of stability"',
