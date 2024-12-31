@@ -24,7 +24,7 @@ const images = [
     srcThumb: "/drawings-2_thumb.jpg",
     srcMobile: "/drawings-2_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -64,7 +64,7 @@ const images = [
     srcThumb: "/drawings-6_thumb.jpg",
     srcMobile: "/drawings-6_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -104,7 +104,7 @@ const images = [
     srcThumb: "/drawings-10_thumb.jpg",
     srcMobile: "/drawings-10_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -124,7 +124,7 @@ const images = [
     srcThumb: "/drawings-12_thumb.jpg",
     srcMobile: "/drawings-12_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -134,7 +134,7 @@ const images = [
     srcThumb: "/drawings-13_thumb.jpg",
     srcMobile: "/drawings-13_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -154,7 +154,7 @@ const images = [
     srcThumb: "/drawings-15_thumb.jpg",
     srcMobile: "/drawings-15_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -184,7 +184,7 @@ const images = [
     srcThumb: "/drawings-18_thumb.jpg",
     srcMobile: "/drawings-18_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -194,7 +194,7 @@ const images = [
     srcThumb: "/drawings-19_thumb.jpg",
     srcMobile: "/drawings-19_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -214,7 +214,7 @@ const images = [
     srcThumb: "/drawings-21_thumb.jpg",
     srcMobile: "/drawings-21_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -224,7 +224,7 @@ const images = [
     srcThumb: "/drawings-22_thumb.jpg",
     srcMobile: "/drawings-22_mobile.jpg",
     name: {
-      en: "Reference picture",
+      en: "Copy",
       fi: "Referenssikuva",
     },
   },
@@ -346,7 +346,7 @@ const mixed = [
     srcThumb: "/mixed-2_thumb.jpg",
     srcMobile: "/mixed-2_mobile.jpg",
     name: {
-      en: "Poster for school",
+      en: "Poster",
       fi: "Koulu juliste",
     },
   },
@@ -356,7 +356,7 @@ const mixed = [
     srcThumb: "/mixed-3_thumb.jpg",
     srcMobile: "/mixed-3_mobile.jpg",
     name: {
-      en: "Poster for school",
+      en: "Poster",
       fi: "Koulu juliste",
     },
   },
@@ -366,8 +366,8 @@ const mixed = [
     srcThumb: "/mixed-4_thumb.jpg",
     srcMobile: "/mixed-4_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -376,8 +376,8 @@ const mixed = [
     srcThumb: "/mixed-5_thumb.jpg",
     srcMobile: "/mixed-5_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -386,8 +386,8 @@ const mixed = [
     srcThumb: "/mixed-6_thumb.jpg",
     srcMobile: "/mixed-6_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -396,8 +396,8 @@ const mixed = [
     srcThumb: "/mixed-7_thumb.jpg",
     srcMobile: "/mixed-7_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -406,8 +406,8 @@ const mixed = [
     srcThumb: "/mixed-8_thumb.jpg",
     srcMobile: "/mixed-8_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -416,8 +416,8 @@ const mixed = [
     srcThumb: "/mixed-9_thumb.jpg",
     srcMobile: "/mixed-9_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -426,8 +426,8 @@ const mixed = [
     srcThumb: "/mixed-10_thumb.jpg",
     srcMobile: "/mixed-10_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -436,8 +436,8 @@ const mixed = [
     srcThumb: "/mixed-13_thumb.jpg",
     srcMobile: "/mixed-13_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -446,8 +446,8 @@ const mixed = [
     srcThumb: "/mixed-12_thumb.jpg",
     srcMobile: "/mixed-12_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
   {
@@ -456,8 +456,8 @@ const mixed = [
     srcThumb: "/mixed-13_thumb.jpg",
     srcMobile: "/mixed-13_mobile.jpg",
     name: {
-      en: "",
-      fi: "",
+      en: "Photograph",
+      fi: "Kuva",
     },
   },
 ];

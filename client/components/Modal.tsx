@@ -56,11 +56,8 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
             onClick={(e) => e.stopPropagation()}
           />
           {images[modalIndex].name.en !== "" && (
-            <div
-              className="w-full text-[22px] text-center py-3 px-12 bg-buttonGray max-w-fit shrink-0"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <span className="font-mono font-bold">
+            <div className="w-full text-center">
+              <span className="font-mono font-bold text-white">
                 {language === "fi"
                   ? images[modalIndex].name.fi
                   : images[modalIndex].name.en}
@@ -76,7 +73,7 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
         <img
           src={images[modalIndex].src}
           srcSet={`${images[modalIndex].srcMobile} 600w`}
-          sizes="(max-width: 600px) 600px"
+          sizes="max-width: 600px) 600px"
           alt=""
           className="w-full"
           onClick={(e) => e.stopPropagation()}
