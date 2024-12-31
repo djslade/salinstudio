@@ -8,7 +8,7 @@ interface PortfolioImageProps {
 export const PortfolioImage = ({ image, onClick }: PortfolioImageProps) => {
   return (
     <button onClick={onClick} className="w-full">
-      <img src={image.src} alt="" className="w-full" />
+      <img src={image.srcThumb} alt="" className="w-full" />
     </button>
   );
 };

@@ -11,6 +11,8 @@ const images = [
   {
     index: 0,
     src: "/drawings-1.jpg",
+    srcThumb: "/drawings-1_thumb.jpg",
+    srcMobile: "/drawings-1_mobile.jpg",
     name: {
       en: '"Insurmountable"',
       fi: '"Ylitsepääsemätön"',
@@ -19,6 +21,8 @@ const images = [
   {
     index: 1,
     src: "/drawings-2.jpg",
+    srcThumb: "/drawings-2_thumb.jpg",
+    srcMobile: "/drawings-2_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -27,6 +31,8 @@ const images = [
   {
     index: 2,
     src: "/drawings-3.jpg",
+    srcThumb: "/drawings-3_thumb.jpg",
+    srcMobile: "/drawings-3_mobile.jpg",
     name: {
       en: "Schoolwork",
       fi: "Koulu tehtävä",
@@ -35,6 +41,8 @@ const images = [
   {
     index: 3,
     src: "/drawings-4.jpg",
+    srcThumb: "/drawings-4_thumb.jpg",
+    srcMobile: "/drawings-4_mobile.jpg",
     name: {
       en: 'Inktober 2023 "Golden"',
       fi: 'Inktober 2023 "Kultainen"',
@@ -43,6 +51,8 @@ const images = [
   {
     index: 4,
     src: "/drawings-5.jpg",
+    srcThumb: "/drawings-5_thumb.jpg",
+    srcMobile: "/drawings-5_mobile.jpg",
     name: {
       en: "Protect thy brother",
       fi: "Suojele veljeäsi",
@@ -51,6 +61,8 @@ const images = [
   {
     index: 5,
     src: "/drawings-6.jpg",
+    srcThumb: "/drawings-6_thumb.jpg",
+    srcMobile: "/drawings-6_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -59,6 +71,8 @@ const images = [
   {
     index: 6,
     src: "/drawings-7.jpg",
+    srcThumb: "/drawings-7_thumb.jpg",
+    srcMobile: "/drawings-7_mobile.jpg",
     name: {
       en: "Schoolwork",
       fi: "Koulu tehtävä",
@@ -67,6 +81,8 @@ const images = [
   {
     index: 7,
     src: "/drawings-8.jpg",
+    srcThumb: "/drawings-8_thumb.jpg",
+    srcMobile: "/drawings-8_mobile.jpg",
     name: {
       en: '"Christina"',
       fi: '"Christina"',
@@ -75,6 +91,8 @@ const images = [
   {
     index: 8,
     src: "/drawings-9.jpg",
+    srcThumb: "/drawings-9_thumb.jpg",
+    srcMobile: "/drawings-9_mobile.jpg",
     name: {
       en: "Schoolwork",
       fi: "Koulu tehtävä",
@@ -83,6 +101,8 @@ const images = [
   {
     index: 9,
     src: "/drawings-10.jpg",
+    srcThumb: "/drawings-10_thumb.jpg",
+    srcMobile: "/drawings-10_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -91,6 +111,8 @@ const images = [
   {
     index: 10,
     src: "/drawings-11.jpg",
+    srcThumb: "/drawings-11_thumb.jpg",
+    srcMobile: "/drawings-11_mobile.jpg",
     name: {
       en: '"What could have been"',
       fi: '"Mikä olisi voinut olla"',
@@ -99,6 +121,8 @@ const images = [
   {
     index: 11,
     src: "/drawings-12.jpg",
+    srcThumb: "/drawings-12_thumb.jpg",
+    srcMobile: "/drawings-12_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -107,6 +131,8 @@ const images = [
   {
     index: 12,
     src: "/drawings-13.jpg",
+    srcThumb: "/drawings-13_thumb.jpg",
+    srcMobile: "/drawings-13_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -115,6 +141,8 @@ const images = [
   {
     index: 13,
     src: "/drawings-14.jpg",
+    srcThumb: "/drawings-14_thumb.jpg",
+    srcMobile: "/drawings-14_mobile.jpg",
     name: {
       en: '"Mother and son"',
       fi: '"Äiti ja poika"',
@@ -123,6 +151,8 @@ const images = [
   {
     index: 14,
     src: "/drawings-15.jpg",
+    srcThumb: "/drawings-15_thumb.jpg",
+    srcMobile: "/drawings-15_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -131,6 +161,8 @@ const images = [
   {
     index: 15,
     src: "/drawings-16.jpg",
+    srcThumb: "/drawings-16_thumb.jpg",
+    srcMobile: "/drawings-16_mobile.jpg",
     name: {
       en: '"Bella"',
       fi: '"Bella"',
@@ -139,6 +171,8 @@ const images = [
   {
     index: 16,
     src: "/drawings-17.jpg",
+    srcThumb: "/drawings-17_thumb.jpg",
+    srcMobile: "/drawings-17_mobile.jpg",
     name: {
       en: '"HAN"',
       fi: '"HAN"',
@@ -147,6 +181,8 @@ const images = [
   {
     index: 17,
     src: "/drawings-18.jpg",
+    srcThumb: "/drawings-18_thumb.jpg",
+    srcMobile: "/drawings-18_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -155,6 +191,8 @@ const images = [
   {
     index: 18,
     src: "/drawings-19.jpg",
+    srcThumb: "/drawings-19_thumb.jpg",
+    srcMobile: "/drawings-19_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -163,6 +201,8 @@ const images = [
   {
     index: 19,
     src: "/drawings-20.jpg",
+    srcThumb: "/drawings-20_thumb.jpg",
+    srcMobile: "/drawings-20_mobile.jpg",
     name: {
       en: '"You are my future"',
       fi: '"Sinä olet tulevaisuuteni"',
@@ -171,6 +211,8 @@ const images = [
   {
     index: 20,
     src: "/drawings-21.jpg",
+    srcThumb: "/drawings-21_thumb.jpg",
+    srcMobile: "/drawings-21_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -179,6 +221,8 @@ const images = [
   {
     index: 21,
     src: "/drawings-22.jpg",
+    srcThumb: "/drawings-22_thumb.jpg",
+    srcMobile: "/drawings-22_mobile.jpg",
     name: {
       en: "Reference picture",
       fi: "Referenssikuva",
@@ -187,6 +231,8 @@ const images = [
   {
     index: 22,
     src: "/drawings-23.jpg",
+    srcThumb: "/drawings-23_thumb.jpg",
+    srcMobile: "/drawings-23_mobile.jpg",
     name: {
       en: 'Inktober 2023 "Bounce"',
       fi: 'Inktober 2023 "Pomppu"',
@@ -198,6 +244,8 @@ const paintings = [
   {
     index: 0,
     src: "/paintings-1.jpg",
+    srcThumb: "/paintings-1_thumb.jpg",
+    srcMobile: "/paintings-1_mobile.jpg",
     name: {
       en: "Schoolwork",
       fi: "Koulu tehtävä",
@@ -206,6 +254,8 @@ const paintings = [
   {
     index: 1,
     src: "/paintings-2.jpg",
+    srcThumb: "/paintings-2_thumb.jpg",
+    srcMobile: "/paintings-2_mobile.jpg",
     name: {
       en: "Schoolwork",
       fi: "Koulu tehtävä",
@@ -214,6 +264,8 @@ const paintings = [
   {
     index: 2,
     src: "/paintings-3.jpg",
+    srcThumb: "/paintings-3_thumb.jpg",
+    srcMobile: "/paintings-3_mobile.jpg",
     name: {
       en: "Schoolwork",
       fi: "Koulu tehtävä",
@@ -222,6 +274,8 @@ const paintings = [
   {
     index: 3,
     src: "/paintings-4.jpg",
+    srcThumb: "/paintings-4_thumb.jpg",
+    srcMobile: "/paintings-4_mobile.jpg",
     name: {
       en: 'Painted "Insurmountable"',
       fi: 'Maalattu "Ylitsepääsemätön"',
@@ -233,6 +287,8 @@ const pastels = [
   {
     index: 0,
     src: "/pastels-1.jpg",
+    srcThumb: "/pastels-1_thumb.jpg",
+    srcMobile: "/pastels-1_mobile.jpg",
     name: {
       en: '"Red Apples"',
       fi: '"Red Apples"',
@@ -244,6 +300,8 @@ const digitals = [
   {
     index: 0,
     src: "/digital-3.jpg",
+    srcThumb: "/digital-3_thumb.jpg",
+    srcMobile: "/digital-3_mobile.jpg",
     name: {
       en: '"An English New Year"',
       fi: '"Englantilainen Uusi Vuosi"',
@@ -252,6 +310,8 @@ const digitals = [
   {
     index: 1,
     src: "/digital-2b.jpg",
+    srcThumb: "/digital-2b_thumb.jpg",
+    srcMobile: "/digital-2b_mobile.jpg",
     name: {
       en: '"Onwards"',
       fi: '"Eteenpäin"',
@@ -260,6 +320,8 @@ const digitals = [
   {
     index: 2,
     src: "/digital-1.jpg",
+    srcThumb: "/digital-1_thumb.jpg",
+    srcMobile: "/digital-1_mobile.jpg",
     name: {
       en: '"Sense of stability"',
       fi: '"Vakauden tunne"',
@@ -271,6 +333,8 @@ const mixed = [
   {
     index: 0,
     src: "/mixed-1.jpg",
+    srcThumb: "/mixed-1_thumb.jpg",
+    srcMobile: "/mixed-1_mobile.jpg",
     name: {
       en: "Schoolwork",
       fi: "Koulu tehtävä",
@@ -279,6 +343,8 @@ const mixed = [
   {
     index: 1,
     src: "/mixed-2.jpg",
+    srcThumb: "/mixed-2_thumb.jpg",
+    srcMobile: "/mixed-2_mobile.jpg",
     name: {
       en: "Poster for school",
       fi: "Koulu juliste",
@@ -287,6 +353,8 @@ const mixed = [
   {
     index: 2,
     src: "/mixed-3.jpg",
+    srcThumb: "/mixed-3_thumb.jpg",
+    srcMobile: "/mixed-3_mobile.jpg",
     name: {
       en: "Poster for school",
       fi: "Koulu juliste",
@@ -295,6 +363,8 @@ const mixed = [
   {
     index: 3,
     src: "/mixed-4.jpg",
+    srcThumb: "/mixed-4_thumb.jpg",
+    srcMobile: "/mixed-4_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -303,6 +373,8 @@ const mixed = [
   {
     index: 4,
     src: "/mixed-5.jpg",
+    srcThumb: "/mixed-5_thumb.jpg",
+    srcMobile: "/mixed-5_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -311,6 +383,8 @@ const mixed = [
   {
     index: 5,
     src: "/mixed-6.jpg",
+    srcThumb: "/mixed-6_thumb.jpg",
+    srcMobile: "/mixed-6_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -319,6 +393,8 @@ const mixed = [
   {
     index: 6,
     src: "/mixed-7.jpg",
+    srcThumb: "/mixed-7_thumb.jpg",
+    srcMobile: "/mixed-7_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -327,6 +403,8 @@ const mixed = [
   {
     index: 7,
     src: "/mixed-8.jpg",
+    srcThumb: "/mixed-8_thumb.jpg",
+    srcMobile: "/mixed-8_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -335,6 +413,8 @@ const mixed = [
   {
     index: 8,
     src: "/mixed-9.jpg",
+    srcThumb: "/mixed-9_thumb.jpg",
+    srcMobile: "/mixed-9_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -343,6 +423,8 @@ const mixed = [
   {
     index: 9,
     src: "/mixed-10.jpg",
+    srcThumb: "/mixed-10_thumb.jpg",
+    srcMobile: "/mixed-10_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -351,6 +433,8 @@ const mixed = [
   {
     index: 10,
     src: "/mixed-11.jpg",
+    srcThumb: "/mixed-13_thumb.jpg",
+    srcMobile: "/mixed-13_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -359,6 +443,8 @@ const mixed = [
   {
     index: 11,
     src: "/mixed-12.jpg",
+    srcThumb: "/mixed-12_thumb.jpg",
+    srcMobile: "/mixed-12_mobile.jpg",
     name: {
       en: "",
       fi: "",
@@ -367,6 +453,8 @@ const mixed = [
   {
     index: 12,
     src: "/mixed-13.jpg",
+    srcThumb: "/mixed-13_thumb.jpg",
+    srcMobile: "/mixed-13_mobile.jpg",
     name: {
       en: "",
       fi: "",

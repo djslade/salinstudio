@@ -75,6 +75,8 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
       <div className="tablet:hidden w-full h-full flex flex-col justify-center gap-3">
         <img
           src={images[modalIndex].src}
+          srcSet={`${images[modalIndex].srcMobile} 600w`}
+          sizes="(max-width: 600px) 600px"
           alt=""
           className="w-full"
           onClick={(e) => e.stopPropagation()}
