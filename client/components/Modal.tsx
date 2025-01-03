@@ -1,9 +1,11 @@
 "use client";
 import { GalleryImage } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useAtomValue } from "jotai";
 import { languageAtom } from "@/state";
+import Lightbox from "yet-another-react-lightbox";
+import { Captions, Zoom } from "yet-another-react-lightbox/plugins";
 
 interface ModalProps {
   onClose: () => void;
@@ -15,6 +17,8 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
   const language = useAtomValue(languageAtom);
 
   const [modalIndex, setModalIndex] = useState<number>(index);
+
+  const captionsRef = useRef(null);
 
   const handlePrevious = (evt: any) => {
     evt.stopPropagation();
@@ -34,6 +38,15 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
     }
   };
 
+  const mapImages = () => {
+    return images.map((image) => {
+      return {
+        ...image,
+        description: language === "fi" ? image.name.fi : image.name.en,
+      }
+    })
+  }
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
@@ -43,48 +56,22 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
   }, []);
 
   return ReactDOM.createPortal(
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content">
-        <button onClick={handlePrevious} className="w-10">
-          <img src="/salinstudio-left.svg" alt="Left" />
-        </button>
-        <div className="flex flex-col items-center justify-center gap-6 h-full w-full">
-          <img
-            src={images[modalIndex].src}
-            alt="Image"
-            className="max-w-full max-h-full"
-            onClick={(e) => e.stopPropagation()}
-          />
-          {images[modalIndex].name.en !== "" && (
-            <div className="w-full text-center">
-              <span className="font-mono font-bold text-white">
-                {language === "fi"
-                  ? images[modalIndex].name.fi
-                  : images[modalIndex].name.en}
-              </span>
-            </div>
-          )}
-        </div>
-        <button onClick={handleNext} className="w-10">
-          <img src="/salinstudio-right.svg" alt="right" />
-        </button>
-      </div>
-      <div className="tablet:hidden w-full h-full flex flex-col justify-center gap-3">
-        <img
-          src={images[modalIndex].src}
-          alt=""
-          className="w-full"
-          onClick={(e) => e.stopPropagation()}
-        />
-        <div className="w-full text-center">
-          <span className="font-mono font-bold text-white">
-            {language === "fi"
-              ? images[modalIndex].name.fi
-              : images[modalIndex].name.en}
-          </span>
-        </div>
-      </div>
-    </div>,
+    <Lightbox
+    open
+    slides={mapImages()}
+    index={modalIndex}
+    close={onClose}
+    plugins={[Captions, Zoom]}
+    captions={{ descriptionTextAlign: "center" }}
+    styles={{
+      captionsDescriptionContainer: {
+        fontFamily: "var(--ibm-plex-mono)",
+        fontWeight: 700,
+        fontSize: "18px",
+        backgroundColor: "rgba(0,0,0,0.65)"
+      }
+    }}
+     />,
     document.getElementById("modal")!
   );
 };

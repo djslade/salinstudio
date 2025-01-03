@@ -433,8 +433,8 @@ const mixed = [
   {
     index: 10,
     src: "/mixed-11.jpg",
-    srcThumb: "/mixed-13_thumb.jpg",
-    srcMobile: "/mixed-13_mobile.jpg",
+    srcThumb: "/mixed-11_thumb.jpg",
+    srcMobile: "/mixed-11_mobile.jpg",
     name: {
       en: "Photograph",
       fi: "Kuva",

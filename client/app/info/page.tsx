@@ -31,6 +31,7 @@ const Info = () => {
     <div className="desktop:min-h-screen flex flex-col">
       <Header />
       <section className="w-full bg-formGray font-sans font-[18px] flex flex-col items-center text-white py-12 tablet:py-24 desktop:px-24 px-3 flex-1">
+        <img src="/miia-mobile.jpg" alt="Me" className="aspect-square max-w-64 object-cover object-top rounded-full desktop:hidden" />
         <div className="max-w-[600px] w-full flex flex-col gap-6 relative">
           <div className="flex flex-col gap-8">
             <p className="max-w-[500px] tablet:ml-12">
