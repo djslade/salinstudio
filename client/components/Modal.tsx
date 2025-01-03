@@ -16,28 +16,6 @@ interface ModalProps {
 export const Modal = ({ onClose, images, index }: ModalProps) => {
   const language = useAtomValue(languageAtom);
 
-  const [modalIndex, setModalIndex] = useState<number>(index);
-
-  const captionsRef = useRef(null);
-
-  const handlePrevious = (evt: any) => {
-    evt.stopPropagation();
-    if (modalIndex === 0) {
-      setModalIndex(images.length - 1);
-    } else {
-      setModalIndex(modalIndex - 1);
-    }
-  };
-
-  const handleNext = (evt: any) => {
-    evt.stopPropagation();
-    if (modalIndex === images.length - 1) {
-      setModalIndex(0);
-    } else {
-      setModalIndex(modalIndex + 1);
-    }
-  };
-
   const mapImages = () => {
     return images.map((image) => {
       return {
@@ -59,7 +37,7 @@ export const Modal = ({ onClose, images, index }: ModalProps) => {
     <Lightbox
     open
     slides={mapImages()}
-    index={modalIndex}
+    index={index}
     close={onClose}
     plugins={[Captions, Zoom]}
     captions={{ descriptionTextAlign: "center" }}
