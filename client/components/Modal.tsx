@@ -1,6 +1,6 @@
 "use client";
 import { GalleryImage } from "@/types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useAtomValue } from "jotai";
 import { languageAtom } from "@/state";
