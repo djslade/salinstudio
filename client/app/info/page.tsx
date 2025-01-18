@@ -30,7 +30,7 @@ const Info = () => {
   return (
     <div className="desktop:min-h-screen flex flex-col">
       <Header />
-      <section className="w-full bg-formGray font-sans font-[18px] leading-[27px] flex flex-col items-center text-white py-12 tablet:py-24 desktop:px-24 px-3 flex-1">
+      <section className="w-full bg-formGray font-sans text-[18px] leading-[27px] flex flex-col items-center text-white pt-12 pb-12 tablet:pt-24 tablet:pb-20 desktop:px-24 px-3">
         <div className="max-w-[600px] w-full flex flex-col gap-6 relative">
           <div className="flex flex-col gap-8">
             <p className="max-w-[500px] tablet:ml-12">
@@ -43,7 +43,7 @@ const Info = () => {
               {language === "fi" ? paragraphThree.fi : paragraphThree.en}
             </p>
           </div>
-          <div className="max-w-[580px] text-end">
+          <div className="max-w-[580px] text-end pt-2.5">
             <Link href="/contact" className="font-mono">
               {language === "fi" ? contact.fi : contact.en}
             </Link>
