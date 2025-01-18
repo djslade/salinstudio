@@ -92,6 +92,7 @@ textarea:-webkit-autofill:active {
 }
 
 .mid-reel {
+  background-color: transparent;
   background-repeat: repeat-x;
   background-size: cover;
   animation-name: bot-reel;
@@ -101,6 +102,7 @@ textarea:-webkit-autofill:active {
 }
 
 .top-reel {
+  background-color: transparent;
   background-repeat: repeat-x;
   background-size: contain;
   animation-name: top-reel;
@@ -110,6 +112,7 @@ textarea:-webkit-autofill:active {
 }
 
 .bot-reel {
+  background-color: transparent;
   background-repeat: repeat-x;
   background-size: contain;
   animation-name: bot-reel;

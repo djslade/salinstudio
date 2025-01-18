@@ -34,7 +34,7 @@ export const Navbar = () => {
 
   return (
     <div className="w-full text-white self-center flex flex-col">
-      <div className="flex w-full font-cursive justify-between text-[28px] px-24">
+      <div className="flex w-full font-cursive justify-between text-[32px] px-24">
         <Link href="/" className="hover:scale-110 transition-all">
           {language === "fi" ? home.fi : home.en}
         </Link>
