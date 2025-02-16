@@ -1,0 +1,44 @@
+.home-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.home-main {
+  min-height: calc(100vh - 80px);
+  width: 100%;
+  background-color: transparent;
+  background-color: #232323;
+}
+
+.top-reel {
+  background-image: url("/salinstudio-top-reel.jpg");
+  background-color: #232323;
+  position: absolute;
+  height: 331px;
+  background-size: cover;
+  background-repeat: repeat;
+  left: -300px;
+  right: -100px;
+  top: -30%;
+  transform: rotate(-21.8deg);
+}
+
+.bot-reel {
+  background-color: #232323;
+  background-image: url("/salinstudio-bot-reel.jpg");
+  position: absolute;
+  height: 331px;
+  background-size: cover;
+  background-repeat: repeat;
+  left: -400px;
+  right: -100px;
+  bottom: -30%;
+  transform: rotate(12.4deg);
+}
+
+.home-hero {
+  padding: 16px;
+  color: white;
+  position: relative;
+  z-index: 9;
+}
