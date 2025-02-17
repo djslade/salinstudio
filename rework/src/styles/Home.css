@@ -1,39 +1,51 @@
 .home-container {
   overflow: hidden;
   position: relative;
+  background-color: #232323;
 }
 
 .home-main {
   min-height: calc(100vh - 80px);
   width: 100%;
-  background-color: transparent;
-  background-color: #232323;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  position: relative;
 }
 
 .top-reel {
   background-image: url("/salinstudio-top-reel.jpg");
   background-color: #232323;
   position: absolute;
-  height: 331px;
-  background-size: cover;
-  background-repeat: repeat;
+  height: 263px;
+  background-size: contain;
+  background-repeat: repeat-x;
   left: -300px;
   right: -100px;
-  top: -30%;
+  top: -20%;
   transform: rotate(-21.8deg);
+  animation-name: top-reel;
+  animation-duration: 600s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 .bot-reel {
   background-color: #232323;
   background-image: url("/salinstudio-bot-reel.jpg");
   position: absolute;
-  height: 331px;
-  background-size: cover;
-  background-repeat: repeat;
+  height: 263px;
+  background-size: contain;
+  background-repeat: repeat-x;
   left: -400px;
   right: -100px;
-  bottom: -30%;
+  bottom: -20%;
   transform: rotate(12.4deg);
+  animation-name: bot-reel;
+  animation-duration: 600s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 .home-hero {
@@ -41,4 +53,93 @@
   color: white;
   position: relative;
   z-index: 9;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 1px;
+  font-weight: 400px;
+  font-family: "Afacad", sans-serif;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.home-hero-text-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+}
+
+.home-hero-heading {
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -1px;
+  font-weight: 700;
+}
+
+.home-hero-link {
+  background-color: #3a3a3a;
+  max-width: 160px;
+  width: 100%;
+  height: 42px;
+  font-variant: small-caps;
+  text-decoration: none;
+  color: white;
+  font-family: "Afacad", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  border-radius: 4px;
+  font-size: 20px;
+  letter-spacing: 3px;
+}
+
+.home-hero-contact-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 32px;
+}
+
+.home-hero-contact-link {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+@keyframes top-reel {
+  from {
+    background-position: 0;
+  }
+
+  to {
+    background-position: -1000vw;
+  }
+}
+
+@keyframes bot-reel {
+  from {
+    background-position: 0;
+  }
+
+  to {
+    background-position: 1000vw;
+  }
+}
+
+@media (min-width: 600px) {
+  .home-container {
+    min-height: 100vh;
+  }
+
+  .top-reel {
+    top: -30%;
+  }
+
+  .bot-reel {
+    bottom: -30%;
+  }
 }
