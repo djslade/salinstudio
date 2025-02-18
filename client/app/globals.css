@@ -69,6 +69,10 @@ input::placeholder {
   font-family: "Afacad";
 }
 
+.field-error::placeholder {
+  color: #f56565;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -161,9 +165,9 @@ textarea:-webkit-autofill:active {
   .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Two equal columns */
-    gap: 32px; /* Adjust gap as needed */
     width: 600px;
     margin: 0 auto;
+    height: min-content;
   }
 
   .grid-item {

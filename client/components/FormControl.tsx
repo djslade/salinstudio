@@ -31,7 +31,9 @@ export const FormControl = ({
           id={id}
           name={name}
           type={type}
-          className="bg-transparent border-b border-white resize-none py-2 outline-none w-full pr-8"
+          className={`bg-transparent border-b ${
+            touched && error ? "border-red-500 field-error" : "border-white"
+          } resize-none py-2 outline-none w-full pr-8`}
           placeholder={placeholder}
         />
       ) : (
@@ -39,7 +41,9 @@ export const FormControl = ({
           id={id}
           name={name}
           type={type}
-          className="bg-transparent border-b border-white py-2 outline-none w-full pr-8"
+          className={`bg-transparent border-b ${
+            touched && error ? "border-red-500 field-error" : "border-white"
+          } py-2 outline-none w-full pr-8`}
           placeholder={placeholder}
         />
       )}

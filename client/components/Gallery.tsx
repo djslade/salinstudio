@@ -32,6 +32,22 @@ export const Gallery = ({ images }: GalleryProps) => {
         className="w-full hidden tablet:flex"
         style={{ columnCount: "auto", columnGap: "8px" }}
       >
+        {getColumnArrays(images, 4).map((column, idx) => (
+          <div className="w-full flex-1" key={`column-${idx}`}>
+            {column.map((image) => (
+              <PortfolioImage
+                key={image.src}
+                image={image}
+                onClick={() => handleShowModal(image.index)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div
+        className="w-full hidden midMobile:flex tablet:hidden"
+        style={{ columnCount: "auto", columnGap: "4px" }}
+      >
         {getColumnArrays(images, 3).map((column, idx) => (
           <div className="w-full flex-1" key={`column-${idx}`}>
             {column.map((image) => (
@@ -45,7 +61,7 @@ export const Gallery = ({ images }: GalleryProps) => {
         ))}
       </div>
       <div
-        className="w-full flex tablet:hidden"
+        className="w-full flex midMobile:hidden"
         style={{ columnCount: "auto", columnGap: "4px" }}
       >
         {getColumnArrays(images, 2).map((column, idx) => (

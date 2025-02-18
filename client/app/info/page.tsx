@@ -4,6 +4,10 @@ import { languageAtom } from "@/state";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
 
+const heading = {
+  en: "About me",
+  fi: "Tietoa minusta",
+};
 const paragraphOne = {
   en: "I’m a hardworking 2nd year art student from Finland with limitless imagination and drive. I’ve come a long way for this path, but my hardships have just made my motivation stronger. ",
   fi: "Olen ahkera 2. vuoden taideopiskelija Suomesta, jolla on rajaton mielikuvitus ja sisu. Tieni on ollut pitkä ja haastava, mutta vaikeudet ovat vain vahvistaneet motivaatiotani.",
@@ -30,9 +34,12 @@ const Info = () => {
   return (
     <div className="desktop:min-h-screen flex flex-col">
       <Header />
-      <section className="w-full bg-formGray font-sans text-[18px] leading-[27px] flex flex-col items-center text-white pt-12 pb-12 tablet:pt-24 tablet:pb-20 desktop:px-24 px-3">
+      <section className="w-full bg-formGray font-sans text-[18px] leading-[27px] flex flex-col items-center text-white pt-12 pb-12 tablet:pt-24 tablet:pb-20 desktop:px-24 px-6 tablet:px-3 text-center tablet:text-left">
         <div className="max-w-[600px] w-full flex flex-col gap-6 relative">
           <div className="flex flex-col gap-8">
+            <h1 className="font-bold text-[32px] tablet:ml-12">
+              {language === "fi" ? heading.fi : heading.en}
+            </h1>
             <p className="max-w-[500px] tablet:ml-12">
               {language === "fi" ? paragraphOne.fi : paragraphOne.en}
             </p>
@@ -51,27 +58,27 @@ const Info = () => {
           <img
             src="/salinstudio-info-2.jpg"
             alt=""
-            className="top-[240px] w-[240px] -left-[270px] absolute hidden desktop:block"
+            className="top-[240px] w-[240px] -left-[270px] absolute hidden midTablet:block"
           />
           <img
             src="/salinstudio-info-1.jpg"
             alt=""
-            className="-top-[25px] w-[200px] -left-[250px] absolute hidden desktop:block"
+            className="-top-[25px] w-[200px] -left-[250px] absolute hidden midTablet:block"
           />
           <img
             src="/salinstudio-info-4.jpg"
             alt=""
-            className="-bottom-[350px] w-[300px] left-[150px] hidden absolute desktop:block"
+            className="-bottom-[350px] w-[300px] left-[150px] hidden absolute midTablet:block"
           />
           <img
             src="/salinstudio-info-3.jpg"
             alt=""
-            className="-bottom-[300px] w-[208px] -left-[48px] hidden absolute desktop:block"
+            className="-bottom-[300px] w-[208px] -left-[48px] hidden absolute midTablet:block"
           />
           <img
             src="/salinstudio-info-5.jpg"
             alt=""
-            className="-bottom-[330px] w-[220px] -right-[50px] hidden absolute desktop:block"
+            className="-bottom-[330px] w-[220px] -right-[50px] hidden absolute midTablet:block"
           />
         </div>
       </section>

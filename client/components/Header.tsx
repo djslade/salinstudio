@@ -13,13 +13,13 @@ const home = {
 };
 
 const info = {
-  en: "Info",
-  fi: "Info",
+  en: "About",
+  fi: "Tietoa",
 };
 
 const portfolio = {
-  en: "Portfolio",
-  fi: "Portfolio",
+  en: "Gallery",
+  fi: "Galleria",
 };
 
 const blog = {
@@ -62,7 +62,7 @@ export const Header = () => {
   }, [showMobileMenu]);
 
   return (
-    <header className="bg-darkest w-full p-6 tablet:p-9 desktop:p-12 flex justify-between tablet:flex-col tablet:justify-start tablet:gap-6 desktop:gap-0">
+    <header className="bg-darkest p-4 w-full h-[80px] tablet:h-auto items-center tablet:items-start tablet:p-9 desktop:p-12 flex justify-between tablet:flex-col tablet:justify-start tablet:gap-6 desktop:gap-0">
       <Logo size="small" />
       <div className="w-[600px] text-white self-center flex-col hidden tablet:flex">
         <Navbar />

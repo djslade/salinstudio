@@ -114,7 +114,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen w-full flex flex-col">
       <Header />
-      <div className="flex-1 flex justify-center items-center w-full">
+      <div className="flex-1 flex justify-center w-full">
         <section className="flex flex-col items-center w-full justify-between h-full max-w-[1200px] my-0 mx-auto gap-12 flex-1 p-3">
           <div className="flex-1 text-center">
             <h1 className="font-sans text-[32px] text-white">

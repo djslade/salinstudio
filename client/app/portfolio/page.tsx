@@ -601,7 +601,7 @@ const Portfolio = () => {
         )}
 
         {getActiveImage().length === 0 ? (
-          <div className="flex justify-center items-center w-full flex-1">
+          <div className="flex justify-center w-full flex-1">
             <div className="grid-container">
               <Link className="grid-item" href="/portfolio?q=drawings">
                 {language === "fi" ? menuDrawings.fi : menuDrawings.en}

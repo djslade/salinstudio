@@ -10,13 +10,13 @@ const home = {
 };
 
 const info = {
-  en: "Info",
-  fi: "Info",
+  en: "About",
+  fi: "Tietoa",
 };
 
 const portfolio = {
-  en: "Portfolio",
-  fi: "Portfolio",
+  en: "Gallery",
+  fi: "Galleria",
 };
 
 const blog = {
