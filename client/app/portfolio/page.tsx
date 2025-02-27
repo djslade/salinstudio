@@ -10,6 +10,16 @@ import { useRouter } from "next/navigation";
 const images = [
   {
     index: 0,
+    src: "/drawings-head.jpg",
+    srcThumb: "/drawings-head-thumb.jpg",
+    srcMobile: "/drawings-head-mobile.jpg",
+    name: {
+      en: "Schoolwork",
+      fi: "Koulu tehtävä",
+    },
+  },
+  {
+    index: 1,
     src: "/drawings-1.jpg",
     srcThumb: "/drawings-1_thumb.jpg",
     srcMobile: "/drawings-1_mobile.jpg",
@@ -19,7 +29,7 @@ const images = [
     },
   },
   {
-    index: 1,
+    index: 2,
     src: "/drawings-2.jpg",
     srcThumb: "/drawings-2_thumb.jpg",
     srcMobile: "/drawings-2_mobile.jpg",
@@ -29,7 +39,7 @@ const images = [
     },
   },
   {
-    index: 2,
+    index: 3,
     src: "/drawings-3.jpg",
     srcThumb: "/drawings-3_thumb.jpg",
     srcMobile: "/drawings-3_mobile.jpg",
@@ -39,7 +49,7 @@ const images = [
     },
   },
   {
-    index: 3,
+    index: 4,
     src: "/drawings-4.jpg",
     srcThumb: "/drawings-4_thumb.jpg",
     srcMobile: "/drawings-4_mobile.jpg",
@@ -49,7 +59,7 @@ const images = [
     },
   },
   {
-    index: 4,
+    index: 5,
     src: "/drawings-5.jpg",
     srcThumb: "/drawings-5_thumb.jpg",
     srcMobile: "/drawings-5_mobile.jpg",
@@ -59,7 +69,7 @@ const images = [
     },
   },
   {
-    index: 5,
+    index: 6,
     src: "/drawings-6.jpg",
     srcThumb: "/drawings-6_thumb.jpg",
     srcMobile: "/drawings-6_mobile.jpg",
@@ -69,7 +79,7 @@ const images = [
     },
   },
   {
-    index: 6,
+    index: 7,
     src: "/drawings-7.jpg",
     srcThumb: "/drawings-7_thumb.jpg",
     srcMobile: "/drawings-7_mobile.jpg",
@@ -79,7 +89,7 @@ const images = [
     },
   },
   {
-    index: 7,
+    index: 8,
     src: "/drawings-8.jpg",
     srcThumb: "/drawings-8_thumb.jpg",
     srcMobile: "/drawings-8_mobile.jpg",
@@ -89,7 +99,7 @@ const images = [
     },
   },
   {
-    index: 8,
+    index: 9,
     src: "/drawings-9.jpg",
     srcThumb: "/drawings-9_thumb.jpg",
     srcMobile: "/drawings-9_mobile.jpg",
@@ -99,7 +109,7 @@ const images = [
     },
   },
   {
-    index: 9,
+    index: 10,
     src: "/drawings-10.jpg",
     srcThumb: "/drawings-10_thumb.jpg",
     srcMobile: "/drawings-10_mobile.jpg",
@@ -109,7 +119,7 @@ const images = [
     },
   },
   {
-    index: 10,
+    index: 11,
     src: "/drawings-11.jpg",
     srcThumb: "/drawings-11_thumb.jpg",
     srcMobile: "/drawings-11_mobile.jpg",
@@ -119,7 +129,7 @@ const images = [
     },
   },
   {
-    index: 11,
+    index: 12,
     src: "/drawings-12.jpg",
     srcThumb: "/drawings-12_thumb.jpg",
     srcMobile: "/drawings-12_mobile.jpg",
@@ -129,7 +139,7 @@ const images = [
     },
   },
   {
-    index: 12,
+    index: 13,
     src: "/drawings-13.jpg",
     srcThumb: "/drawings-13_thumb.jpg",
     srcMobile: "/drawings-13_mobile.jpg",
@@ -139,7 +149,7 @@ const images = [
     },
   },
   {
-    index: 13,
+    index: 14,
     src: "/drawings-14.jpg",
     srcThumb: "/drawings-14_thumb.jpg",
     srcMobile: "/drawings-14_mobile.jpg",
@@ -149,7 +159,7 @@ const images = [
     },
   },
   {
-    index: 14,
+    index: 15,
     src: "/drawings-15.jpg",
     srcThumb: "/drawings-15_thumb.jpg",
     srcMobile: "/drawings-15_mobile.jpg",
@@ -159,7 +169,7 @@ const images = [
     },
   },
   {
-    index: 15,
+    index: 16,
     src: "/drawings-16.jpg",
     srcThumb: "/drawings-16_thumb.jpg",
     srcMobile: "/drawings-16_mobile.jpg",
@@ -169,7 +179,7 @@ const images = [
     },
   },
   {
-    index: 16,
+    index: 17,
     src: "/drawings-17.jpg",
     srcThumb: "/drawings-17_thumb.jpg",
     srcMobile: "/drawings-17_mobile.jpg",
@@ -179,7 +189,7 @@ const images = [
     },
   },
   {
-    index: 17,
+    index: 18,
     src: "/drawings-18.jpg",
     srcThumb: "/drawings-18_thumb.jpg",
     srcMobile: "/drawings-18_mobile.jpg",
@@ -189,7 +199,7 @@ const images = [
     },
   },
   {
-    index: 18,
+    index: 19,
     src: "/drawings-19.jpg",
     srcThumb: "/drawings-19_thumb.jpg",
     srcMobile: "/drawings-19_mobile.jpg",
@@ -199,7 +209,7 @@ const images = [
     },
   },
   {
-    index: 19,
+    index: 20,
     src: "/drawings-20.jpg",
     srcThumb: "/drawings-20_thumb.jpg",
     srcMobile: "/drawings-20_mobile.jpg",
@@ -209,7 +219,7 @@ const images = [
     },
   },
   {
-    index: 20,
+    index: 21,
     src: "/drawings-21.jpg",
     srcThumb: "/drawings-21_thumb.jpg",
     srcMobile: "/drawings-21_mobile.jpg",
@@ -219,7 +229,7 @@ const images = [
     },
   },
   {
-    index: 21,
+    index: 22,
     src: "/drawings-22.jpg",
     srcThumb: "/drawings-22_thumb.jpg",
     srcMobile: "/drawings-22_mobile.jpg",
@@ -229,7 +239,7 @@ const images = [
     },
   },
   {
-    index: 22,
+    index: 23,
     src: "/drawings-23.jpg",
     srcThumb: "/drawings-23_thumb.jpg",
     srcMobile: "/drawings-23_mobile.jpg",
