@@ -274,6 +274,16 @@ const images = [
 const paintings = [
   {
     index: 0,
+    src: "/paintings-5.jpg",
+    srcThumb: "/paintings-5_thumb.jpg",
+    srcMobile: "/paintings-5_mobile.jpg",
+    name: {
+      en: "Copy",
+      fi: "Referenssikuva",
+    },
+  },
+  {
+    index: 1,
     src: "/paintings-1.jpg",
     srcThumb: "/paintings-1_thumb.jpg",
     srcMobile: "/paintings-1_mobile.jpg",
@@ -283,7 +293,7 @@ const paintings = [
     },
   },
   {
-    index: 1,
+    index: 2,
     src: "/paintings-2.jpg",
     srcThumb: "/paintings-2_thumb.jpg",
     srcMobile: "/paintings-2_mobile.jpg",
@@ -293,7 +303,7 @@ const paintings = [
     },
   },
   {
-    index: 2,
+    index: 3,
     src: "/paintings-3.jpg",
     srcThumb: "/paintings-3_thumb.jpg",
     srcMobile: "/paintings-3_mobile.jpg",
@@ -303,7 +313,7 @@ const paintings = [
     },
   },
   {
-    index: 3,
+    index: 4,
     src: "/paintings-4.jpg",
     srcThumb: "/paintings-4_thumb.jpg",
     srcMobile: "/paintings-4_mobile.jpg",
@@ -330,6 +340,16 @@ const pastels = [
 const digitals = [
   {
     index: 0,
+    src: "/digital-4.jpeg",
+    srcThumb: "/digital-4_thumb.jpg",
+    srcMobile: "/digital-4_mobile.jpg",
+    name: {
+      en: '"A Sign"',
+      fi: '"Merkki"',
+    },
+  },
+  {
+    index: 1,
     src: "/digital-3.jpg",
     srcThumb: "/digital-3_thumb.jpg",
     srcMobile: "/digital-3_mobile.jpg",
@@ -339,7 +359,7 @@ const digitals = [
     },
   },
   {
-    index: 1,
+    index: 2,
     src: "/digital-2b.jpg",
     srcThumb: "/digital-2b_thumb.jpg",
     srcMobile: "/digital-2b_mobile.jpg",
@@ -349,7 +369,7 @@ const digitals = [
     },
   },
   {
-    index: 2,
+    index: 3,
     src: "/digital-1.jpg",
     srcThumb: "/digital-1_thumb.jpg",
     srcMobile: "/digital-1_mobile.jpg",
