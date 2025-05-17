@@ -4,9 +4,11 @@ import { artProviders } from './art.providers';
 import { ArtController } from './art.controller';
 import { ArtService } from './art.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { UploadModule } from 'src/upload/upload.module';
+import { ImageModule } from 'src/image/image.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule],
+  imports: [DatabaseModule, AuthModule, UploadModule, ImageModule],
   providers: [...artProviders, ArtService],
   controllers: [ArtController],
 })

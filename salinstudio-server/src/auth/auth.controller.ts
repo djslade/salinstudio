@@ -66,8 +66,10 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(RefreshGuard)
   @Post('logout')
   async logout(@Req() req: ExpandedRequest) {
+    console.log('boop');
     const refreshToken = this.authService.getBearerToken(req.headers);
     await this.authService.revokeRefreshToken(refreshToken);
 
