@@ -12,9 +12,11 @@ import {
   sendLoginRequest,
   sendSignupRequest,
 } from "../utils/auth";
+import { useRouter } from "vue-router";
 
 const formErrorMessage = ref<string>("");
 const submitting = ref<boolean>(false);
+const router = useRouter();
 
 const signupFormResolver = zodResolver(
   z.object({
@@ -41,6 +43,7 @@ const handleSignup = async ({ values, valid }: FormSubmitEvent) => {
     });
     setTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
     setVisitorAsMember();
+    router.push({ name: "Home" });
   } catch (err) {
     const res = getErrorResponseOrThrow(err);
     formErrorMessage.value = res.message;

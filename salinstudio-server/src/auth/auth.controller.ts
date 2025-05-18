@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -12,10 +13,22 @@ import { AuthService } from './auth.service';
 import { LoginRequestDto } from './dtos/login-request.dto';
 import { RefreshGuard } from './guards/refresh.guard';
 import { ExpandedRequest } from './types/expanded-request';
+import { AuthGuard } from './guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @Get()
+  @UseGuards(AuthGuard)
+  async getUser(@Req() req: ExpandedRequest) {
+    const user = this.authService.getUserFromRequest(req);
+
+    return {
+      message: 'Request successful',
+      user: this.authService.getSecureUser(user),
+    };
+  }
 
   @Post('signup')
   async signup(@Body() signupRequest: SignupRequestDto) {
@@ -69,7 +82,6 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   @Post('logout')
   async logout(@Req() req: ExpandedRequest) {
-    console.log('boop');
     const refreshToken = this.authService.getBearerToken(req.headers);
     await this.authService.revokeRefreshToken(refreshToken);
 

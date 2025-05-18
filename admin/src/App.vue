@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
+import Sidebar from "./components/Sidebar.vue";
+import Header from "./components/Header.vue";
 </script>
 
 <template>
-  <RouterView />
+  <div class="flex">
+    <Sidebar v-if="$route.meta.requiresAuth" />
+    <div class="w-full">
+      <Header v-if="$route.meta.requiresAuth" />
+      <main class="p-5">
+        <RouterView />
+      </main>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style scoped></style>

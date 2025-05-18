@@ -8,9 +8,16 @@ import { getErrorResponseOrThrow, sendLoginRequest } from "../utils/auth";
 import { setTokens } from "../utils/tokens";
 import { setVisitorAsMember } from "../utils/visitor";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const formErrorMessage = ref<string>("");
 const submitting = ref<boolean>(false);
+const router = useRouter();
+
+const defaultFormValues = {
+  username: "",
+  password: "",
+};
 
 const loginFormResolver = zodResolver(
   z.object({
@@ -31,6 +38,7 @@ const handleLogin = async ({ values, valid }: FormSubmitEvent) => {
     });
     setTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
     setVisitorAsMember();
+    router.push({ name: "Home" });
   } catch (err) {
     const res = getErrorResponseOrThrow(err);
     formErrorMessage.value = res.message;
@@ -42,7 +50,12 @@ const handleLogin = async ({ values, valid }: FormSubmitEvent) => {
 
 <template>
   <h1>Welcome back!</h1>
-  <Form v-slot="$form" :resolver="loginFormResolver" @submit="handleLogin">
+  <Form
+    v-slot="$form"
+    :defaultValues="defaultFormValues"
+    :resolver="loginFormResolver"
+    @submit="handleLogin"
+  >
     <FormControl name="username" type="text" label="Username" />
     <FormControl name="password" type="password" label="Password" />
     <div v-if="formErrorMessage" class="">
