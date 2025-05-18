@@ -4,11 +4,13 @@ import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { Button } from "primevue";
 import { z } from "zod";
 import FormControl from "../components/FormControl.vue";
-import { getErrorResponseOrThrow, sendLoginRequest } from "../utils/auth";
+import { getErrorResponseOrThrow, post } from "../utils/auth";
 import { setTokens } from "../utils/tokens";
 import { setVisitorAsMember } from "../utils/visitor";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import type { LoginResponse } from "../types/requests";
+import type { LoginRequestBody } from "../types/responses";
 
 const formErrorMessage = ref<string>("");
 const submitting = ref<boolean>(false);
@@ -32,7 +34,7 @@ const handleLogin = async ({ values, valid }: FormSubmitEvent) => {
   formErrorMessage.value = "";
   try {
     submitting.value = true;
-    const res = await sendLoginRequest({
+    const res = await post<LoginResponse, LoginRequestBody>("/auth/login", {
       username: values.username,
       password: values.password,
     });

@@ -25,7 +25,7 @@ export class AuthController {
     const user = this.authService.getUserFromRequest(req);
 
     return {
-      message: 'Request successful',
+      message: 'OK',
       user: this.authService.getSecureUser(user),
     };
   }
@@ -41,7 +41,7 @@ export class AuthController {
     );
 
     return {
-      message: 'Signup successful',
+      message: 'Created',
       user: this.authService.getSecureUser(user),
     };
   }
@@ -58,7 +58,7 @@ export class AuthController {
     const refreshToken = await this.authService.genRefreshToken(user);
 
     return {
-      message: 'Login successful',
+      message: 'OK',
       accessToken,
       refreshToken,
     };
@@ -75,7 +75,7 @@ export class AuthController {
     const oldRefreshToken = this.authService.getBearerToken(req.headers);
     await this.authService.revokeRefreshToken(oldRefreshToken);
 
-    return { message: 'Refresh successful', accessToken, refreshToken };
+    return { message: 'OK', accessToken, refreshToken };
   }
 
   @HttpCode(HttpStatus.OK)
@@ -85,6 +85,6 @@ export class AuthController {
     const refreshToken = this.authService.getBearerToken(req.headers);
     await this.authService.revokeRefreshToken(refreshToken);
 
-    return { message: 'Logout successful' };
+    return { message: 'OK' };
   }
 }

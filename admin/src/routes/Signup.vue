@@ -7,12 +7,13 @@ import FormControl from "../components/FormControl.vue";
 import { ref } from "vue";
 import { setTokens } from "../utils/tokens";
 import { setVisitorAsMember } from "../utils/visitor";
-import {
-  getErrorResponseOrThrow,
-  sendLoginRequest,
-  sendSignupRequest,
-} from "../utils/auth";
+import { getErrorResponseOrThrow, post } from "../utils/auth";
 import { useRouter } from "vue-router";
+import { type SignupResponse, type LoginResponse } from "../types/requests";
+import {
+  type SignupRequestBody,
+  type LoginRequestBody,
+} from "../types/responses";
 
 const formErrorMessage = ref<string>("");
 const submitting = ref<boolean>(false);
@@ -32,12 +33,12 @@ const handleSignup = async ({ values, valid }: FormSubmitEvent) => {
   formErrorMessage.value = "";
   try {
     submitting.value = true;
-    await sendSignupRequest({
+    await post<SignupResponse, SignupRequestBody>("/auth/signup", {
       username: values.username,
       password: values.password,
       secret: values.secret,
     });
-    const res = await sendLoginRequest({
+    const res = await post<LoginResponse, LoginRequestBody>("/auth/login", {
       username: values.username,
       password: values.password,
     });

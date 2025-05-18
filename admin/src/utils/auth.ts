@@ -1,48 +1,7 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 import { clearTokens, getTokens, setTokens } from "./tokens";
-
-type LoginRequestBody = {
-  username: string;
-  password: string;
-};
-
-type LoginResponse = {
-  message: string;
-  accessToken: string;
-  refreshToken: string;
-};
-
-type LogoutResponse = {
-  message: string;
-};
-
-type SignupResponse = {
-  message: string;
-};
-
-type UserResponse = {
-  message: string;
-  user: {
-    id: string;
-    username: string;
-  };
-};
-
-type RefreshResponse = {
-  message: string;
-  accessToken: string;
-  refreshToken: string;
-};
-
-type ErrorResponse = {
-  message: string;
-  error: string;
-  statusCode: number;
-};
-
-type SignupRequestBody = LoginRequestBody & {
-  secret: string;
-};
+import { useRouter } from "vue-router";
+import type { ErrorResponse, RefreshResponse } from "../types/requests";
 
 export const getEndpoint = () => import.meta.env.VITE_ENDPOINT ?? "";
 
@@ -50,49 +9,51 @@ export const isAuthenticated = () => {
   return getTokens() !== null;
 };
 
-export const sendSignupRequest = async (body: SignupRequestBody) => {
-  const res = await axios.post(getEndpoint() + "/auth/signup", body);
-  const data: SignupResponse = res.data;
-  return data;
+type SendRequestOptions = {
+  accessToken?: boolean;
+  refreshToken?: boolean;
 };
 
-export const sendLoginRequest = async (body: LoginRequestBody) => {
-  const res = await axios.post(getEndpoint() + "/auth/login", body);
-  const data: LoginResponse = res.data;
-  return data;
-};
+function genRequestConfig(options?: SendRequestOptions): AxiosRequestConfig {
+  const config: AxiosRequestConfig = {};
+  if (options?.accessToken) {
+    config.headers = { Authorization: "Bearer " + getTokens()?.accessToken };
+  } else if (options?.refreshToken) {
+    config.headers = { Authorization: "Bearer " + getTokens()?.refreshToken };
+  }
+  return config;
+}
 
-export const sendLogoutRequest = async () => {
-  const res = await axios.post(getEndpoint() + "/auth/logout", null, {
-    headers: { Authorization: "Bearer " + getTokens()?.refreshToken },
-  });
-  const data: LogoutResponse = res.data;
+export async function get<T>(
+  path: string,
+  options?: SendRequestOptions
+): Promise<T> {
+  const config: AxiosRequestConfig = genRequestConfig(options);
+  const res = await axios.get(getEndpoint() + path, config);
+  const data: T = res.data;
   return data;
-};
+}
 
-export const sendUserRequest = async () => {
-  const res = await axios.get(getEndpoint() + "/auth", {
-    headers: { Authorization: "Bearer " + getTokens()?.accessToken },
-  });
-  const data: UserResponse = res.data;
+export async function post<S, E>(
+  path: string,
+  body: E,
+  options?: SendRequestOptions
+): Promise<S> {
+  const config: AxiosRequestConfig = genRequestConfig(options);
+  const res = await axios.post(getEndpoint() + path, body, config);
+  const data: S = res.data;
   return data;
-};
+}
 
-export const sendRefreshRequest = async () => {
-  const res = await axios.post(getEndpoint() + "/auth/refresh", null, {
-    headers: { Authorization: "Bearer " + getTokens()?.refreshToken },
-  });
-  const data: RefreshResponse = res.data;
-  return data;
-};
-
-export const refreshTokens = async (redirectFn: () => void) => {
+export const refreshTokens = async () => {
   try {
-    const res = await sendRefreshRequest();
+    const res = await post<RefreshResponse, null>("/auth/refresh", null, {
+      refreshToken: true,
+    });
     setTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
   } catch (err) {
     clearTokens();
-    redirectFn();
+    useRouter().push({ name: "Login" });
   }
 };
 

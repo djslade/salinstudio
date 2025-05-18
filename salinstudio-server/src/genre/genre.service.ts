@@ -17,6 +17,15 @@ export class GenreService {
     return await this.genreRepository.save(genre);
   }
 
+  async findById(id: string) {
+    const genre = await this.genreRepository.findOne({ where: { id } });
+    if (!genre) throw new NotFoundException('Genre not found');
+    return genre;
+  }
+  async findAll() {
+    return await this.genreRepository.find();
+  }
+
   async findAllWithArt() {
     return await this.genreRepository.find({
       relations: { art: true },

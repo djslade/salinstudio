@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import { sendLogoutRequest } from "../utils/auth";
+import { post } from "../utils/auth";
 import { clearTokens } from "../utils/tokens";
 import { Button, Menu } from "primevue";
 
@@ -8,7 +8,7 @@ const router = useRouter();
 
 const handleLogout = async () => {
   try {
-    await sendLogoutRequest();
+    await post("/auth/logout", null, { refreshToken: true });
   } finally {
     clearTokens();
     router.push({ name: "Login" });

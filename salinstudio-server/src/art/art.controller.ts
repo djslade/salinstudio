@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -29,6 +30,13 @@ export class ArtController {
       createArtRequest.descriptionEn,
       createArtRequest.descriptionFi,
     );
-    return { message: 'Art created', art };
+    return { message: 'Created', art };
+  }
+
+  @Get()
+  async getAllArt() {
+    const art = await this.artService.findAll();
+    console.log(art);
+    return { message: 'OK', art };
   }
 }

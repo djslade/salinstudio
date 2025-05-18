@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import {
-  getErrorResponseOrThrow,
-  refreshTokens,
-  sendUserRequest,
-} from "../utils/auth";
+import { getErrorResponseOrThrow, post, refreshTokens } from "../utils/auth";
 import "../style.css";
 import { useQuery } from "@tanstack/vue-query";
-
-const router = useRouter();
+import type { UserResponse } from "../types/requests";
 
 const { data, isFetching } = useQuery({
   queryKey: ["user"],
   queryFn: async () => {
     try {
-      return await sendUserRequest();
+      return await post<UserResponse, null>("/auth", null, {
+        accessToken: true,
+      });
     } catch (err) {
       const res = getErrorResponseOrThrow(err);
       if (res.statusCode !== 401) throw err;
-      await refreshTokens(() => router.push({ name: "Login" }));
+      await refreshTokens();
     }
   },
   retry: 1,
