@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -18,6 +22,15 @@ export class UploadService {
         Bucket: this.configService.getOrThrow('AWS_S3_BUCKET'),
         Key: fileName,
         Body: file,
+      }),
+    );
+  }
+
+  async delete(fileName: string) {
+    await this.s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: this.configService.getOrThrow('AWS_S3_BUCKET'),
+        Key: fileName,
       }),
     );
   }

@@ -44,28 +44,25 @@ export class ArtService {
 
   async handleImage(image: Buffer) {
     const processedImages = await this.imageService.processImage(image);
+    const fileNames = this.imageService.getFileNames();
+    const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
+
+    await this.uploadService.upload(fileNames.fullUrl, processedImages.full);
     await this.uploadService.upload(
-      `full/${processedImages.name}.webp`,
-      processedImages.full,
-    );
-    await this.uploadService.upload(
-      `desktop/${processedImages.name}.webp`,
+      fileNames.desktopUrl,
       processedImages.desktop,
     );
     await this.uploadService.upload(
-      `mobile/${processedImages.name}.webp`,
+      fileNames.mobileUrl,
       processedImages.mobile,
     );
-    await this.uploadService.upload(
-      `thumb/${processedImages.name}.webp`,
-      processedImages.thumb,
-    );
-    const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
+    await this.uploadService.upload(fileNames.thumbUrl, processedImages.thumb);
+
     return {
-      fullUrl: `${domain}/full/${processedImages.name}.webp`,
-      desktopUrl: `${domain}/desktop/${processedImages.name}.webp`,
-      mobileUrl: `${domain}/mobile/${processedImages.name}.webp`,
-      thumbUrl: `${domain}/thumb/${processedImages.name}.webp`,
+      fullUrl: `${domain}/${fileNames.fullUrl}`,
+      desktopUrl: `${domain}/${fileNames.desktopUrl}`,
+      mobileUrl: `${domain}/${fileNames.mobileUrl}`,
+      thumbUrl: `${domain}/${fileNames.thumbUrl}`,
       fingerprintChecksum: processedImages.fingerprintChecksum,
     };
   }
@@ -111,13 +108,20 @@ export class ArtService {
   }
 
   async delete(id: string): Promise<void> {
-    const { totalIndex, categoryIndex, category } = await this.findArtById(id);
+    const artToDelete = await this.findArtById(id);
     const allArt = await this.findAll();
+    await this.uploadService.delete(artToDelete.fullUrl);
+    await this.uploadService.delete(artToDelete.desktopUrl);
+    await this.uploadService.delete(artToDelete.mobileUrl);
+    await this.uploadService.delete(artToDelete.thumbUrl);
     for (let art of allArt) {
-      if (art.totalIndex > totalIndex) {
+      if (art.totalIndex > artToDelete.totalIndex) {
         art.totalIndex--;
       }
-      if (art.category === category && art.categoryIndex > categoryIndex) {
+      if (
+        art.category === artToDelete.category &&
+        art.categoryIndex > artToDelete.categoryIndex
+      ) {
         art.categoryIndex--;
       }
       await this.artRepository.save(art);

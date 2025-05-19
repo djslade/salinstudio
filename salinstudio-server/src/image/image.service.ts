@@ -8,6 +8,13 @@ type FingerprintConfig = {
   checksum: number;
 };
 
+type FIleNames = {
+  fullUrl: string;
+  desktopUrl: string;
+  mobileUrl: string;
+  thumbUrl: string;
+};
+
 @Injectable()
 export class ImageService {
   async getImageMetadata(buffer: Buffer) {
@@ -26,6 +33,16 @@ export class ImageService {
         },
       })
       .toBuffer();
+  }
+
+  getFileNames(): FIleNames {
+    const name = Date.now();
+    return {
+      fullUrl: `full/${name}.webp`,
+      desktopUrl: `desktop/${name}.webp`,
+      mobileUrl: `mobile/${name}.webp`,
+      thumbUrl: `thumb/${name}.webp`,
+    };
   }
 
   getFingerprintConfig(currentDate?: Date): FingerprintConfig {
@@ -113,7 +130,6 @@ export class ImageService {
     const withCopyright = await this.embedCopyright(buffer);
     const { width } = await this.getImageMetadata(withCopyright);
     const config = this.getFingerprintConfig();
-    const name = `${Date.now()}`;
     const full = await this.addFingerprint(withCopyright, config);
     const thumb =
       width > 360 ? await this.genThumbnail(withCopyright, config) : full;
@@ -122,7 +138,6 @@ export class ImageService {
     const desktop =
       width > 1200 ? await this.genDesktop(withCopyright, config) : full;
     return {
-      name,
       full,
       thumb,
       mobile,
