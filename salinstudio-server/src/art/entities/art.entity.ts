@@ -1,12 +1,15 @@
 import { BaseEntity } from 'src/database/base.entity';
-import { Genre } from 'src/genre/entities/genre.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity } from 'typeorm';
+
+export type ArtCategory =
+  | 'drawings'
+  | 'paintings'
+  | 'pastels'
+  | 'digital'
+  | 'mixed media';
 
 @Entity()
 export class Art extends BaseEntity {
-  @ManyToOne(() => Genre, (genre) => genre.art)
-  genre: Genre;
-
   @Column()
   fullUrl: string;
 
@@ -33,4 +36,17 @@ export class Art extends BaseEntity {
 
   @Column()
   fingerprintChecksum: number;
+
+  @Column({
+    type: 'enum',
+    enum: ['drawings', 'paintings', 'pastels', 'digital', 'mixed media'],
+    default: 'drawings',
+  })
+  category: ArtCategory;
+
+  @Column()
+  categoryIndex: number;
+
+  @Column()
+  totalIndex: number;
 }

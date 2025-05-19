@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 import { ArtCategory } from '../entities/art.entity';
 
-export class CreateArtDto {
+export class UpdateArtDto {
   @IsNotEmpty()
   titleEn: string;
 
@@ -13,9 +13,6 @@ export class CreateArtDto {
 
   @IsNotEmpty()
   descriptionFi: string;
-
-  @IsNotEmpty()
-  genreNameEn: string;
 
   @IsNotEmpty()
   category: ArtCategory;

@@ -3,7 +3,6 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { ArtModule } from './art/art.module';
-import { GenreModule } from './genre/genre.module';
 
 @Module({
   imports: [
@@ -11,7 +10,6 @@ import { GenreModule } from './genre/genre.module';
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ArtModule,
-    GenreModule,
   ],
 })
 export class AppModule {}
