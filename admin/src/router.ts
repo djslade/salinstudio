@@ -2,12 +2,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoginVivew from "./routes/Login.vue";
 import HomeView from "./routes/Home.vue";
 import SignupView from "./routes/Signup.vue";
-import NewArtView from "./routes/NewArt.vue";
-import NewCategoryView from "./routes/NewCategory.vue";
-import AllArtView from "./routes/AllArt.vue";
-import AllCategoriesView from "./routes/AllCategories.vue";
-import ArtView from "./routes/Art.vue";
-import CategoryView from "./routes/Category.vue";
+import NewView from "./routes/New.vue";
+import ListView from "./routes/List.vue";
+import PreviewView from "./routes/Preview.vue";
 import { isAuthenticated } from "./utils/auth";
 import { isVisitorMember } from "./utils/visitor";
 
@@ -19,39 +16,21 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/art",
-    name: "All Art",
-    component: AllArtView,
+    path: "/new",
+    name: "New",
+    component: NewView,
     meta: { requiresAuth: true },
   },
   {
-    path: "/art/new",
-    name: "New Art",
-    component: NewArtView,
+    path: "/list",
+    name: "List",
+    component: ListView,
     meta: { requiresAuth: true },
   },
   {
-    path: "/art/:id",
-    name: "Art",
-    component: ArtView,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/categories",
-    name: "All Categories",
-    component: AllCategoriesView,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/categories/new",
-    name: "New Category",
-    component: NewCategoryView,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/categories/:id",
-    name: "Category",
-    component: CategoryView,
+    path: "/preview",
+    name: "Preview",
+    component: PreviewView,
     meta: { requiresAuth: true },
   },
   {

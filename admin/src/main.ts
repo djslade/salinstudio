@@ -5,7 +5,9 @@ import { router } from "./router";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import { VueQueryPlugin } from "@tanstack/vue-query";
+import { createPinia } from "pinia";
 
+const pinia = createPinia();
 const app = createApp(App);
 
 app.use(router);
@@ -20,5 +22,6 @@ app.use(PrimeVue, {
   },
 });
 
+app.use(pinia);
 app.use(VueQueryPlugin);
 app.mount("#app");

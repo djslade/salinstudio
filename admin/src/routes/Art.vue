@@ -1,3 +1,7 @@
 <script setup lang="ts"></script>
 
-<template></template>
+<template>
+  <div class="w-full">
+    <RouterView />
+  </div>
+</template>

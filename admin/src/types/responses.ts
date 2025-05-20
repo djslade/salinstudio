@@ -11,3 +11,13 @@ export type CreateCategoryRequestBody = {
   nameEn: string;
   nameFi: string;
 };
+
+export type JsonRequestBody = {
+  username?: string;
+  password?: string;
+  secret?: string;
+  titleFi?: string;
+  titleEn?: string;
+  descriptionFi?: string;
+  descriptionEn?: string;
+};

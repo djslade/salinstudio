@@ -4,32 +4,32 @@ import { ref } from "vue";
 
 const items = ref([
   {
+    label: "Main",
+    items: [{ label: "Dashboard", route: "/" }],
+  },
+  {
     label: "Art",
     items: [
       {
         label: "New",
-        icon: "pi pi-plus",
-        route: "/art/new",
+        route: "/new",
       },
       {
-        label: "All",
-        icon: "pi-th-large",
-        route: "/art",
+        label: "Art list",
+        route: "/list",
+      },
+      {
+        label: "Preview",
+        route: "/preview",
       },
     ],
   },
   {
-    label: "Genres",
+    label: "Other",
     items: [
       {
-        label: "New",
-        icon: "pi pi-plus",
-        route: "/categories/new",
-      },
-      {
-        label: "All",
-        icon: "pi-th-large",
-        route: "/categories",
+        label: "Log out",
+        route: "/logout",
       },
     ],
   },
@@ -37,10 +37,13 @@ const items = ref([
 </script>
 
 <template>
-  <Menu :model="items" class="flex flex-col h-screen max-w-40 gap-6">
+  <Menu
+    :model="items"
+    class="flex flex-col h-screen max-w-40 gap-6 shrink-0 py-6"
+  >
     <template #start>
       <div class="w-full flex p-3 h-20">
-        <img src="/logo.svg" class="" alt="" />
+        <img src="/logo.svg" class="h-full" alt="" />
       </div>
     </template>
     <template #item="{ item, props }">
@@ -56,5 +59,8 @@ const items = ref([
         </a>
       </router-link>
     </template>
+    <div class="justify-self-end">
+      <h1>Hi</h1>
+    </div>
   </Menu>
 </template>
