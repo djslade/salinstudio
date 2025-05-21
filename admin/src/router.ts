@@ -5,7 +5,8 @@ import SignupView from "./routes/Signup.vue";
 import NewView from "./routes/New.vue";
 import ListView from "./routes/List.vue";
 import PreviewView from "./routes/Preview.vue";
-import { isAuthenticated } from "./utils/auth";
+import LogoutView from "./routes/Logout.vue";
+import { isAuthenticated, logout } from "./utils/auth";
 import { isVisitorMember } from "./utils/visitor";
 
 const routes = [
@@ -34,6 +35,11 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/logout",
+    name: "Logout",
+    component: LogoutView,
+  },
+  {
     path: "/login",
     name: "Login",
     component: LoginVivew,
@@ -52,7 +58,15 @@ export const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _, next) => {
+router.beforeEach(async (to, _, next) => {
+  if (to.name === "Logout") {
+    if (!isAuthenticated()) {
+      return next({ name: isVisitorMember() ? "Login" : "Signup" });
+    } else {
+      await logout();
+    }
+  }
+
   if (to.meta.requiresAuth && !isAuthenticated()) {
     return next({
       name: isVisitorMember() ? "Login" : "Signup",

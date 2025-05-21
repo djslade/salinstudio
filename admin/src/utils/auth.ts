@@ -1,6 +1,5 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 import { clearTokens, getTokens, setTokens } from "./tokens";
-import { useRouter } from "vue-router";
 import type { ErrorResponse, RefreshResponse } from "../types/requests";
 
 export const getEndpoint = () => import.meta.env.VITE_ENDPOINT ?? "";
@@ -53,7 +52,6 @@ export const refreshTokens = async () => {
     setTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
   } catch (err) {
     clearTokens();
-    useRouter().push({ name: "Login" });
   }
 };
 
@@ -62,4 +60,15 @@ export const getErrorResponseOrThrow = (err: unknown) => {
   if (!err.response) throw err;
   const data: ErrorResponse = err.response.data;
   return data;
+};
+
+export const logout = async () => {
+  try {
+    await post("/auth/logout", null, { refreshToken: true });
+  } catch (err) {
+    // do nothing
+    return;
+  } finally {
+    clearTokens();
+  }
 };

@@ -53,7 +53,7 @@ const items = ref([
         :to="item.route"
         custom
       >
-        <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+        <a :href="href" v-bind="props.action" @click="navigate">
           <span :class="item.icon" />
           <span>{{ item.label }}</span>
         </a>
