@@ -91,4 +91,4 @@ jobs:
             docker compose up -d
             rm -rf docker-compose.yml
             rm -rf .env
-            docker image prune -a
+            docker image prune -a -f
