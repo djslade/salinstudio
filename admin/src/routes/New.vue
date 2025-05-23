@@ -69,7 +69,7 @@ const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
     formData.append("titleFi", evt.values.titleFi);
     formData.append("descriptionEn", evt.values.descriptionEn);
     formData.append("descriptionFi", evt.values.descriptionFi);
-    const res = await post("/art", formData);
+    const res = await post("/art", formData, { accessToken: true });
     evt.reset();
     src.value = "";
     artImage.value = null;
