@@ -9,6 +9,9 @@ services:
     image: fenroe/salinstudio-server:latest
     env_file: .env
     pull_policy: always
+    depends_on:
+      - db:
+          condition: service_healthy
   admin:
     image: fenroe/salinstudio-admin:latest
     env_file: .env
