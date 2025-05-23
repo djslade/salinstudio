@@ -1,6 +1,8 @@
 services:
   db:
     image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: postgres
     volumes:
       - salinstudio:/var/lib/postgresql
   server:
