@@ -25,7 +25,9 @@ export class ArtController {
 
   @Post()
   @UseGuards(AuthGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: 50 * 1024 * 1024 } }),
+  )
   async createArt(
     @UploadedFile() image: Express.Multer.File,
     @Body() body: CreateArtDto,
