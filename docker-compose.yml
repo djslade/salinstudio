@@ -19,5 +19,5 @@ services:
     pull_policy: always
     ports:
       - 333:3000
-  volumes:
-    salinstudio:
+volumes:
+  salinstudio:
