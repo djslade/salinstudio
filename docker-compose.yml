@@ -5,6 +5,12 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - salinstudio:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
   server:
     image: fenroe/salinstudio-server:latest
     env_file: .env
