@@ -1,7 +1,7 @@
 export const DATABASE_CONFIG = {
   PROVIDER_NAME: 'DATA_SOURCE',
   TYPE: 'postgres',
-  HOST: 'localhost',
+  HOST: process.env.DB_HOST ?? 'localhost',
   PORT: 5432,
   USERNAME: process.env.DB_USERNAME ?? 'postgres',
   PASSWORD: process.env.DB_PASSWORD ?? 'postgres',
