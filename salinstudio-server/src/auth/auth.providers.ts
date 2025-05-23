@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
-import { DATABASE_CONFIG, REPOSITORY_NAMES } from 'src/config/constants';
+import { DATABASE_CONFIG, REPOSITORY_NAMES } from '../config/constants';
 
 export const authProviders = [
   {

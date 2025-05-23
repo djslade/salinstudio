@@ -11,6 +11,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Create .env file for admin
+        run: echo "VITE_ENDPOINT=${{ secrets.VITE_ENDPOINT }}" > admin/.env
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -23,12 +26,26 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build docker image and push
+      - name: Build docker image and push - client
         uses: docker/build-push-action@v6
         with:
           context: ./client
           push: true
-          tags: fenroe/salinstudio:latest
+          tags: fenroe/salinstudio-web:latest
+
+      - name: Build docker image and push - admin
+        uses: docker/build-push-action@v6
+        with:
+          context: ./admin
+          push: true
+          tags: fenroe/salinstudio-admin:latest
+
+      - name: Build docker image and push - admin
+        uses: docker/build-push-action@v6
+        with:
+          context: ./salinstudio-server
+          push: true
+          tags: fenroe/salinstudio-server:latest
   deploy:
     needs: [docker]
     runs-on: ubuntu-latest
@@ -36,7 +53,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: SSH into server
+      - name: Create .env file for compose
+        run: |
+          touch .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "SIGNUP_SECRET=${{ secrets.SIGNUP_SECRET }}" >> .env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+          echo "AWS_S3_REGION=${{ secrets.AWS_S3_REGION }}" >> .env
+          echo "AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET}}" >> .env
+          echo "AWS_CF_DOMAIN=${{ secrets.AWS_CF_DOMAIN }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "MODE=${{ secrets.MODE }}" >> .env
+
+      - name: SSH into server+
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_IP }}
@@ -44,7 +76,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            docker stop salinstudio
-            docker rm salinstudio
-            docker image rm fenroe/salinstudio:latest
-            ./scripts/salinstudio_init.sh
+            scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} \
+              ./docker-compose.yml \
+              ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:/apps/salinstudio
+            scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} \
+              ./.env \
+              ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:/apps/salinstudio
+            cd apps/salinstudio
+            docker compose up -d
+            rm -rf docker-compose.yml
+            rm -rf .env

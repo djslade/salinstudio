@@ -5,8 +5,9 @@ export const DATABASE_CONFIG = {
   PORT: 5432,
   USERNAME: process.env.DB_USERNAME ?? 'postgres',
   PASSWORD: process.env.DB_PASSWORD ?? 'postgres',
-  DATABASE: process.env.DB_NAME ?? 'salinstudio',
+  DATABASE: process.env.DB_NAME ?? 'salinstudio_test',
   SYNCHRONIZE: process.env.MODE !== 'production',
+  MIGRATIONS_RUN: process.env.MODE === 'production',
 };
 
 export const REPOSITORY_NAMES = {

@@ -44,6 +44,20 @@ export async function post<S, E>(
   return data;
 }
 
+export async function sendPut<T>(
+  path: string,
+  body: T,
+  options?: SendRequestOptions
+) {
+  const config: AxiosRequestConfig = genRequestConfig(options);
+  await axios.put(getEndpoint() + path, body, config);
+}
+
+export async function sendDelete(path: string, options?: SendRequestOptions) {
+  const config: AxiosRequestConfig = genRequestConfig(options);
+  await axios.delete(getEndpoint() + path, config);
+}
+
 export const refreshTokens = async () => {
   try {
     const res = await post<RefreshResponse, null>("/auth/refresh", null, {
@@ -64,6 +78,7 @@ export const getErrorResponseOrThrow = (err: unknown) => {
 
 export const logout = async () => {
   try {
+    if (!isAuthenticated()) return;
     await post("/auth/logout", null, { refreshToken: true });
   } catch (err) {
     // do nothing

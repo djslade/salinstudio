@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../user/user.module';
 import { authProviders } from './auth.providers';
-import { DatabaseModule } from 'src/database/database.module';
+import { DatabaseModule } from '../database/database.module';
 import { JwtModule } from '@nestjs/jwt';
-import { JWT_SECRET } from 'src/config/constants';
+import { JWT_SECRET } from '../config/constants';
 import { AuthGuard } from './guards/auth.guard';
 
 @Module({
@@ -20,6 +20,6 @@ import { AuthGuard } from './guards/auth.guard';
   ],
   providers: [...authProviders, AuthService, AuthGuard],
   controllers: [AuthController],
-  exports: [AuthGuard],
+  exports: [AuthService],
 })
 export class AuthModule {}

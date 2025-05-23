@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - salinstudio:/var/lib/postgresql
+  server:
+    image: fenroe/salinstudio-server:latest
+    env_file: .env
+    pull_policy: always
+  admin:
+    image: fenroe/salinstudio-admin:latest
+    env_file: .env
+    pull_policy: always
+      - 334:3000
+  web:
+    image: fenroe/salinstudio-web:latest
+    env_file: .env
+    pull_policy: always
+    ports:
+      - 333:3000
+  volumes:
+    salinstudio:

@@ -6,8 +6,9 @@ import NewView from "./routes/New.vue";
 import ListView from "./routes/List.vue";
 import PreviewView from "./routes/Preview.vue";
 import LogoutView from "./routes/Logout.vue";
-import { isAuthenticated, logout } from "./utils/auth";
+import { isAuthenticated } from "./utils/auth";
 import { isVisitorMember } from "./utils/visitor";
+import { clearTokens } from "./utils/tokens";
 
 const routes = [
   {
@@ -58,12 +59,12 @@ export const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, _, next) => {
+router.beforeEach((to, _, next) => {
   if (to.name === "Logout") {
     if (!isAuthenticated()) {
       return next({ name: isVisitorMember() ? "Login" : "Signup" });
     } else {
-      await logout();
+      clearTokens();
     }
   }
 

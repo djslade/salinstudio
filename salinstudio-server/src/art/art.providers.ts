@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { Art } from './entities/art.entity';
-import { DATABASE_CONFIG, REPOSITORY_NAMES } from 'src/config/constants';
+import { DATABASE_CONFIG, REPOSITORY_NAMES } from '../config/constants';
 
 export const artProviders = [
   {

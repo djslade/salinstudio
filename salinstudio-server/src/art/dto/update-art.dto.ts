@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsDefined, IsNotEmpty } from 'class-validator';
 import { ArtCategory } from '../entities/art.entity';
 
 export class UpdateArtDto {
@@ -8,10 +8,10 @@ export class UpdateArtDto {
   @IsNotEmpty()
   titleFi: string;
 
-  @IsNotEmpty()
+  @IsDefined()
   descriptionEn: string;
 
-  @IsNotEmpty()
+  @IsDefined()
   descriptionFi: string;
 
   @IsNotEmpty()

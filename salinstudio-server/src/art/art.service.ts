@@ -1,9 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { REPOSITORY_NAMES } from 'src/config/constants';
+import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Art, ArtCategory } from './entities/art.entity';
-import { UploadService } from 'src/upload/upload.service';
-import { ImageService } from 'src/image/image.service';
+import { UploadService } from '../upload/upload.service';
+import { ImageService } from '../image/image.service';
 import { ConfigService } from '@nestjs/config';
 import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
@@ -109,11 +109,14 @@ export class ArtService {
 
   async delete(id: string): Promise<void> {
     const artToDelete = await this.findArtById(id);
+    const urls = [
+      artToDelete.fullUrl,
+      artToDelete.desktopUrl,
+      artToDelete.mobileUrl,
+      artToDelete.thumbUrl,
+    ];
+    for (let url of urls) await this.uploadService.delete(url);
     const allArt = await this.findAll();
-    await this.uploadService.delete(artToDelete.fullUrl);
-    await this.uploadService.delete(artToDelete.desktopUrl);
-    await this.uploadService.delete(artToDelete.mobileUrl);
-    await this.uploadService.delete(artToDelete.thumbUrl);
     for (let art of allArt) {
       if (art.totalIndex > artToDelete.totalIndex) {
         art.totalIndex--;

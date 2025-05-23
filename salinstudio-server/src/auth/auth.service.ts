@@ -5,16 +5,16 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/user/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { SecureUser } from './types/secure-user';
 import { Repository } from 'typeorm';
 import {
   REFRESH_EXPIRES_AT_MS,
   REPOSITORY_NAMES,
   SIGNUP_SECRET,
-} from 'src/config/constants';
+} from '../config/constants';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { JwtService } from '@nestjs/jwt';
 import { IncomingHttpHeaders } from 'http';

@@ -1,5 +1,5 @@
-import { RefreshToken } from 'src/auth/entities/refresh-token.entity';
-import { BaseEntity } from 'src/database/base.entity';
+import { RefreshToken } from '../../auth/entities/refresh-token.entity';
+import { BaseEntity } from '../../database/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
