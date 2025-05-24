@@ -57,7 +57,8 @@ const onFileSelect = (event: FileUploadSelectEvent) => {
   reader.readAsDataURL(file);
 };
 
-const onFileClear = () => {
+const onFileClear = (cb?: () => void) => {
+  if (cb) cb();
   src.value = "";
   artImage.value = null;
 };
@@ -104,7 +105,7 @@ const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
         severity: "error",
         closable: true,
         summary: res.message,
-        life: 3000,
+        life: 5000,
       });
       submissionStage.value = SubmissionStage.Start;
     }
@@ -201,7 +202,7 @@ const handleGoToList = () => {
                 invalid-file-type-message="File must have a valid image extension (.jpg, .png, etc)"
                 class="flex justify-center"
               >
-                <template #header="{ chooseCallback, clearCallback, files }">
+                <template #header="{ chooseCallback, clearCallback }">
                   <div
                     class="flex flex-wrap justify-between items-center flex-1 gap-4"
                   >
@@ -212,14 +213,15 @@ const handleGoToList = () => {
                         rounded
                         outlined
                         severity="secondary"
+                        :disabled="artImage !== null"
                       ></Button>
                       <Button
-                        @click="clearCallback()"
+                        @click="() => onFileClear(clearCallback)"
                         icon="pi pi-times"
                         rounded
                         outlined
                         severity="danger"
-                        :disabled="!files || files.length === 0"
+                        :disabled="artImage === null"
                       ></Button>
                     </div>
                   </div>
@@ -235,7 +237,10 @@ const handleGoToList = () => {
                   </div>
                 </template>
                 <template #empty>
-                  <div class="flex items-center justify-center flex-col">
+                  <div
+                    v-if="!artImage"
+                    class="flex items-center justify-center flex-col"
+                  >
                     <i
                       class="pi pi-cloud-upload rounded-full !text-4xl text-muted-color"
                     />

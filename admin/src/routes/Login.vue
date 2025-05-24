@@ -50,7 +50,7 @@ const handleLogin = async ({ values, valid }: FormSubmitEvent) => {
       severity: "error",
       closable: true,
       summary: res.message,
-      life: 3000,
+      life: 5000,
     });
   } finally {
     submitting.value = false;

@@ -1,4 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Art, ArtCategory } from './entities/art.entity';
@@ -43,28 +49,42 @@ export class ArtService {
   }
 
   async handleImage(image: Buffer) {
-    const processedImages = await this.imageService.processImage(image);
-    const fileNames = this.imageService.getFileNames();
-    const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
+    try {
+      const processedImages = await this.imageService.processImage(image);
+      const fileNames = this.imageService.getFileNames();
+      const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
 
-    await this.uploadService.upload(fileNames.fullUrl, processedImages.full);
-    await this.uploadService.upload(
-      fileNames.desktopUrl,
-      processedImages.desktop,
-    );
-    await this.uploadService.upload(
-      fileNames.mobileUrl,
-      processedImages.mobile,
-    );
-    await this.uploadService.upload(fileNames.thumbUrl, processedImages.thumb);
+      await this.uploadService.upload(fileNames.fullUrl, processedImages.full);
+      await this.uploadService.upload(
+        fileNames.desktopUrl,
+        processedImages.desktop,
+      );
+      await this.uploadService.upload(
+        fileNames.mobileUrl,
+        processedImages.mobile,
+      );
+      await this.uploadService.upload(
+        fileNames.thumbUrl,
+        processedImages.thumb,
+      );
 
-    return {
-      fullUrl: `${domain}/${fileNames.fullUrl}`,
-      desktopUrl: `${domain}/${fileNames.desktopUrl}`,
-      mobileUrl: `${domain}/${fileNames.mobileUrl}`,
-      thumbUrl: `${domain}/${fileNames.thumbUrl}`,
-      fingerprintChecksum: processedImages.fingerprintChecksum,
-    };
+      return {
+        fullUrl: `${domain}/${fileNames.fullUrl}`,
+        desktopUrl: `${domain}/${fileNames.desktopUrl}`,
+        mobileUrl: `${domain}/${fileNames.mobileUrl}`,
+        thumbUrl: `${domain}/${fileNames.thumbUrl}`,
+        fingerprintChecksum: processedImages.fingerprintChecksum,
+      };
+    } catch (err) {
+      if (err.message.includes('VipsJpeg')) {
+        throw new UnprocessableEntityException(
+          'This file is corrupt and cannot be processed',
+        );
+      }
+      throw new InternalServerErrorException(
+        'Could not process images at this time',
+      );
+    }
   }
 
   async createArt(params: CreateArtParams): Promise<Art> {
