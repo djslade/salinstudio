@@ -7,7 +7,8 @@ export type Art = {
   titleEn: string;
   titleFi: string;
   descriptionEn: string;
-  descriptioNFi: string;
+  descriptionFi: string;
+  category: string;
   fingerprintChecksum: number;
   createdAt: string;
   updatedAt: string;

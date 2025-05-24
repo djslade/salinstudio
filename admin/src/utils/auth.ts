@@ -59,6 +59,7 @@ export async function sendDelete(path: string, options?: SendRequestOptions) {
 }
 
 export const refreshTokens = async () => {
+  if (!isAuthenticated()) return;
   try {
     const res = await post<RefreshResponse, null>("/auth/refresh", null, {
       refreshToken: true,

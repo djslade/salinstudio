@@ -8,21 +8,59 @@ import {
   sendPut,
 } from "../utils/auth";
 import { type AllArtResponse } from "../types/requests";
-import { DataView, Button, Dialog, useToast, ProgressSpinner } from "primevue";
+import {
+  Button,
+  Dialog,
+  DataTable,
+  IconField,
+  InputText,
+  InputIcon,
+  Column,
+  Select,
+  ProgressSpinner,
+  Card,
+} from "primevue";
 import { ref } from "vue";
 import { type Art } from "../types/data";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
 import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 import FormControl from "../components/FormControl.vue";
+import { FilterMatchMode } from "@primevue/core/api";
 
+enum FormStep {
+  Start,
+  Submitting,
+  End,
+}
+
+type FormValues = {
+  category: string;
+  titleEn: string;
+  titleFi: string;
+  descriptionEn: string;
+  descriptionFi: string;
+};
+
+const initialFormValues = ref<FormValues>({
+  category: "",
+  titleEn: "",
+  titleFi: "",
+  descriptionEn: "",
+  descriptionFi: "",
+});
+
+const formStep = ref<FormStep>(FormStep.Start);
 const editVisible = ref<boolean>(false);
 const deleteVisible = ref<boolean>(false);
-const submitting = ref<boolean>(false);
-
-const toast = useToast();
 
 const focusedArt = ref<Art | null>(null);
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  category: { value: null, matchMode: FilterMatchMode.EQUALS },
+  emptyDescription: { value: null, matchMode: FilterMatchMode.EQUALS },
+});
 
 const updateArtResolver = zodResolver(
   z.object({
@@ -36,10 +74,16 @@ const updateArtResolver = zodResolver(
 
 const handleUpdateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
   if (!evt.valid) return;
-  if (submitting.value) return;
   if (!focusedArt.value) return;
   try {
-    submitting.value = true;
+    initialFormValues.value = {
+      category: evt.values.category,
+      titleEn: evt.values.titleEn,
+      titleFi: evt.values.titleFi,
+      descriptionEn: evt.values.descriptionEn,
+      descriptionFi: evt.values.descriptionFi,
+    };
+    formStep.value = FormStep.Submitting;
     await sendPut(
       `/art/${focusedArt.value.id}`,
       {
@@ -51,30 +95,15 @@ const handleUpdateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
       },
       { accessToken: true }
     );
-    editVisible.value = false;
-    refetch();
-    toast.add({
-      group: "main",
-      severity: "success",
-      closable: true,
-      summary: `Updated ${evt.values.nameEn}`,
-    });
+    formStep.value = FormStep.End;
   } catch (err) {
     const res = getErrorResponseOrThrow(err);
     if (res.statusCode === 401 && retry) {
       await refreshTokens();
-      submitting.value = false;
       handleUpdateArt(evt, false);
     } else {
-      toast.add({
-        group: "main",
-        severity: "error",
-        closable: true,
-        summary: res.message,
-      });
+      formStep.value = FormStep.Start;
     }
-  } finally {
-    submitting.value = false;
   }
 };
 
@@ -86,118 +115,293 @@ const { data, isFetching, refetch } = useQuery({
   },
 });
 
+const addCustomFields = (art?: Art[]) => {
+  if (!art) return;
+  return art.map((a) => {
+    return {
+      ...a,
+      emptyDescription:
+        a.descriptionFi.trim() === "" || a.descriptionEn.trim() === "",
+    };
+  });
+};
+
 const setFocusedArt = (id: string) => {
   const art = data.value?.filter((a) => a.id === id)[0];
   if (!art) return;
   focusedArt.value = art;
 };
 
+const setInitialFormValues = (id: string) => {
+  const art = data.value?.filter((a) => a.id === id)[0];
+  if (!art) return;
+  initialFormValues.value = {
+    category: art.category,
+    titleEn: art.titleEn,
+    titleFi: art.titleFi,
+    descriptionEn: art.descriptionEn,
+    descriptionFi: art.descriptionFi,
+  };
+};
+
 const handleEdit = (id: string) => {
   setFocusedArt(id);
+  setInitialFormValues(id);
+  formStep.value = FormStep.Start;
   editVisible.value = true;
 };
 
 const handleDelete = (id: string) => {
   setFocusedArt(id);
+  formStep.value = FormStep.Start;
   deleteVisible.value = true;
 };
 
+const closeEditDialog = async () => {
+  editVisible.value = false;
+  await refetch();
+};
+
+const closeDeleteDialog = async () => {
+  deleteVisible.value = false;
+  await refetch();
+};
+
+const categories = [
+  {
+    name: "Drawings",
+    value: "drawings",
+  },
+  {
+    name: "Paintings",
+    value: "paintings",
+  },
+  {
+    name: "Pastels",
+    value: "pastels",
+  },
+  {
+    name: "Digital",
+    value: "digital",
+  },
+  {
+    name: "Mixed Media",
+    value: "mixed media",
+  },
+];
+
+const descriptionStatus = [
+  {
+    name: "Filled",
+    value: false,
+  },
+  {
+    name: "Empty",
+    value: true,
+  },
+];
+
 const deleteArt = async (retry: boolean = true) => {
   if (!focusedArt.value) return;
-  if (submitting.value) return;
   try {
-    submitting.value = true;
+    formStep.value = FormStep.Submitting;
     await sendDelete(`/art/${focusedArt.value.id}`, {
       accessToken: true,
     });
-    deleteVisible.value = false;
-    refetch();
+    formStep.value = FormStep.End;
   } catch (err) {
     const res = getErrorResponseOrThrow(err);
     if (res.statusCode === 401 && retry) {
       await refreshTokens();
-      submitting.value = false;
       deleteArt(false);
     } else {
-      toast.add({
-        group: "main",
-        severity: "error",
-        closable: true,
-        summary: res.message,
-      });
+      formStep.value = FormStep.Start;
     }
-  } finally {
-    submitting.value = false;
   }
 };
 </script>
 
 <template>
-  <div
-    v-if="isFetching || !data"
-    class="w-full flex justify-center items-center"
+  <DataTable
+    class="w-full"
+    v-model:filters="filters"
+    :value="addCustomFields(data)"
+    paginator
+    :alwaysShowPaginator="false"
+    :rows="12"
+    dataKey="id"
+    :loading="isFetching"
+    :globalFilterFields="[
+      'titleEn',
+      'titleFi',
+      'descriptionEn',
+      'descriptionFi',
+    ]"
   >
-    <ProgressSpinner v-if="isFetching || !data" />
-  </div>
-  <DataView v-else :value="data" class="w-full max-w-screen-lg">
     <template #header>
-      <h1 class="font-bold text-2xl">Published art</h1>
-    </template>
-    <template #list="slotProps">
-      <div class="flex flex-col">
-        <div
-          v-for="(item, index) in slotProps.items"
-          :key="index"
-          class="w-full"
+      <div class="flex pt-6 gap-6">
+        <IconField>
+          <InputIcon>
+            <i class="pi pi-search" />
+          </InputIcon>
+          <InputText v-model="filters['global'].value" placeholder="Search" />
+        </IconField>
+        <Select
+          v-model="filters['category'].value"
+          :options="categories"
+          optionLabel="name"
+          optionValue="value"
+          placeholder="Select One"
+          class="max-w-xs w-full"
         >
-          <div class="flex px-6 py-3 gap-6 rounded-lg shadow-lg">
-            <div class="w-full max-w-40">
-              <img
-                class="rounded w-full h-full object-cover max-h-30"
-                :src="item.thumbUrl"
-                :alt="item.titleEn"
-              />
-            </div>
-            <div class="w-full flex flex-col gap-3">
-              <span class="font-medium text-surface-500 text-sm capitalize">
-                {{ item.category }}
-              </span>
-              <span class="font-bold text-surface-100 text-xl"
-                >{{ item.titleEn }} / {{ item.titleFi }}</span
-              >
-            </div>
-            <div class="flex flex-col gap-3 justify-center">
-              <Button
-                icon="pi pi-pencil"
-                outlined
-                severity="secondary"
-                @click="() => handleEdit(item.id)"
-              ></Button>
-              <Button
-                icon="pi pi-trash"
-                outlined
-                severity="danger"
-                @click="() => handleDelete(item.id)"
-              ></Button>
-            </div>
-          </div>
-        </div>
+        </Select>
+        <Select
+          v-model="filters['emptyDescription'].value"
+          :options="descriptionStatus"
+          optionLabel="name"
+          optionValue="value"
+          placeholder="Select One"
+          class="max-w-xs w-full"
+        >
+        </Select>
       </div>
     </template>
-  </DataView>
-  <Dialog v-model:visible="editVisible" modal header="Edit art">
+    <template #empty>
+      <div class="w-full flex justify-center p-6">No results found.</div>
+    </template>
+    <Column
+      field="thumbUrl"
+      header="Image"
+      :showFilterMatchModes="false"
+      :showFilterMenu="false"
+    >
+      <template #body="{ data }">
+        <img
+          :src="data.thumbUrl"
+          class="w-30 aspect-video object-cover rounded"
+          alt=""
+        />
+      </template>
+    </Column>
+    <Column
+      field="category"
+      header="Category"
+      :showFilterMatchModes="false"
+      :showFilterMenu="false"
+    >
+      <template #body="{ data }">
+        <div class="capitalize">
+          {{ data.category }}
+        </div>
+      </template>
+    </Column>
+    <Column
+      field="titleEn"
+      header="Title (English)"
+      :showFilterMatchModes="false"
+      :showFilterMenu="false"
+    >
+      <template #body="{ data }">
+        {{ data.titleEn }}
+      </template>
+    </Column>
+    <Column
+      field="titleFi"
+      header="Title (Finnish)"
+      :showFilterMatchModes="false"
+      :showFilterMenu="false"
+    >
+      <template #body="{ data }">
+        {{ data.titleFi }}
+      </template>
+    </Column>
+    <Column field="actions" header="Actions">
+      <template #body="{ data }">
+        <div class="flex gap-6">
+          <Button
+            icon="pi pi-pencil"
+            rounded
+            severity="secondary"
+            raised
+            @click="() => handleEdit(data.id)"
+          />
+          <Button
+            icon="pi pi-trash"
+            rounded
+            severity="danger"
+            raised
+            @click="() => handleDelete(data.id)"
+          />
+        </div>
+      </template>
+    </Column>
+  </DataTable>
+  <Dialog
+    v-model:visible="editVisible"
+    modal
+    header="Edit art"
+    class="transition-all max-w-screen-sm w-full"
+  >
+    <div
+      v-if="formStep === FormStep.Submitting"
+      class="w-full flex justify-center items-center"
+    >
+      <ProgressSpinner strokeWidth="5" />
+    </div>
+    <div
+      v-if="formStep === FormStep.End"
+      class="w-full flex justify-center items-center"
+    >
+      <Card class="max-w-screen-sm w-full">
+        <template #content>
+          <div class="flex justify-center items-center flex-col gap-6">
+            <div class="flex flex-col gap-3 items-center">
+              <i
+                class="pi pi-check text-emerald-500 w-fit"
+                style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  border: 2px solid;
+                  border-radius: 50%;
+                  padding: 1rem;
+                "
+              />
+              <span class="text-lg">Update successful</span>
+            </div>
+            <div class="flex w-full justify-center gap-3">
+              <Button
+                label="Close"
+                class="w-full max-w-xs"
+                severity="secondary"
+                @click="closeEditDialog"
+              />
+            </div>
+          </div>
+        </template>
+      </Card>
+    </div>
     <Form
-      v-slot="$form"
+      v-if="formStep === FormStep.Start"
       class="flex flex-col gap-5"
-      :initialValues="focusedArt as Record<string, unknown>"
+      :initialValues="initialFormValues"
       :resolver="updateArtResolver"
       @submit="handleUpdateArt"
     >
       <div class="gap-5 flex flex-col py-5">
         <FormControl name="category" type="select" label="Category" fluid />
         <div class="flex w-full gap-3">
-          <FormControl name="titleEn" type="text" label="Title (English)" />
-          <FormControl name="titleFi" type="text" label="Title (Finnish)" />
+          <FormControl
+            name="titleEn"
+            type="text"
+            label="Title (English)"
+            fluid
+          />
+          <FormControl
+            name="titleFi"
+            type="text"
+            label="Title (Finnish)"
+            fluid
+          />
         </div>
         <FormControl
           name="descriptionEn"
@@ -212,15 +416,49 @@ const deleteArt = async (retry: boolean = true) => {
           fluid
         />
       </div>
-      <Button
-        :label="submitting ? 'Saving' : 'Save'"
-        type="submit"
-        :disabled="!$form.valid || submitting"
-      />
+      <Button label="Save" type="submit" />
     </Form>
   </Dialog>
   <Dialog v-model:visible="deleteVisible" modal header="Delete art">
-    <div class="flex flex-col w-full gap-6">
+    <div
+      v-if="formStep === FormStep.Submitting"
+      class="w-full flex justify-center items-center"
+    >
+      <ProgressSpinner strokeWidth="5" />
+    </div>
+    <div
+      v-if="formStep === FormStep.End"
+      class="w-full flex justify-center items-center"
+    >
+      <Card class="max-w-screen-sm w-full">
+        <template #content>
+          <div class="flex justify-center items-center flex-col gap-6">
+            <div class="flex flex-col gap-3 items-center">
+              <i
+                class="pi pi-check text-emerald-500 w-fit"
+                style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  border: 2px solid;
+                  border-radius: 50%;
+                  padding: 1rem;
+                "
+              />
+              <span class="text-lg">Successfully deleted art.</span>
+            </div>
+            <div class="flex w-full justify-center gap-3">
+              <Button
+                label="Close"
+                class="w-full max-w-xs"
+                severity="secondary"
+                @click="closeDeleteDialog"
+              />
+            </div>
+          </div>
+        </template>
+      </Card>
+    </div>
+    <div v-if="formStep === FormStep.Start" class="flex flex-col w-full gap-6">
       <div class="w-full">
         <img
           :src="focusedArt?.thumbUrl"
@@ -236,11 +474,7 @@ const deleteArt = async (retry: boolean = true) => {
           @click="() => (deleteVisible = false)"
           >Cancel</Button
         >
-        <Button
-          severity="danger"
-          fluid
-          @click="() => deleteArt()"
-          :loading="submitting"
+        <Button severity="danger" fluid @click="() => deleteArt()"
           >Delete</Button
         >
       </div>

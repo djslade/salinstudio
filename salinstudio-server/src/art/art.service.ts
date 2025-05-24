@@ -39,7 +39,7 @@ export class ArtService {
   }
 
   async findAll(): Promise<Art[]> {
-    return await this.artRepository.find({ order: {} });
+    return await this.artRepository.find({ order: { totalIndex: 'DESC' } });
   }
 
   async handleImage(image: Buffer) {

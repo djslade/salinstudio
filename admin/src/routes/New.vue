@@ -5,6 +5,7 @@ import {
   type FileUploadSelectEvent,
   Button,
   useToast,
+  ProgressSpinner,
 } from "primevue";
 import { ref } from "vue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
@@ -12,9 +13,35 @@ import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 import { getErrorResponseOrThrow, post, refreshTokens } from "../utils/auth";
 import FormControl from "../components/FormControl.vue";
+import { useRouter } from "vue-router";
+
+enum SubmissionStage {
+  Start,
+  Submitting,
+  End,
+}
+
+type FormValues = {
+  category: string;
+  titleEn: string;
+  titleFi: string;
+  descriptionEn: string;
+  descriptionFi: string;
+};
 
 const src = ref<string>("");
 const artImage = ref<Blob | null>(null);
+const router = useRouter();
+
+const initialFormValues = ref<FormValues>({
+  category: "",
+  titleEn: "",
+  titleFi: "",
+  descriptionEn: "",
+  descriptionFi: "",
+});
+
+const submissionStage = ref<SubmissionStage>(SubmissionStage.Start);
 
 const toast = useToast();
 
@@ -35,16 +62,6 @@ const onFileClear = () => {
   artImage.value = null;
 };
 
-const formErrorMessage = ref<string>("");
-const submitting = ref<boolean>(false);
-
-const defaultFormValues = {
-  titleEn: "",
-  titleFi: "",
-  descriptionEn: "",
-  descriptionFi: "",
-};
-
 const createArtResolver = zodResolver(
   z.object({
     category: z.string().nonempty("This field is required"),
@@ -57,11 +74,16 @@ const createArtResolver = zodResolver(
 
 const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
   if (!evt.valid) return;
-  if (submitting.value) return;
   if (!artImage.value) return;
-  formErrorMessage.value = "";
   try {
-    submitting.value = true;
+    submissionStage.value = SubmissionStage.Submitting;
+    initialFormValues.value = {
+      category: evt.values.category,
+      titleEn: evt.values.titleEn,
+      titleFi: evt.values.titleFi,
+      descriptionEn: evt.values.descriptionEn,
+      descriptionFi: evt.values.descriptionFi,
+    };
     const formData = new FormData();
     formData.append("file", artImage.value);
     formData.append("category", evt.values.category);
@@ -69,39 +91,93 @@ const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
     formData.append("titleFi", evt.values.titleFi);
     formData.append("descriptionEn", evt.values.descriptionEn);
     formData.append("descriptionFi", evt.values.descriptionFi);
-    const res = await post("/art", formData, { accessToken: true });
-    evt.reset();
-    src.value = "";
-    artImage.value = null;
-    toast.add({
-      group: "main",
-      severity: "success",
-      closable: true,
-      summary: "Added new art",
-    });
-    return res;
+    await post("/art", formData, { accessToken: true });
+    submissionStage.value = SubmissionStage.End;
   } catch (err) {
     const res = getErrorResponseOrThrow(err);
     if (res.statusCode === 401 && retry) {
       await refreshTokens();
       handleCreateArt(evt, false);
     } else {
-      formErrorMessage.value = res.message;
       toast.add({
         group: "main",
         severity: "error",
         closable: true,
         summary: res.message,
+        life: 3000,
       });
+      submissionStage.value = SubmissionStage.Start;
     }
-  } finally {
-    submitting.value = false;
   }
+};
+
+const handlePublishMore = () => {
+  artImage.value = null;
+  src.value = "";
+  initialFormValues.value = {
+    category: "",
+    titleEn: "",
+    titleFi: "",
+    descriptionEn: "",
+    descriptionFi: "",
+  };
+  submissionStage.value = SubmissionStage.Start;
+};
+
+const handleGoToList = () => {
+  router.push({ name: "List" });
 };
 </script>
 
 <template>
-  <div class="flex flex-col w-full gap-3">
+  <div
+    v-if="submissionStage === SubmissionStage.Submitting"
+    class="w-full flex justify-center items-center"
+  >
+    <ProgressSpinner strokeWidth="5" />
+  </div>
+  <div
+    v-if="submissionStage === SubmissionStage.End"
+    class="w-full flex justify-center items-center"
+  >
+    <Card class="max-w-screen-sm w-full">
+      <template #content>
+        <div class="flex justify-center items-center flex-col gap-6">
+          <div class="flex flex-col gap-3 items-center">
+            <i
+              class="pi pi-check text-emerald-500 w-fit"
+              style="
+                font-size: 2rem;
+                font-weight: 700;
+                border: 2px solid;
+                border-radius: 50%;
+                padding: 1rem;
+              "
+            />
+            <span class="text-lg">You've published a new piece!</span>
+          </div>
+          <div class="flex w-full justify-center gap-3">
+            <Button
+              label="Publish more"
+              fluid
+              severity="secondary"
+              @click="handlePublishMore"
+            />
+            <Button
+              label="Go to list"
+              fluid
+              severity="secondary"
+              @click="handleGoToList"
+            />
+          </div>
+        </div>
+      </template>
+    </Card>
+  </div>
+  <div
+    class="flex flex-col w-full gap-6"
+    v-if="submissionStage === SubmissionStage.Start"
+  >
     <div class="px-3">
       <h1 class="text-2xl font-bold">Upload New Art</h1>
     </div>
@@ -151,9 +227,10 @@ const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
                 <template #content>
                   <div class="w-full flex justify-center">
                     <img
+                      v-if="src"
                       :src="src"
                       alt=""
-                      class="w-full max-w-sm rounded shadow-lg object-cover"
+                      class="w-full max-w-sm aspect-square rounded shadow-lg object-cover"
                     />
                   </div>
                 </template>
@@ -170,7 +247,7 @@ const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
           </div>
         </template>
       </Card>
-      <Card v-if="artImage" class="w-full max-w-screen-sm">
+      <Card class="w-full max-w-screen-sm">
         <template #header>
           <div class="px-6 pt-6">
             <h2 class="font-medium text-xl">Details</h2>
@@ -180,7 +257,7 @@ const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
           <Form
             v-slot="$form"
             class="flex flex-col gap-5 h-full justify-between"
-            :initialValues="defaultFormValues"
+            :initialValues="initialFormValues"
             :resolver="createArtResolver"
             @submit="handleCreateArt"
           >
@@ -196,11 +273,13 @@ const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
                   name="titleEn"
                   type="text"
                   label="Title (English)"
+                  fluid
                 />
                 <FormControl
                   name="titleFi"
                   type="text"
                   label="Title (Finnish)"
+                  fluid
                 />
               </div>
               <FormControl
@@ -220,10 +299,9 @@ const handleCreateArt = async (evt: FormSubmitEvent, retry: boolean = true) => {
               <Button label="Reset" fluid type="reset" severity="secondary" />
               <Button
                 fluid
-                :loading="submitting"
-                :label="submitting ? 'Submitting...' : 'Submit'"
+                label="Submit"
                 type="submit"
-                :disabled="!$form.valid || !src || submitting"
+                :disabled="!$form.valid || !src"
               />
             </div>
           </Form>
