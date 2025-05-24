@@ -6,6 +6,7 @@ import {
   Button,
   useToast,
   ProgressSpinner,
+  Image,
 } from "primevue";
 import { ref } from "vue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
@@ -182,14 +183,11 @@ const handleGoToList = () => {
     <div class="px-3">
       <h1 class="text-2xl font-bold">Upload New Art</h1>
     </div>
-    <div class="w-full flex gap-6">
-      <Card class="w-full flex max-w-screen-sm h-fit">
-        <template #title>
-          <h2>Image</h2>
-        </template>
+    <div class="w-full flex flex-col gap-6">
+      <Card class="w-full flex h-fit">
         <template #content>
-          <div class="flex flex-col gap-6">
-            <div class="flex flex-col gap-6">
+          <div class="flex gap-12 w-full justify-center">
+            <div class="w-full flex-1">
               <FileUpload
                 :multiple="false"
                 accept="image/*"
@@ -200,13 +198,12 @@ const handleGoToList = () => {
                 :show-upload-button="false"
                 :show-cancel-button="false"
                 invalid-file-type-message="File must have a valid image extension (.jpg, .png, etc)"
-                class="flex justify-center"
               >
                 <template #header="{ chooseCallback, clearCallback }">
                   <div
-                    class="flex flex-wrap justify-between items-center flex-1 gap-4"
+                    class="flex flex-wrap justify-between items-center flex-1 gap-4 w-full"
                   >
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 w-full">
                       <Button
                         @click="chooseCallback()"
                         icon="pi pi-images"
@@ -227,19 +224,34 @@ const handleGoToList = () => {
                   </div>
                 </template>
                 <template #content>
-                  <div class="w-full flex justify-center">
-                    <img
-                      v-if="src"
-                      :src="src"
-                      alt=""
-                      class="w-full max-w-sm aspect-square rounded shadow-lg object-cover"
-                    />
+                  <div class="w-full flex justify-center h-full">
+                    <Image alt="Image" preview>
+                      <template #previewicon>
+                        <i class="pi pi-search"></i>
+                      </template>
+                      <template #image>
+                        <img
+                          :src="src"
+                          :alt="src"
+                          class="aspect-video object-cover max-w-sm w-full"
+                        />
+                      </template>
+                      <template #original="slotProps">
+                        <img
+                          :src="src"
+                          :alt="src"
+                          :style="slotProps.style"
+                          class="max-w-screen-lg max-h-[90vh]"
+                          @click="slotProps.previewCallback()"
+                        />
+                      </template>
+                    </Image>
                   </div>
                 </template>
                 <template #empty>
                   <div
                     v-if="!artImage"
-                    class="flex items-center justify-center flex-col"
+                    class="flex items-center justify-center flex-col w-full h-full"
                   >
                     <i
                       class="pi pi-cloud-upload rounded-full !text-4xl text-muted-color"
@@ -249,67 +261,58 @@ const handleGoToList = () => {
                 </template>
               </FileUpload>
             </div>
-          </div>
-        </template>
-      </Card>
-      <Card class="w-full max-w-screen-sm">
-        <template #header>
-          <div class="px-6 pt-6">
-            <h2 class="font-medium text-xl">Details</h2>
-          </div>
-        </template>
-        <template #content>
-          <Form
-            v-slot="$form"
-            class="flex flex-col gap-5 h-full justify-between"
-            :initialValues="initialFormValues"
-            :resolver="createArtResolver"
-            @submit="handleCreateArt"
-          >
-            <div class="gap-5 flex flex-col">
-              <FormControl
-                name="category"
-                type="select"
-                label="Category"
-                fluid
-              />
-              <div class="flex w-full gap-3">
+            <Form
+              v-slot="$form"
+              class="flex flex-col gap-5 h-full justify-between flex-1"
+              :initialValues="initialFormValues"
+              :resolver="createArtResolver"
+              @submit="handleCreateArt"
+            >
+              <div class="gap-5 flex flex-col">
                 <FormControl
-                  name="titleEn"
-                  type="text"
-                  label="Title (English)"
+                  name="category"
+                  type="select"
+                  label="Category"
+                  fluid
+                />
+                <div class="flex w-full gap-3">
+                  <FormControl
+                    name="titleEn"
+                    type="text"
+                    label="Title (English)"
+                    fluid
+                  />
+                  <FormControl
+                    name="titleFi"
+                    type="text"
+                    label="Title (Finnish)"
+                    fluid
+                  />
+                </div>
+                <FormControl
+                  name="descriptionEn"
+                  type="textarea"
+                  label="Description (English)"
                   fluid
                 />
                 <FormControl
-                  name="titleFi"
-                  type="text"
-                  label="Title (Finnish)"
+                  name="descriptionFi"
+                  type="textarea"
+                  label="Description (Finnish)"
                   fluid
                 />
               </div>
-              <FormControl
-                name="descriptionEn"
-                type="textarea"
-                label="Description (English)"
-                fluid
-              />
-              <FormControl
-                name="descriptionFi"
-                type="textarea"
-                label="Description (Finnish)"
-                fluid
-              />
-            </div>
-            <div class="flex w-full gap-3">
-              <Button label="Reset" fluid type="reset" severity="secondary" />
-              <Button
-                fluid
-                label="Submit"
-                type="submit"
-                :disabled="!$form.valid || !src"
-              />
-            </div>
-          </Form>
+              <div class="flex w-full gap-3">
+                <Button label="Reset" fluid type="reset" severity="secondary" />
+                <Button
+                  fluid
+                  label="Submit"
+                  type="submit"
+                  :disabled="!$form.valid || !src"
+                />
+              </div>
+            </Form>
+          </div>
         </template>
       </Card>
     </div>
