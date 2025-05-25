@@ -1,7 +1,7 @@
 const STORAGE_KEY_ACCESS = "salinstudio.admin.access";
 const STORAGE_KEY_REFRESH = "salinstudio.admin.refresh";
 
-type Tokens = {
+export type Tokens = {
   accessToken: string;
   refreshToken: string;
 };
@@ -20,6 +20,8 @@ export const getTokens = () => {
     refreshToken,
   };
 };
+
+export const hasTokens = () => getTokens() !== null;
 
 export const clearTokens = () => {
   localStorage.removeItem(STORAGE_KEY_ACCESS);

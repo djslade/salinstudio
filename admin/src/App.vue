@@ -18,9 +18,9 @@ onMounted(async () => {
   <div v-if="!loaded" class="w-full h-screen flex">
     <LoadingPanel />
   </div>
-  <div v-else class="w-full flex">
+  <div v-else class="w-full flex h-screen">
     <Sidebar v-if="$route.meta.requiresAuth" />
-    <main class="w-full flex h-screen overflow-scroll p-10">
+    <main class="w-full flex overflow-x-scroll p-10">
       <RouterView />
       <Toast position="top-left" group="main" />
     </main>
