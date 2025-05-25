@@ -5,7 +5,6 @@ import {
   type FileUploadSelectEvent,
   Button,
   useToast,
-  ProgressSpinner,
   Image,
 } from "primevue";
 import { ref } from "vue";
@@ -15,6 +14,7 @@ import { z } from "zod";
 import { getErrorResponseOrThrow, post, refreshTokens } from "../utils/auth";
 import FormControl from "../components/FormControl.vue";
 import { useRouter } from "vue-router";
+import LoadingPanel from "../components/LoadingPanel.vue";
 
 enum SubmissionStage {
   Start,
@@ -132,12 +132,7 @@ const handleGoToList = () => {
 </script>
 
 <template>
-  <div
-    v-if="submissionStage === SubmissionStage.Submitting"
-    class="w-full flex justify-center items-center"
-  >
-    <ProgressSpinner strokeWidth="5" />
-  </div>
+  <LoadingPanel v-if="submissionStage === SubmissionStage.Submitting" />
   <div
     v-if="submissionStage === SubmissionStage.End"
     class="w-full flex justify-center items-center"

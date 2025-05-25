@@ -17,7 +17,6 @@ import {
   InputIcon,
   Column,
   Select,
-  ProgressSpinner,
   Card,
   Image,
 } from "primevue";
@@ -28,6 +27,7 @@ import { zodResolver } from "@primevue/forms/resolvers/zod";
 import { z } from "zod";
 import FormControl from "../components/FormControl.vue";
 import { FilterMatchMode } from "@primevue/core/api";
+import LoadingPanel from "../components/LoadingPanel.vue";
 
 enum FormStep {
   Start,
@@ -365,12 +365,7 @@ const deleteArt = async (retry: boolean = true) => {
     header="Edit art"
     class="transition-all max-w-screen-sm w-full"
   >
-    <div
-      v-if="formStep === FormStep.Submitting"
-      class="w-full flex justify-center items-center"
-    >
-      <ProgressSpinner strokeWidth="5" />
-    </div>
+    <LoadingPanel v-if="formStep === FormStep.Submitting" />
     <div
       v-if="formStep === FormStep.End"
       class="w-full flex justify-center items-center"
@@ -443,12 +438,7 @@ const deleteArt = async (retry: boolean = true) => {
     </Form>
   </Dialog>
   <Dialog v-model:visible="deleteVisible" modal header="Delete art">
-    <div
-      v-if="formStep === FormStep.Submitting"
-      class="w-full flex justify-center items-center"
-    >
-      <ProgressSpinner strokeWidth="5" />
-    </div>
+    <LoadingPanel v-if="formStep === FormStep.Submitting" />
     <div
       v-if="formStep === FormStep.End"
       class="w-full flex justify-center items-center"

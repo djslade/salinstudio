@@ -1,57 +1,101 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="carousel-container">
-    <div class="carousel-image-container">
-      <img src="/feather.jpeg" alt="" class="carousel-image" />
-      <img src="/feather.jpeg" alt="" class="carousel-image" />
+  <div class="gallery-wrapper">
+    <h1 class="title">Gallery</h1>
+    <div class="gallery">
+      <div class="card left-most"><img src="/img1.jpg" alt="1" /></div>
+      <div class="card left"><img src="/img2.jpg" alt="2" /></div>
+      <div class="card right"><img src="/img3.jpg" alt="3" /></div>
+      <div class="card right-most"><img src="/img4.jpg" alt="4" /></div>
     </div>
-    <div class="carousel-text-container">
-      <h2 class="carousel-text">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-      </h2>
+    <div class="nav">
+      <span class="prev">← Prev</span>
+      <span class="next">Next →</span>
     </div>
   </div>
 </template>
 
 <style scoped>
-.carousel-container {
-  max-width: 720px;
-  width: 100%;
-  background: radial-gradient(#3d3b2f, #353229);
-  aspect-ratio: 4/3;
-  justify-self: center;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 8px;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
+.gallery-wrapper {
+  text-align: center;
+  padding: 2rem;
 }
 
-.carousel-image-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+.title {
+  font-size: 3rem;
+  font-family: "Orbitron", sans-serif;
+  margin-bottom: 2rem;
+  color: white;
 }
 
-.carousel-image {
-  max-width: 50%;
-  max-height: 50%;
-}
-
-.carousel-text-container {
-  width: 100%;
-  height: 3rem;
+.gallery {
   display: flex;
   justify-content: center;
   align-items: center;
-  align-self: flex-end;
-  padding: 1rem;
-  flex-shrink: 0;
+  perspective: 1500px;
+  gap: 1.5rem;
 }
 
-.carousel-text {
-  color: silver;
+.card {
+  width: 220px;
+  height: 320px;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+  background: #222;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 3D Effect Classes */
+.left-most {
+  transform: rotateY(20deg) translateX(-30px) scale(0.95);
+  z-index: 1;
+}
+
+.left {
+  transform: rotateY(10deg) translateX(-10px);
+  z-index: 2;
+}
+
+.right {
+  transform: rotateY(-10deg) translateX(10px);
+  z-index: 2;
+}
+
+.right-most {
+  transform: rotateY(-20deg) translateX(30px) scale(0.95);
+  z-index: 1;
+}
+
+.card:hover {
+  transform: scale(1.05) rotateY(0deg) !important;
+  z-index: 3;
+}
+
+/* Nav buttons */
+.nav {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  max-width: 300px;
+  margin-inline: auto;
+  color: #aaa;
+}
+
+.nav span {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.nav span:hover {
+  color: white;
 }
 </style>
