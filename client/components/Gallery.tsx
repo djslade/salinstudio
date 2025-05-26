@@ -2,26 +2,26 @@
 import { useState } from "react";
 import { PortfolioImage } from "./PortfolioImage";
 import { Modal } from "./Modal";
-import { GalleryImage } from "@/types";
+import { Art } from "@/types/Art";
 
 interface GalleryProps {
-  images: GalleryImage[];
+  images: Art[];
 }
 
 export const Gallery = ({ images }: GalleryProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const [modalIndex, setModalIndex] = useState<number>(0);
+  const [modalIndex, setModalIndex] = useState<string>("");
 
-  const handleShowModal = (index: number) => {
+  const handleShowModal = (index: string) => {
     setModalIndex(index);
     setShowModal(true);
   };
 
-  const getColumnArrays = (array: GalleryImage[], columnCount: number) => {
-    const columnsArray: GalleryImage[][] = [];
+  const getColumnArrays = (array: Art[], columnCount: number) => {
+    const columnsArray: Art[][] = [];
     for (let i = 0; i < columnCount; i++) {
-      columnsArray.push(array.filter((item) => item.index % columnCount === i));
+      columnsArray.push(array.filter((_, idx) => idx % columnCount === i));
     }
     return columnsArray;
   };
@@ -36,9 +36,9 @@ export const Gallery = ({ images }: GalleryProps) => {
           <div className="w-full flex-1" key={`column-${idx}`}>
             {column.map((image) => (
               <PortfolioImage
-                key={image.src}
+                key={image.id}
                 image={image}
-                onClick={() => handleShowModal(image.index)}
+                onClick={() => handleShowModal(image.id)}
               />
             ))}
           </div>
@@ -52,9 +52,9 @@ export const Gallery = ({ images }: GalleryProps) => {
           <div className="w-full flex-1" key={`column-${idx}`}>
             {column.map((image) => (
               <PortfolioImage
-                key={image.src}
+                key={image.id}
                 image={image}
-                onClick={() => handleShowModal(image.index)}
+                onClick={() => handleShowModal(image.id)}
               />
             ))}
           </div>
@@ -68,9 +68,9 @@ export const Gallery = ({ images }: GalleryProps) => {
           <div className="w-full flex-1" key={`column-${idx}`}>
             {column.map((image) => (
               <PortfolioImage
-                key={image.src}
+                key={image.id}
                 image={image}
-                onClick={() => handleShowModal(image.index)}
+                onClick={() => handleShowModal(image.id)}
               />
             ))}
           </div>
@@ -80,7 +80,7 @@ export const Gallery = ({ images }: GalleryProps) => {
         <Modal
           onClose={() => setShowModal(false)}
           images={images}
-          index={modalIndex}
+          id={modalIndex}
         />
       )}
     </section>
