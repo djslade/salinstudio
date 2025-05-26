@@ -1,5 +1,5 @@
 
-FROM node:22-alpine AS base
+FROM node:22-alpine AS builder
 # make the directory where the project files will be stored
 RUN mkdir -p /usr/src/next-nginx
 # set it as the working directory so that we don't need to keep referencing it
