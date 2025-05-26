@@ -12,7 +12,7 @@ RUN npm install
 # make sure to set up .dockerignore to copy only necessary files
 COPY . .
 # run the build command which will build and export html files
-RUN npx prisma db seed && npm run build
+RUN npm run build
 
 # bundle static assets with nginx
 FROM nginx:1.25.4-alpine3.18 as production
