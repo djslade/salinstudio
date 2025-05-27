@@ -1,29 +1,18 @@
-
+# Build stage
 FROM node:22-alpine AS builder
-# make the directory where the project files will be stored
-RUN mkdir -p /usr/src/next-nginx
-# set it as the working directory so that we don't need to keep referencing it
-WORKDIR /usr/src/next-nginx
-# Copy the package.json file
-COPY package.json package.json
-# install project dependencies
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
-# copy project files 
-# make sure to set up .dockerignore to copy only necessary files
 COPY . .
-# run the build command which will build and export html files
 RUN npm run build
 
-# bundle static assets with nginx
-FROM nginx:1.25.4-alpine3.18 as production
-ENV NODE_ENV production
-# remove existing files from nginx directory
-RUN rm -rf /usr/share/nginx/html/*
-# copy built assets from 'builder' stage
-COPY --from=builder /usr/src/next-nginx/out /usr/share/nginx/html
-# add nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-# expose port 80 for nginx
-EXPOSE 3000
-# start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Production stage
+FROM node:22-alpine
+WORKDIR /app
+COPY --from=builder /app/next.config.mjs ./next.config.mjs
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+CMD ["npm", "start"]

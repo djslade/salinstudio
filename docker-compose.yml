@@ -28,7 +28,10 @@ services:
     image: fenroe/salinstudio-web:latest
     env_file: .env
     pull_policy: always
+  proxy:
+    image: fenroe/salinstudio-proxy:latest
     ports:
-      - 333:3000
+      -333:3000
+
 volumes:
   salinstudio:
