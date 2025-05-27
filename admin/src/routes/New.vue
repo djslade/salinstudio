@@ -5,6 +5,7 @@ import {
   type FileUploadSelectEvent,
   Button,
   Image,
+  useToast,
 } from "primevue";
 import { ref } from "vue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
@@ -40,6 +41,7 @@ const {
 const src = ref<string>("");
 const artImage = ref<Blob | null>(null);
 const router = useRouter();
+const toast = useToast();
 
 const onFileSelect = (event: FileUploadSelectEvent) => {
   const file = event.files[0];
@@ -81,7 +83,7 @@ const handleCreateArt = async (evt: FormSubmitEvent) => {
     );
     setStepEnd();
   } catch (err) {
-    showRequestError(err);
+    toast.add(showRequestError(err));
     setStepStart();
   }
 };

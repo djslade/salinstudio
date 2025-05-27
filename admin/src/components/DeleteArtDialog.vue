@@ -10,6 +10,9 @@ import {
   refreshIfUnauthorized,
   showRequestError,
 } from "../utils/requests";
+import { useToast } from "primevue";
+
+const toast = useToast();
 
 const { art } = defineProps<{
   art: Art;
@@ -36,7 +39,7 @@ const submit = async () => {
     );
     setStepEnd();
   } catch (err) {
-    showRequestError(err);
+    toast.add(showRequestError(err));
     setStepStart();
   }
 };

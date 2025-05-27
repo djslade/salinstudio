@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form, type FormSubmitEvent } from "@primevue/forms";
-import { Button, Card, Divider } from "primevue";
+import { Button, Card, Divider, useToast } from "primevue";
 import FormControl from "../components/FormControl.vue";
 import { setTokens, type Tokens } from "../utils/tokens";
 import { setVisitorAsMember } from "../utils/visitor";
@@ -23,6 +23,8 @@ const {
   username: "",
   password: "",
 });
+
+const toast = useToast();
 const submitting = ref<boolean>(false);
 const router = useRouter();
 
@@ -39,7 +41,7 @@ const handleLogin = async ({ values, valid }: FormSubmitEvent) => {
     setVisitorAsMember();
     router.push({ name: "Home" });
   } catch (err) {
-    showRequestError(err);
+    toast.add(showRequestError(err));
     setStepStart();
   }
 };

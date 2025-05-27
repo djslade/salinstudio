@@ -5,7 +5,6 @@ import axios, {
 } from "axios";
 import { getTokens } from "./tokens";
 import { refreshTokens } from "./auth";
-import { useToast } from "primevue";
 
 type RequestOptions = {
   accessToken?: boolean;
@@ -111,12 +110,11 @@ export const refreshIfUnauthorized = async <T>(
 
 export const showRequestError = (err: unknown) => {
   const res = getErrorResponseOrThrow(err);
-  const toast = useToast();
-  toast.add({
+  return {
     group: "main",
     severity: "error",
     closable: true,
     summary: res.message,
     life: 5000,
-  });
+  };
 };
