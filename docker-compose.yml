@@ -29,9 +29,11 @@ services:
     env_file: .env
     pull_policy: always
   proxy:
-    image: fenroe/salinstudio-proxy:latest
+    image: nginx:alpine
     ports:
       - 333:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
 
 volumes:
   salinstudio:
