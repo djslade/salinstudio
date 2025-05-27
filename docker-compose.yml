@@ -31,7 +31,7 @@ services:
   proxy:
     image: fenroe/salinstudio-proxy:latest
     ports:
-      - 333:3000
+      - 333:80
 
 volumes:
   salinstudio:
