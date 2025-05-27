@@ -32,11 +32,11 @@ const {
 const submit = async () => {
   try {
     setStepSubmitting();
-    await refreshIfUnauthorized(
+    await refreshIfUnauthorized(async () => {
       await deleteRequest(`/art/${art.id}`, {
         accessToken: true,
-      })
-    );
+      });
+    });
     setStepEnd();
   } catch (err) {
     toast.add(showRequestError(err));
