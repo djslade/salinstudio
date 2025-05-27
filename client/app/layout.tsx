@@ -4,7 +4,6 @@ import "./globals.css";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/captions.css";
 import { LanguageButton } from "@/components/LanguageButton";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const islandMoments = localFont({
   src: "./fonts/IslandMoments.ttf",
@@ -34,21 +33,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const client = new QueryClient();
   return (
     <html lang="en">
       <body
         className={`${afacad.variable} ${islandMoments.variable} ${ibmPlexMono.variable} antialiased bg-darkest relative`}
       >
-        <QueryClientProvider client={client}>
-          <div className="relative">
-            <div className="absolute right-10 top-5 z-[1000]">
-              <LanguageButton />
-            </div>
-            {children}
+        <div className="relative">
+          <div className="absolute right-10 top-5 z-[1000]">
+            <LanguageButton />
           </div>
-          <div id="modal"></div>
-        </QueryClientProvider>
+          {children}
+        </div>
+        <div id="modal"></div>
       </body>
     </html>
   );
