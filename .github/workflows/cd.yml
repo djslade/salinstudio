@@ -40,7 +40,7 @@ jobs:
           push: true
           tags: fenroe/salinstudio-admin:latest
 
-      - name: Build docker image and push - admin
+      - name: Build docker image and push - server
         uses: docker/build-push-action@v6
         with:
           context: ./salinstudio-server
