@@ -15,9 +15,7 @@ import Header from "./components/Header.vue";
   max-width: 100vw;
   width: 100%;
   min-height: 100vh;
-  background-image: url("/background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+  background-color: #383129;
+  position: relative;
 }
 </style>

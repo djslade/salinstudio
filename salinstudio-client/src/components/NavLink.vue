@@ -13,7 +13,14 @@ defineProps<{
 
 <style scoped>
 .nav-link {
-  color: black;
+  color: #bcb1a4;
   text-decoration: none;
+  transition-property: color;
+  transition-duration: 0.3s;
+  letter-spacing: 3px;
+}
+
+.nav-link:hover {
+  color: #d4af37;
 }
 </style>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import LogoLink from "./LogoLink.vue";
 import NavLink from "./NavLink.vue";
-import Divider from "./Divider.vue";
 
 type Link = {
   to: string;
@@ -41,18 +40,19 @@ const links: Link[] = [
         />
       </nav>
     </div>
-    <Divider />
   </header>
 </template>
 
 <style scoped>
 .header {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 1200px;
+  background-color: #211d18;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .inner-header {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
   height: 5rem;
   display: flex;
   justify-content: space-between;

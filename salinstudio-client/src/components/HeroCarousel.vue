@@ -8,7 +8,7 @@ type Image = {
 
 const images: Image[] = [
   {
-    src: "/1748026840851.webp",
+    src: "/1748116299507.webp",
     alt: "",
   },
   {
@@ -38,7 +38,6 @@ const getZIndex = (idx: number) => {
 onMounted(() => {
   intervalId = setInterval(() => {
     frontImageIdx.value = (frontImageIdx.value + 1) % images.length;
-    console.log(frontImageIdx.value);
   }, 10000);
 });
 
@@ -49,14 +48,14 @@ onUnmounted(() => {
 
 <template>
   <div class="hero-img-container">
-    <img
+    <div
       v-for="(image, idx) in images"
+      :class="`canvas ${frontImageIdx === idx && 'prev'}`"
       :key="idx"
-      :class="frontImageIdx === idx ? 'hero-img-prev' : 'hero-img'"
-      :src="image.src"
-      :alt="image.alt"
       :style="{ zIndex: getZIndex(idx) }"
-    />
+    >
+      <img class="hero-img" :src="image.src" :alt="image.alt" />
+    </div>
   </div>
 </template>
 
@@ -67,22 +66,25 @@ onUnmounted(() => {
   position: relative;
 }
 
-.hero-img {
+.canvas {
   position: absolute;
   width: 100%;
-  object-fit: cover;
-  box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
   aspect-ratio: 16/9;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background-color: #2d2721;
+  border-radius: 1rem;
 }
 
-.hero-img-prev {
-  position: absolute;
-  width: 100%;
-  object-fit: cover;
-  aspect-ratio: 16/9;
-  z-index: 5;
+.prev {
   opacity: 0;
   transition-duration: 1s;
   transition-property: opacity;
+}
+
+.hero-img {
+  height: 100%;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 </style>
