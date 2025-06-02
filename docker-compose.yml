@@ -24,10 +24,16 @@ services:
     pull_policy: always
     ports:
       - 334:3000
+    depends_on:
+      server:
+        condition: service_started
   web:
     image: fenroe/salinstudio-web:latest
     env_file: .env
     pull_policy: always
+    depends_on:
+      server:
+        condition: service_started
   proxy:
     image: nginx:alpine
     ports:
