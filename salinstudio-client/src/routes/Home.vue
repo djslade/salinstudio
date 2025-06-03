@@ -1,6 +1,26 @@
 <script setup lang="ts">
 import Main from "../components/Main.vue";
 import HeroCarousel from "../components/HeroCarousel.vue";
+import CtaCard from "../components/CtaCard.vue";
+import { type LinkCard } from "../types/linkCard";
+
+const cards: LinkCard[] = [
+  {
+    imageSrc: "/1748113914558.webp",
+    heading: "About me",
+    to: "/about",
+  },
+  {
+    imageSrc: "/1748113914558.webp",
+    heading: "My work",
+    to: "/gallery",
+  },
+  {
+    imageSrc: "/comm.webp",
+    heading: "Commission art",
+    to: "/commissions",
+  },
+];
 </script>
 
 <template>
@@ -24,15 +44,13 @@ import HeroCarousel from "../components/HeroCarousel.vue";
           </div>
         </div>
         <div class="boxes">
-          <div class="card">
-            <img src="/1748113914558.webp" alt="" class="card-img" />
-          </div>
-          <div class="card">
-            <img src="/1748113914558.webp" alt="" class="card-img" />
-          </div>
-          <div class="card">
-            <img src="/1748113914558.webp" alt="" class="card-img" />
-          </div>
+          <CtaCard
+            v-for="(card, idx) in cards"
+            :key="idx"
+            :to="card.to"
+            :imageSrc="card.imageSrc"
+            :heading="card.heading"
+          />
         </div>
       </section>
     </template>
@@ -54,8 +72,19 @@ import HeroCarousel from "../components/HeroCarousel.vue";
   width: 100%;
   padding: 2rem 0;
   border-radius: 1rem;
-  margin: 2rem 0;
   min-height: calc(100vh - 5rem);
+}
+
+.hero-title {
+  font-size: 8rem;
+  color: white;
+  background-color: #383129;
+  text-shadow: (
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000
+  );
 }
 
 .hero-cap {
@@ -71,6 +100,7 @@ import HeroCarousel from "../components/HeroCarousel.vue";
   min-height: calc(100vh - 5rem);
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 3rem;
 }
 
@@ -101,7 +131,7 @@ import HeroCarousel from "../components/HeroCarousel.vue";
 
 .about-p {
   color: #bcb1a4;
-  font-size: 1.25rem;
+  font-size: 1rem;
   text-align: center;
   font-weight: 400;
   line-height: 1.5;
@@ -120,5 +150,14 @@ import HeroCarousel from "../components/HeroCarousel.vue";
 .card-img {
   width: 100%;
   aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
+.card-heading {
+  color: #bcb1a4;
+  font-size: 1.5rem;
+  font-weight: 500;
+  text-align: center;
 }
 </style>

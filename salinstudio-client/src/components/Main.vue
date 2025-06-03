@@ -9,5 +9,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  min-height: calc(100vh - 10rem);
+  padding: 2rem 1rem;
 }
 </style>

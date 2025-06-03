@@ -73,7 +73,8 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   padding: 1rem;
-  background-color: #2d2721;
+  background-color: #383129;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   border-radius: 1rem;
 }
 
@@ -85,6 +86,5 @@ onUnmounted(() => {
 
 .hero-img {
   height: 100%;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 </style>
