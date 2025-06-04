@@ -35,13 +35,10 @@ const cards: LinkCard[] = [
             <h1 class="about-heading">Miia Salin</h1>
             <h2 class="about-subheading">Artist and Visual Storyteller</h2>
           </div>
-          <div class="about-p-container">
-            <p class="about-p">
-              I create varied art with a particular focus on portraits,
-              still-life and surrealism, alongside an occasional splash of
-              horror.
-            </p>
-          </div>
+          <p class="about-p">
+            I create varied art with a particular focus on portraits, still-life
+            and surrealism, alongside an occasional splash of horror.
+          </p>
         </div>
         <div class="boxes">
           <CtaCard
@@ -59,10 +56,9 @@ const cards: LinkCard[] = [
 
 <style scoped>
 .about-heading {
-  font-size: 2rem;
+  font-size: 3rem;
   color: #bcb1a4;
-  text-align: center;
-  font-weight: 700;
+  font-weight: 500;
   text-shadow: 1px 1px 2px #000;
   letter-spacing: 1.5px;
 }
@@ -97,15 +93,13 @@ const cards: LinkCard[] = [
   width: 100%;
   padding: 2rem 0;
   border-radius: 1rem;
-  min-height: calc(100vh - 5rem);
+  min-height: calc(100vh - 10rem);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 3rem;
+  gap: 6rem;
 }
 
 .about-text {
-  max-width: 600px;
   width: 100%;
   margin: 0 auto;
   display: flex;
@@ -121,9 +115,8 @@ const cards: LinkCard[] = [
 
 .about-subheading {
   color: #bcb1a4;
-  text-align: center;
-  font-weight: 500;
-  font-size: 1.75rem;
+  font-weight: 700;
+  font-size: 2.25rem;
   text-shadow: 1px 1px 2px #000;
   line-height: 1.3;
   letter-spacing: 2px;
@@ -131,8 +124,7 @@ const cards: LinkCard[] = [
 
 .about-p {
   color: #bcb1a4;
-  font-size: 1rem;
-  text-align: center;
+  font-size: 1.5rem;
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: 3px;
@@ -141,6 +133,7 @@ const cards: LinkCard[] = [
 .boxes {
   display: flex;
   gap: 3rem;
+  border-radius: 1rem;
 }
 
 .card {

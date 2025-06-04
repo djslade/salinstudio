@@ -23,6 +23,11 @@ import Footer from "./components/Footer.vue";
   min-height: 100vh;
   background-color: #383129;
   position: relative;
+  background-image: url("/background.jpg");
+  background-color: #383129;
+  background-blend-mode: multiply;
+  background-size: cover;
+  background-repeat: repeat;
 }
 
 .page-opacity-enter-active,
