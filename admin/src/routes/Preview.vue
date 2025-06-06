@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { Art } from "../types/data";
-import { getRequest } from "../utils/requests";
+import {
+  getRequest,
+  patchRequest,
+  refreshIfUnauthorized,
+  showRequestError,
+} from "../utils/requests";
 import { useQuery } from "@tanstack/vue-query";
 import Button from "primevue/button";
 import LoadingPanel from "../components/LoadingPanel.vue";
-import { Draggable, Container } from "vue-dndrop";
+import Reorder from "../components/Reorder.vue";
+import { useToast } from "primevue";
 
 enum Stage {
   Preview,
   Reorder,
+  Submitting,
 }
 
 const activeCategory = ref<string>("");
@@ -45,6 +52,8 @@ const { data, refetch } = useQuery({
     return res.art as Art[];
   },
 });
+
+const toast = useToast();
 
 const getColumnArrays = (array: Art[], columnCount: number) => {
   const columnsArray: Art[][] = [];
@@ -84,70 +93,45 @@ const setToPreview = () => {
   stage.value = Stage.Preview;
 };
 
-const applyDrag = (arr: Art[], dragResult: any) => {
-  const { removedIndex, addedIndex, payload } = dragResult;
-  if (removedIndex === null && addedIndex === null) return arr;
-
-  const result = [...arr];
-  let itemToAdd = payload;
-
-  if (removedIndex !== null) {
-    itemToAdd = result.splice(removedIndex, 1)[0];
+const updateArtOrder = async (art: Art[]) => {
+  try {
+    stage.value = Stage.Submitting;
+    const ids = art.map((a) => a.id).reverse();
+    await refreshIfUnauthorized(async () =>
+      patchRequest("/art/order/all", { ids }, { accessToken: true })
+    );
+    await refetch();
+    toast.add({
+      group: "main",
+      severity: "success",
+      closable: true,
+      summary: "Art order has been updated",
+      life: 5000,
+    });
+    setToPreview();
+  } catch (err) {
+    toast.add(showRequestError(err));
+    setToPreview();
   }
-
-  if (addedIndex !== null) {
-    result.splice(addedIndex, 0, itemToAdd);
-  }
-
-  return result;
-};
-
-const onDrop = (dropResult: any) => {
-  if (!data.value) return;
-  data.value = applyDrag(data.value, dropResult);
 };
 </script>
 
 <template>
-  <LoadingPanel v-if="!data" />
+  <LoadingPanel v-if="!data || stage === Stage.Submitting" />
   <div class="flex flex-col gap-4 w-full items-center">
-    <div class="">
+    <div class="flex justify-center gap-4">
       <Button
         v-if="stage === Stage.Preview"
         label="Change order"
         @click="setToReorder"
       />
-      <Button
-        v-if="stage === Stage.Reorder"
-        label="Save"
-        @click="setToPreview"
-      />
     </div>
-    <div
-      v-if="stage === Stage.Reorder"
-      class="flex flex-col gap-4 w-full items-center"
-    >
-      <div class="w-full flex justify-center">
-        <span>
-          Drag and drop images to reorder and save changes when finished.
-        </span>
-      </div>
-      <Container
-        class="max-w-screen-lg grid grid-cols-4 gap-4 w-full"
-        @drop="onDrop"
-      >
-        <Draggable v-for="art in data" :key="`art-${art.id}`">
-          <img
-            :key="`art-${art.id}`"
-            :src="art.thumbUrl"
-            :alt="art.titleEn"
-            class="rounded-xl aspect-square w-full object-cover"
-          />
-        </Draggable>
-
-        />
-      </Container>
-    </div>
+    <Reorder
+      v-if="stage === Stage.Reorder && data"
+      :art="data"
+      :save="updateArtOrder"
+      :cancel="setToPreview"
+    />
     <div
       v-if="stage === Stage.Preview"
       class="flex flex-col gap-4 w-full items-center"

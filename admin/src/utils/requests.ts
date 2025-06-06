@@ -22,6 +22,7 @@ type RequestBody =
       titleFi?: string;
       descriptionEn?: string;
       descriptionFi?: string;
+      ids?: string[];
     }
   | null;
 
@@ -75,6 +76,16 @@ export const putRequest = async <T>(
   return getResponseData<T>(res);
 };
 
+export const patchRequest = async <T>(
+  path: string,
+  body: RequestBody,
+  options?: RequestOptions
+) => {
+  const config: AxiosRequestConfig = getRequestConfig(options);
+  const res = await axios.patch(getEndpoint() + path, body, config);
+  return getResponseData<T>(res);
+};
+
 export const deleteRequest = async <T>(
   path: string,
   options?: RequestOptions
@@ -101,7 +112,7 @@ export const refreshIfUnauthorized = async <T>(
     const res = getErrorResponseOrThrow(err);
     if (res.statusCode === 401 && refresh) {
       await refreshTokens();
-      refreshIfUnauthorized(requestFn, false);
+      await refreshIfUnauthorized(requestFn, false);
     } else {
       throw err;
     }
