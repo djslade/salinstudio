@@ -43,6 +43,7 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
           class="gallery-column"
         >
           <img
+            class="gallery-img"
             v-for="(art, idx) in array"
             :key="`art-${idx}`"
             :src="art.thumbUrl"
@@ -63,5 +64,9 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.gallery-img {
+  border-radius: 0.5rem;
 }
 </style>

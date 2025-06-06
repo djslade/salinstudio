@@ -8,11 +8,11 @@ type Image = {
 
 const images: Image[] = [
   {
-    src: "/1748116299507.webp",
+    src: "/test.webp",
     alt: "",
   },
   {
-    src: "/1748113914558.webp",
+    src: "/test.webp",
     alt: "",
   },
   {
