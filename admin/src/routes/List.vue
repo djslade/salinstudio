@@ -56,6 +56,7 @@ const closeDeleteDialog = async () => {
       :isFetching="isFetching"
       :handleEdit="handleEdit"
       :handleDelete="handleDelete"
+      :refetch="refetch"
     />
   </div>
   <Dialog

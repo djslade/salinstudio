@@ -18,6 +18,7 @@ import { OrderAllDto } from './dto/order-all.dto';
 import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { OrderCarouselDto } from './dto/order-carousel.dto';
 
 @Controller('art')
 export class ArtController {
@@ -52,28 +53,38 @@ export class ArtController {
     return { message: 'OK', art };
   }
 
+  @Get('carousel')
+  async getHomeCarouselArt() {
+    const art = await this.artService.findHomeCarouselArt();
+    return { message: 'OK', art };
+  }
+
   @Patch('order/category')
   @UseGuards(AuthGuard)
   async updateCategoryOrder(@Body() body: OrderCategoryDto) {
     await this.artService.updateCategoryOrder(body);
-    const art = await this.artService.findAll();
-    return { message: 'OK', art };
+    return { message: 'OK' };
   }
 
   @Patch('order/all')
   @UseGuards(AuthGuard)
   async updateAllOrder(@Body() body: OrderAllDto) {
     await this.artService.updateAllOrder(body);
-    const art = await this.artService.findAll();
-    return { message: 'OK', art };
+    return { message: 'OK' };
+  }
+
+  @Patch('order/carousel')
+  @UseGuards(AuthGuard)
+  async updateCarouselOrder(@Body() body: OrderCarouselDto) {
+    await this.artService.updateCarouselOrder(body);
+    return { message: 'OK' };
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
   async updateArt(@Param('id') id: string, @Body() body: UpdateArtDto) {
     await this.artService.update(id, body);
-    const art = await this.artService.findArtById(id);
-    return { message: 'OK', art };
+    return { message: 'OK' };
   }
 
   @Delete(':id')

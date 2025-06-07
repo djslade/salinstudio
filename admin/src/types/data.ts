@@ -12,6 +12,7 @@ export type Art = {
   fingerprintChecksum: number;
   createdAt: string;
   updatedAt: string;
+  onHomeCarousel: boolean;
 };
 
 export type Category = {

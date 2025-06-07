@@ -117,8 +117,16 @@ const updateArtOrder = async (art: Art[]) => {
 </script>
 
 <template>
-  <LoadingPanel v-if="!data || stage === Stage.Submitting" />
-  <div class="flex flex-col gap-4 w-full items-center">
+  <div
+    v-if="!data || stage === Stage.Submitting"
+    class="flex w-full justify-center items-center"
+  >
+    <LoadingPanel />
+  </div>
+  <div
+    v-if="data && stage !== Stage.Submitting"
+    class="flex flex-col gap-4 w-full items-center"
+  >
     <div class="flex justify-center gap-4">
       <Button
         v-if="stage === Stage.Preview"

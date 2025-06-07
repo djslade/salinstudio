@@ -8,10 +8,18 @@ import {
   Column,
   Select,
   Image,
+  ToggleSwitch,
+  useToast,
 } from "primevue";
 import { FilterMatchMode } from "@primevue/core/api";
 import { ref } from "vue";
 import type { Art } from "../types/data";
+import {
+  putRequest,
+  refreshIfUnauthorized,
+  showRequestError,
+} from "../utils/requests";
+import type { QueryObserverResult, RefetchOptions } from "@tanstack/vue-query";
 
 const categories = [
   {
@@ -47,11 +55,14 @@ const descriptionStatus = [
   },
 ];
 
-const { data } = defineProps<{
+const { data, refetch } = defineProps<{
   data?: Art[];
   isFetching: boolean;
   handleEdit: (id: string) => void;
   handleDelete: (id: string) => void;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<Art[], Error>>;
 }>();
 
 const filters = ref({
@@ -59,6 +70,10 @@ const filters = ref({
   category: { value: null, matchMode: FilterMatchMode.EQUALS },
   emptyDescription: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
+
+const savingCarouselStatus = ref<boolean>(false);
+
+const toast = useToast();
 
 const addCustomFields = () => {
   if (!data) return;
@@ -69,6 +84,40 @@ const addCustomFields = () => {
         a.descriptionFi.trim() === "" || a.descriptionEn.trim() === "",
     };
   });
+};
+
+const handleCarouselChange = async (_: Event, art: Art) => {
+  if (savingCarouselStatus.value) return;
+  try {
+    savingCarouselStatus.value = true;
+    await refreshIfUnauthorized(
+      async () =>
+        await putRequest(
+          `/art/${art.id}`,
+          {
+            category: art.category,
+            titleEn: art.titleEn,
+            titleFi: art.titleFi,
+            descriptionEn: art.descriptionEn,
+            descriptionFi: art.descriptionFi,
+            onHomeCarousel: art.onHomeCarousel,
+          },
+          { accessToken: true }
+        )
+    );
+    await refetch();
+    toast.add({
+      group: "main",
+      severity: "success",
+      closable: true,
+      summary: "Home carousel has been updated",
+      life: 5000,
+    });
+  } catch (err) {
+    toast.add(showRequestError(err));
+  } finally {
+    savingCarouselStatus.value = false;
+  }
 };
 </script>
 
@@ -166,22 +215,27 @@ const addCustomFields = () => {
     </Column>
     <Column
       field="titleEn"
-      header="Title (English)"
+      header="Titles"
       :showFilterMatchModes="false"
       :showFilterMenu="false"
     >
       <template #body="{ data }">
-        {{ data.titleEn }}
+        <div class="flex gap-4 items-center">
+          <span class="uppercase tracking-wide text-xs">en</span>
+          {{ data.titleEn }}
+        </div>
+        <div class="flex gap-4 items-center">
+          <span class="uppercase tracking-wide text-xs">fi</span>
+          {{ data.titleFi }}
+        </div>
       </template>
     </Column>
-    <Column
-      field="titleFi"
-      header="Title (Finnish)"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
+    <Column field="onHomeCarousel" header="Carousel">
       <template #body="{ data }">
-        {{ data.titleFi }}
+        <ToggleSwitch
+          v-model="data.onHomeCarousel"
+          @change="(evt) => handleCarouselChange(evt, data)"
+        />
       </template>
     </Column>
     <Column field="actions" header="Actions">

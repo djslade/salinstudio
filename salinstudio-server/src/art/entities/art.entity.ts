@@ -49,4 +49,10 @@ export class Art extends BaseEntity {
 
   @Column()
   totalIndex: number;
+
+  @Column({ default: false })
+  onHomeCarousel: boolean;
+
+  @Column({ default: 0 })
+  homeCarouselIndex: number;
 }

@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { OrderAllDto } from './dto/order-all.dto';
+import { OrderCarouselDto } from './dto/order-carousel.dto';
 
 type CreateArtParams = {
   fullUrl: string;
@@ -46,6 +47,10 @@ export class ArtService {
 
   async findAll(): Promise<Art[]> {
     return await this.artRepository.find({ order: { totalIndex: 'DESC' } });
+  }
+
+  async findHomeCarouselArt(): Promise<Art[]> {
+    return await this.artRepository.find({ where: { onHomeCarousel: true } });
   }
 
   async handleImage(image: Buffer) {
@@ -120,6 +125,15 @@ export class ArtService {
   async updateAllOrder(body: OrderAllDto) {
     for (let i = 0; i < body.ids.length; i++) {
       await this.artRepository.update({ id: body.ids[i] }, { totalIndex: i });
+    }
+  }
+
+  async updateCarouselOrder(body: OrderCarouselDto) {
+    for (let i = 0; i < body.ids.length; i++) {
+      await this.artRepository.update(
+        { id: body.ids[i] },
+        { homeCarouselIndex: i },
+      );
     }
   }
 

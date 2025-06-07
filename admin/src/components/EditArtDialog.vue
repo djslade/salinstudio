@@ -61,6 +61,7 @@ const submit = async (evt: FormSubmitEvent) => {
             titleFi: evt.values.titleFi,
             descriptionEn: evt.values.descriptionEn,
             descriptionFi: evt.values.descriptionFi,
+            onHomeCarousel: art.onHomeCarousel,
           },
           { accessToken: true }
         )

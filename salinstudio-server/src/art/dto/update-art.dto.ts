@@ -16,4 +16,7 @@ export class UpdateArtDto {
 
   @IsNotEmpty()
   category: ArtCategory;
+
+  @IsNotEmpty()
+  onHomeCarousel: boolean;
 }

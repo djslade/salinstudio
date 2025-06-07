@@ -22,6 +22,7 @@ type RequestBody =
       titleFi?: string;
       descriptionEn?: string;
       descriptionFi?: string;
+      onHomeCarousel?: boolean;
       ids?: string[];
     }
   | null;
