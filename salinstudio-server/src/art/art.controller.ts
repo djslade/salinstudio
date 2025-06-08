@@ -47,15 +47,15 @@ export class ArtController {
     return { message: 'OK', art };
   }
 
-  @Get(':id')
-  async getArt(@Param('id') id: string) {
-    const art = await this.artService.findArtById(id);
-    return { message: 'OK', art };
-  }
-
   @Get('carousel')
   async getHomeCarouselArt() {
     const art = await this.artService.findHomeCarouselArt();
+    return { message: 'OK', art };
+  }
+
+  @Get(':id')
+  async getArt(@Param('id') id: string) {
+    const art = await this.artService.findArtById(id);
     return { message: 'OK', art };
   }
 

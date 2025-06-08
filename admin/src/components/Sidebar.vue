@@ -19,8 +19,12 @@ const items = ref([
         route: "/list",
       },
       {
-        label: "Preview",
-        route: "/preview",
+        label: "Gallery",
+        route: "/gallery",
+      },
+      {
+        label: "Carousel",
+        route: "/carousel",
       },
     ],
   },

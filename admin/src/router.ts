@@ -4,8 +4,9 @@ import HomeView from "./routes/Home.vue";
 import SignupView from "./routes/Signup.vue";
 import NewView from "./routes/New.vue";
 import ListView from "./routes/List.vue";
-import PreviewView from "./routes/Preview.vue";
+import GalleryView from "./routes/Gallery.vue";
 import LogoutView from "./routes/Logout.vue";
+import Carouselview from "./routes/Carousel.vue";
 import { isVisitorMember } from "./utils/visitor";
 import { clearTokens, hasTokens } from "./utils/tokens";
 
@@ -29,9 +30,15 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/preview",
-    name: "Preview",
-    component: PreviewView,
+    path: "/gallery",
+    name: "Gallery",
+    component: GalleryView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/carousel",
+    name: "Carousel",
+    component: Carouselview,
     meta: { requiresAuth: true },
   },
   {
