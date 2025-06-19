@@ -4,12 +4,6 @@ import { getRequest } from "../utils/requests";
 import type { Art } from "../types/data";
 import CarouselPreview from "../components/CarouselPreview.vue";
 
-enum Stage {
-  Preview,
-  Reorder,
-  Submitting,
-}
-
 const { data } = useQuery({
   queryKey: ["carouselArt"],
   queryFn: async () => {
