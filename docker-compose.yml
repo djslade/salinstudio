@@ -38,6 +38,7 @@ services:
     image: fenroe/salinstudio-proxy:latest
     ports:
       - 333:80
+    pull_policy: always
     depends_on:
       web:
         condition: service_started
