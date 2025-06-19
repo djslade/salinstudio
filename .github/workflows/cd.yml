@@ -47,6 +47,13 @@ jobs:
           push: true
           tags: fenroe/salinstudio-server:latest
 
+      - name: Build docker image and push - proxy
+        uses: docker/build-push-action@v6
+        with:
+          context: ./salinstudio-proxy
+          push: true
+          tags: fenroe/salinstudio-proxy:latest
+
   deploy:
     needs: [docker]
     runs-on: ubuntu-latest

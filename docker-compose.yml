@@ -35,11 +35,9 @@ services:
       server:
         condition: service_started
   proxy:
-    image: nginx:alpine
+    image: fenroe/salinstudio-proxy:latest
     ports:
       - 333:80
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       web:
         condition: service_started
