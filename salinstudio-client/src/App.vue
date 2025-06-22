@@ -26,7 +26,6 @@ import Footer from "./components/Footer.vue";
   background-image: url("/background.jpg");
   background-color: #383129;
   background-blend-mode: multiply;
-  background-size: cover;
   background-repeat: repeat;
 }
 

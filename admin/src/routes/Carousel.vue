@@ -16,8 +16,11 @@ const { data } = useQuery({
 <template>
   <div class="w-full flex flex-col gap-4">
     <div class=""></div>
-    <div class="w-full h-full flex justify-center items-center">
-      <CarouselPreview v-if="data" :art="data" />
+    <div v-if="data" class="w-full h-full flex justify-center items-center">
+      <span v-if="data.length === 0"
+        >You don't have any images in the carousel.</span
+      >
+      <CarouselPreview v-else :art="data" />
     </div>
   </div>
 </template>

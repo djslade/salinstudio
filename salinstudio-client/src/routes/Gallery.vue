@@ -63,10 +63,12 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
 .gallery-column {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  width: 100%;
 }
 
 .gallery-img {
   border-radius: 0.5rem;
+  width: 100%;
+  margin-bottom: 1rem; /* gap on above does not work correctly */
 }
 </style>
