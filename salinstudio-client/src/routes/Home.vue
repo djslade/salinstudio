@@ -96,7 +96,7 @@ const cards: LinkCard[] = [
   min-height: calc(100vh - 10rem);
   display: flex;
   flex-direction: column;
-  gap: 6rem;
+  gap: 5rem;
 }
 
 .about-text {
