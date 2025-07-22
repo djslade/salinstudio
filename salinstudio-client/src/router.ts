@@ -1,13 +1,13 @@
 import { createWebHistory, createRouter } from "vue-router";
-import Home from "./routes/Home.vue";
 import About from "./routes/About.vue";
 import Gallery from "./routes/Gallery.vue";
 import Commissions from "./routes/Commissions.vue";
+import Whiskey from "./routes/Whiskey.vue";
 
 const routes = [
   {
     path: "/",
-    component: Home,
+    component: Whiskey,
   },
   {
     path: "/about",

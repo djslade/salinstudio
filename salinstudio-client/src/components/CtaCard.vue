@@ -31,6 +31,7 @@ defineProps<LinkCard>();
   aspect-ratio: 16/9;
   object-fit: cover;
   border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 8px;
 }
 
 .card-heading {

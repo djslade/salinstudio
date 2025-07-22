@@ -8,7 +8,7 @@
 
 <style scoped>
 .footer {
-  background-color: #211d18;
+  background-color: #2d2218;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 

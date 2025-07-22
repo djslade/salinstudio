@@ -12,10 +12,6 @@ const images: Image[] = [
     alt: "",
   },
   {
-    src: "/test.webp",
-    alt: "",
-  },
-  {
     src: "/1748116132576.webp",
     alt: "",
   },
@@ -38,7 +34,7 @@ const getZIndex = (idx: number) => {
 onMounted(() => {
   intervalId = setInterval(() => {
     frontImageIdx.value = (frontImageIdx.value + 1) % images.length;
-  }, 10000);
+  }, 36000);
 });
 
 onUnmounted(() => {
@@ -50,41 +46,55 @@ onUnmounted(() => {
   <div class="hero-img-container">
     <div
       v-for="(image, idx) in images"
-      :class="`canvas ${frontImageIdx === idx && 'prev'}`"
+      :class="`canvas ${getZIndex(idx) !== 2 && 'prev'}`"
       :key="idx"
       :style="{ zIndex: getZIndex(idx) }"
     >
       <img class="hero-img" :src="image.src" :alt="image.alt" />
+      <div class="vert-overlay"></div>
+      <div class="horiz-overlay"></div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .hero-img-container {
-  width: 100%;
-  aspect-ratio: 16/9;
+  height: 100vh;
   position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .canvas {
   position: absolute;
-  width: 100%;
-  aspect-ratio: 16/9;
+  height: 100%;
+  padding: 1rem;
   display: flex;
   justify-content: center;
-  padding: 1rem;
-  background-color: #383129;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  border-radius: 1rem;
+  background-color: transparent;
+  transition-duration: 5s;
+  transition-property: opacity;
 }
 
 .prev {
   opacity: 0;
-  transition-duration: 1s;
-  transition-property: opacity;
 }
 
 .hero-img {
   height: 100%;
+  background-color: #261f19;
+}
+
+.vert-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #261f19, transparent, #261f19);
+}
+
+.horiz-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, #261f19, transparent, #261f19);
 }
 </style>

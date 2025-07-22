@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import LogoLink from "./LogoLink.vue";
 import NavLink from "./NavLink.vue";
+import { Icon } from "@iconify/vue";
+import { ref } from "vue";
 
 type Link = {
   to: string;
@@ -25,42 +26,101 @@ const links: Link[] = [
     label: "Commissions",
   },
 ];
+
+const menuIsOpen = ref<boolean>(false);
 </script>
 
 <template>
   <header class="header">
-    <div class="inner-header">
-      <LogoLink />
-      <nav class="nav">
+    <button class="menu-btn" @click="() => (menuIsOpen = !menuIsOpen)">
+      <div class="menu-btn-icon-container">
+        <Icon
+          :icon="menuIsOpen ? 'mdi-light:arrow-left' : 'mdi-light:menu'"
+          class="menu-btn-icon"
+          :inline="true"
+        />
+      </div>
+    </button>
+    -
+    <div class=""></div>
+    <div
+      class="menu"
+      :style="{
+        width: menuIsOpen ? '100%' : '0',
+        transitionDelay: menuIsOpen ? '0s' : '0.8s',
+      }"
+    >
+      <div
+        class="inner-menu"
+        :style="{
+          opacity: menuIsOpen ? '1' : '0',
+          transitionDelay: menuIsOpen ? '0.8s' : '0s',
+        }"
+      >
         <NavLink
           v-for="link in links"
-          :key="link.label"
+          :id="'link-id.' + link.label"
           :to="link.to"
           :label="link.label"
         />
-      </nav>
+      </div>
     </div>
   </header>
 </template>
 
 <style scoped>
 .header {
-  background-color: #211d18;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-}
-
-.inner-header {
-  margin: 0 auto;
+  background-color: transparent;
+  position: absolute;
+  top: 0;
   width: 100%;
-  max-width: 1200px;
-  height: 5rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  z-index: 16;
+  padding: 3rem 6rem;
+  justify-content: space-between;
 }
 
-.nav {
+.menu-btn {
+  background-color: transparent;
+  border: transparent;
   display: flex;
-  gap: 2.5rem;
+  align-items: center;
+  gap: 1rem;
+  z-index: 20;
+}
+
+.menu-btn-icon-container {
+  border: 1px solid #b4936f;
+  border-radius: 50%;
+  padding: 0.6rem;
+}
+
+.menu-btn-icon {
+  color: #d0bfad;
+  font-size: 1.5rem;
+}
+
+.menu {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 18;
+  background-color: #1e1914;
+  transition-property: all;
+  transition-duration: 0.6s;
+}
+
+.inner-menu {
+  padding: 3rem 6rem;
+  transition-property: all;
+  transition-duration: 0.6s;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  height: 100%;
 }
 </style>

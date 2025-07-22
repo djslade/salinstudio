@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from "@tanstack/vue-query";
-import Main from "../components/Main.vue";
 import axios from "axios";
+import Header from "../components/Header.vue";
 
 type Art = {
   id: string;
@@ -34,25 +34,24 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
 </script>
 
 <template>
-  <Main>
-    <template #content>
-      <section v-if="data" class="gallery-panel">
-        <div
-          v-for="(array, idx) in getColumnArrays(data, 4)"
-          :key="`array-${idx}`"
-          class="gallery-column"
-        >
-          <img
-            class="gallery-img"
-            v-for="(art, idx) in array"
-            :key="`art-${idx}`"
-            :src="art.thumbUrl"
-            :alt="art.titleEn"
-          />
-        </div>
-      </section>
-    </template>
-  </Main>
+  <div class="">
+    <Header />
+    <section v-if="data" class="gallery-panel">
+      <div
+        v-for="(array, idx) in getColumnArrays(data, 4)"
+        :key="`array-${idx}`"
+        class="gallery-column"
+      >
+        <img
+          class="gallery-img"
+          v-for="(art, idx) in array"
+          :key="`art-${idx}`"
+          :src="art.thumbUrl"
+          :alt="art.titleEn"
+        />
+      </div>
+    </section>
+  </div>
 </template>
 
 <style scoped>
