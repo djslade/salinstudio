@@ -36,7 +36,7 @@ import Footer from "../components/Footer.vue";
         </div>
       </section>
     </main>
-    <Footer />
+    <Footer position="static" />
   </div>
 </template>
 
@@ -106,9 +106,6 @@ import Footer from "../components/Footer.vue";
   object-fit: cover;
   border-radius: 1rem;
   filter: grayscale(75%);
-}
-
-.about-text-container {
 }
 
 .about-text {

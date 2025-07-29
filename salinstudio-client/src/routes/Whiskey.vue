@@ -39,7 +39,7 @@ import Hero from "../components/Hero.vue";
         </template>
       </Hero>
     </main>
-    <Footer />
+    <Footer position="absolute" />
   </div>
 </template>
 

@@ -59,15 +59,18 @@ onUnmounted(() => {
 
 <template>
   <header class="header" :style="{ position, opacity: isHidden ? 0 : 1 }">
-    <button class="menu-btn" @click="() => (menuIsOpen = !menuIsOpen)">
-      <div class="menu-btn-icon-container">
-        <Icon
-          :icon="menuIsOpen ? 'mdi-light:arrow-left' : 'mdi-light:menu'"
-          class="menu-btn-icon"
-          :inline="true"
-        />
-      </div>
-    </button>
+    <div class="menu-btn-container">
+      <button class="menu-btn" @click="() => (menuIsOpen = !menuIsOpen)">
+        <div class="menu-btn-icon-container">
+          <Icon
+            :icon="menuIsOpen ? 'mdi-light:arrow-left' : 'mdi-light:menu'"
+            class="menu-btn-icon"
+            :inline="true"
+          />
+        </div>
+      </button>
+    </div>
+
     <div v-if="heading" class="heading-container">
       <h1 class="page-heading">{{ heading }}</h1>
     </div>
@@ -85,6 +88,7 @@ onUnmounted(() => {
         class="inner-menu"
         :style="{
           opacity: menuIsOpen ? '1' : '0',
+          visibility: menuIsOpen ? 'visible' : 'hidden',
           transitionDelay: menuIsOpen ? '0.8s' : '0s',
         }"
       >
@@ -106,15 +110,20 @@ onUnmounted(() => {
   top: 0;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   z-index: 16;
   padding: 2rem 6rem;
-  justify-content: space-between;
   height: 5rem;
   transition-property: all;
   transition-duration: 0.3s;
   background-color: #261f19;
+}
+
+.menu-btn-container {
+  flex: 1;
+  position: relative;
+  z-index: 20;
 }
 
 .menu-btn {
@@ -146,8 +155,8 @@ onUnmounted(() => {
 }
 
 .heading-container {
-  flex: 1;
   text-align: center;
+  flex: 1;
 }
 
 .page-heading {
@@ -181,5 +190,8 @@ onUnmounted(() => {
 }
 
 .fixture-container {
+  flex: 1;
+  display: flex;
+  justify-content: end;
 }
 </style>

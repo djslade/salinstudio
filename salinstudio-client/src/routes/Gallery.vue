@@ -4,6 +4,7 @@ import axios from "axios";
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import { ref } from "vue";
+import { Icon } from "@iconify/vue";
 
 type Art = {
   id: string;
@@ -56,36 +57,40 @@ const handleImageSelect = (art: Art) => {
   focusedArt.value = art;
   showGallery.value = false;
 };
+
+const handleBack = () => {
+  showGallery.value = true;
+};
 </script>
 
 <template>
-  <div class="page">
-    <Header position="sticky" heading="gallery">
-      <template #fixture>
-        <div class="category-select-container">
-          <label for="category" class="category-select-label"
-            >Choose art category</label
-          >
-          <select
-            name="category"
-            id="category"
-            class="category-select"
-            :value="artCategory"
-            @change="(evt) => handleChange(evt as unknown as { target: { value: Filter}})"
-          >
-            <option value="all">All</option>
-            <option value="drawings">Drawings</option>
-            <option value="paintings">Paintings</option>
-            <option value="pastels">Pastels</option>
-            <option value="digital">Digital</option>
-            <option value="mixed media">Mixed media</option>
-          </select>
-        </div>
-      </template>
-    </Header>
-    <main>
-      <Transition name="page-opacity" mode="out-in">
-        <section v-if="showGallery" class="gallery-panel">
+  <Transition name="page-opacity" mode="out-in">
+    <div class="page" v-if="showGallery">
+      <Header position="sticky" heading="gallery">
+        <template #fixture>
+          <div class="category-select-container">
+            <label for="category" class="category-select-label"
+              >Choose art category</label
+            >
+            <select
+              name="category"
+              id="category"
+              class="category-select"
+              :value="artCategory"
+              @change="(evt) => handleChange(evt as unknown as { target: { value: Filter}})"
+            >
+              <option value="all">All</option>
+              <option value="drawings">Drawings</option>
+              <option value="paintings">Paintings</option>
+              <option value="pastels">Pastels</option>
+              <option value="digital">Digital</option>
+              <option value="mixed media">Mixed media</option>
+            </select>
+          </div>
+        </template>
+      </Header>
+      <main>
+        <section class="gallery-panel">
           <div v-if="data" class="gallery-container">
             <div
               v-for="(array, idx) in getColumnArrays(
@@ -114,7 +119,28 @@ const handleImageSelect = (art: Art) => {
             </div>
           </div>
         </section>
-        <section v-else class="closeup-panel">
+      </main>
+      <Footer position="static" />
+    </div>
+    <div class="page" v-else>
+      <Header position="sticky" :heading="focusedArt ? focusedArt.titleEn : ''">
+        <template #fixture>
+          <div class="content-cta">
+            <button class="cta-btn" @click="handleBack">
+              <div class="cta-btn-icon-container">
+                <Icon
+                  icon="mdi-light:arrow-left"
+                  class="cta-btn-icon"
+                  :inline="true"
+                />
+              </div>
+              <span class="cta-btn-text">Back to gallery</span>
+            </button>
+          </div>
+        </template>
+      </Header>
+      <main>
+        <section class="closeup-panel">
           <div class="closeup-image-container">
             <img
               class="closeup-image"
@@ -122,17 +148,11 @@ const handleImageSelect = (art: Art) => {
               :alt="focusedArt?.titleEn"
             />
           </div>
-          <div class="closeup-info-container">
-            <h2>{{ focusedArt?.titleEn }}</h2>
-            <p v-if="focusedArt?.descriptioNEn !== ''">
-              {{ focusedArt?.descriptioNEn }}
-            </p>
-          </div>
         </section>
-      </Transition>
-    </main>
-    <Footer />
-  </div>
+      </main>
+      <Footer position="static" />
+    </div>
+  </Transition>
 </template>
 
 <style scoped>
@@ -175,6 +195,7 @@ option {
 
 .page {
   position: relative;
+  min-height: 100vh;
 }
 
 .gallery-heading {
@@ -226,16 +247,17 @@ option {
 }
 
 .closeup-image-container {
-  flex: 1;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 1rem;
   height: calc(100vh - 10rem);
 }
 
 .closeup-image {
-  height: 100%;
-}
-
-.closeup-info-container {
-  flex: 1;
+  max-width: 1200px;
+  max-height: 100%;
+  border-radius: 4px;
 }
 
 .page-opacity-enter-active,
@@ -248,5 +270,30 @@ option {
 .page-opacity-enter-from,
 .page-opacity-leave-to {
   opacity: 0;
+}
+
+.cta-btn {
+  background-color: transparent;
+  border: transparent;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cta-btn-icon-container {
+  border: 1px solid #b4936f;
+  border-radius: 50%;
+  padding: 0.5rem;
+}
+
+.cta-btn-icon {
+  color: #d0bfad;
+  font-size: 1.5rem;
+}
+
+.cta-btn-text {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #d0bfad;
 }
 </style>

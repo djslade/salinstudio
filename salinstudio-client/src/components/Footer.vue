@@ -1,7 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+type Position = "absolute" | "static";
+
+defineProps<{ position: Position }>();
+</script>
 
 <template>
-  <header class="footer">
+  <header class="footer" :style="{ position }">
     <div class="inner-footer">
       <span class="attribution">©2025 Miia Salin</span>
     </div>
