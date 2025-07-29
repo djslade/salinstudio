@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import NavLink from "./NavLink.vue";
 import { Icon } from "@iconify/vue";
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 type Link = {
   to: string;
   label: string;
 };
+
+type Position = "fixed" | "sticky";
+
+defineProps<{ position: Position; heading?: string }>();
+
+const prevYOffset = ref<number>(window.pageYOffset);
+
+const isHidden = ref<boolean>(false);
 
 const links: Link[] = [
   {
@@ -28,10 +36,29 @@ const links: Link[] = [
 ];
 
 const menuIsOpen = ref<boolean>(false);
+
+const handleScroll = () => {
+  const newYOffset = window.pageYOffset;
+  if (newYOffset > prevYOffset.value) {
+    if (!isHidden.value) isHidden.value = true;
+  }
+  if (newYOffset < prevYOffset.value) {
+    if (isHidden.value) isHidden.value = false;
+  }
+  prevYOffset.value = newYOffset;
+};
+
+onMounted(() => {
+  document.addEventListener("scroll", handleScroll);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("scroll", handleScroll);
+});
 </script>
 
 <template>
-  <header class="header">
+  <header class="header" :style="{ position, opacity: isHidden ? 0 : 1 }">
     <button class="menu-btn" @click="() => (menuIsOpen = !menuIsOpen)">
       <div class="menu-btn-icon-container">
         <Icon
@@ -41,8 +68,12 @@ const menuIsOpen = ref<boolean>(false);
         />
       </div>
     </button>
-    -
-    <div class=""></div>
+    <div v-if="heading" class="heading-container">
+      <h1 class="page-heading">{{ heading }}</h1>
+    </div>
+    <div class="fixture-container">
+      <slot name="fixture" />
+    </div>
     <div
       class="menu"
       :style="{
@@ -71,15 +102,19 @@ const menuIsOpen = ref<boolean>(false);
 <style scoped>
 .header {
   background-color: transparent;
-  position: absolute;
+  position: fixed;
   top: 0;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 16;
-  padding: 3rem 6rem;
+  padding: 2rem 6rem;
   justify-content: space-between;
+  height: 5rem;
+  transition-property: all;
+  transition-duration: 0.3s;
+  background-color: #261f19;
 }
 
 .menu-btn {
@@ -94,12 +129,33 @@ const menuIsOpen = ref<boolean>(false);
 .menu-btn-icon-container {
   border: 1px solid #b4936f;
   border-radius: 50%;
-  padding: 0.6rem;
+  padding: 0.5rem;
+  background-color: #1e1914;
+  transition-property: all;
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+
+.menu-btn-icon-container:hover {
+  background-color: #b4936f;
 }
 
 .menu-btn-icon {
   color: #d0bfad;
   font-size: 1.5rem;
+}
+
+.heading-container {
+  flex: 1;
+  text-align: center;
+}
+
+.page-heading {
+  color: #b4936f;
+  font-size: 1.2rem;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 .menu {
@@ -114,7 +170,7 @@ const menuIsOpen = ref<boolean>(false);
 }
 
 .inner-menu {
-  padding: 3rem 6rem;
+  padding: 2rem 6rem;
   transition-property: all;
   transition-duration: 0.6s;
   display: flex;
@@ -122,5 +178,8 @@ const menuIsOpen = ref<boolean>(false);
   gap: 1rem;
   align-items: center;
   height: 100%;
+}
+
+.fixture-container {
 }
 </style>

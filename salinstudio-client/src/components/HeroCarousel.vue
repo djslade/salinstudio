@@ -34,7 +34,7 @@ const getZIndex = (idx: number) => {
 onMounted(() => {
   intervalId = setInterval(() => {
     frontImageIdx.value = (frontImageIdx.value + 1) % images.length;
-  }, 36000);
+  }, 10000);
 });
 
 onUnmounted(() => {

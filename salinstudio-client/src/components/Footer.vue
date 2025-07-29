@@ -2,14 +2,19 @@
 
 <template>
   <header class="footer">
-    <div class="inner-footer"></div>
+    <div class="inner-footer">
+      <span class="attribution">©2025 Miia Salin</span>
+    </div>
   </header>
 </template>
 
 <style scoped>
 .footer {
-  background-color: #2d2218;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 12;
 }
 
 .inner-footer {
@@ -18,12 +23,19 @@
   max-width: 1200px;
   height: 5rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
 .nav {
   display: flex;
   gap: 2.5rem;
+}
+
+.attribution {
+  color: #d0bfad;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
 }
 </style>
