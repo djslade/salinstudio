@@ -15,7 +15,7 @@ type Art = {
   thumbUrl: string;
   titleEn: string;
   titleFi: string;
-  descriptioNEn: string;
+  descriptionEn: string;
   descriptionFi: string;
 };
 
@@ -56,6 +56,7 @@ const handleChange = (evt: { target: { value: Filter } }) => {
 const handleImageSelect = (art: Art) => {
   focusedArt.value = art;
   showGallery.value = false;
+  console.log(focusedArt.value.descriptionEn);
 };
 
 const handleBack = () => {
@@ -140,7 +141,7 @@ const handleBack = () => {
         </template>
       </Header>
       <main>
-        <section class="closeup-panel">
+        <section v-if="focusedArt?.descriptionEn" class="closeup-panel">
           <div class="closeup-image-container">
             <img
               class="closeup-image"
@@ -148,6 +149,22 @@ const handleBack = () => {
               :alt="focusedArt?.titleEn"
             />
           </div>
+          <div v-if="focusedArt?.descriptionEn" class="closeup-info-container">
+            <p
+              class="closeup-info"
+              v-for="(paragraph, idx) in focusedArt.descriptionEn.split('\n\n')"
+              :key="'desc.paragraph.' + idx"
+            >
+              {{ paragraph }}
+            </p>
+          </div>
+        </section>
+        <section v-else class="lone-closeup-panel">
+          <img
+            class="closeup-image"
+            :src="focusedArt?.desktopUrl"
+            :alt="focusedArt?.titleEn"
+          />
         </section>
       </main>
       <Footer position="static" />
@@ -244,20 +261,48 @@ option {
 
 .closeup-panel {
   display: flex;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 2rem;
 }
 
 .closeup-image-container {
   display: flex;
-  width: 100%;
+  flex: 1;
   justify-content: center;
   padding: 1rem;
-  height: calc(100vh - 10rem);
 }
 
 .closeup-image {
-  max-width: 1200px;
+  max-width: 100%;
   max-height: 100%;
   border-radius: 4px;
+}
+
+.closeup-info-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center;
+}
+
+.closeup-info {
+  color: #d0bfad;
+  font-family: sans-serif;
+  letter-spacing: 2px;
+  line-height: 1.5;
+  max-width: 600px;
+  width: 100%;
+}
+
+.lone-closeup-panel {
+  display: flex;
+  height: calc(100vh - 10rem);
+  width: 100%;
+  justify-content: center;
 }
 
 .page-opacity-enter-active,

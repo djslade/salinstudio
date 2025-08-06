@@ -6,6 +6,7 @@ import { onMounted, onUnmounted, ref } from "vue";
 type Link = {
   to: string;
   label: string;
+  currentRoute?: "Home" | "About" | "Gallery" | "Commissions";
 };
 
 type Position = "fixed" | "sticky";
@@ -71,8 +72,8 @@ onUnmounted(() => {
       </button>
     </div>
 
-    <div v-if="heading" class="heading-container">
-      <h1 class="page-heading">{{ heading }}</h1>
+    <div class="heading-container">
+      <h1 v-if="heading" class="page-heading">{{ heading }}</h1>
     </div>
     <div class="fixture-container">
       <slot name="fixture" />
