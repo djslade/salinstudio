@@ -4,7 +4,7 @@ import axios from "axios";
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import { ref } from "vue";
-import { Icon } from "@iconify/vue";
+import Closeup from "../components/Closeup.vue";
 
 type Art = {
   id: string;
@@ -123,52 +123,7 @@ const handleBack = () => {
       </main>
       <Footer position="static" />
     </div>
-    <div class="page" v-else>
-      <Header position="sticky" :heading="focusedArt ? focusedArt.titleEn : ''">
-        <template #fixture>
-          <div class="content-cta">
-            <button class="cta-btn" @click="handleBack">
-              <div class="cta-btn-icon-container">
-                <Icon
-                  icon="mdi-light:arrow-left"
-                  class="cta-btn-icon"
-                  :inline="true"
-                />
-              </div>
-              <span class="cta-btn-text">Back to gallery</span>
-            </button>
-          </div>
-        </template>
-      </Header>
-      <main>
-        <section v-if="focusedArt?.descriptionEn" class="closeup-panel">
-          <div class="closeup-image-container">
-            <img
-              class="closeup-image"
-              :src="focusedArt?.desktopUrl"
-              :alt="focusedArt?.titleEn"
-            />
-          </div>
-          <div v-if="focusedArt?.descriptionEn" class="closeup-info-container">
-            <p
-              class="closeup-info"
-              v-for="(paragraph, idx) in focusedArt.descriptionEn.split('\n\n')"
-              :key="'desc.paragraph.' + idx"
-            >
-              {{ paragraph }}
-            </p>
-          </div>
-        </section>
-        <section v-else class="lone-closeup-panel">
-          <img
-            class="closeup-image"
-            :src="focusedArt?.desktopUrl"
-            :alt="focusedArt?.titleEn"
-          />
-        </section>
-      </main>
-      <Footer position="static" />
-    </div>
+    <Closeup v-else :focused-art="focusedArt" :handle-back="handleBack" />
   </Transition>
 </template>
 
@@ -300,9 +255,10 @@ option {
 
 .lone-closeup-panel {
   display: flex;
+  flex-direction: column;
   height: calc(100vh - 10rem);
   width: 100%;
-  justify-content: center;
+  align-items: center;
 }
 
 .page-opacity-enter-active,
@@ -340,5 +296,11 @@ option {
   text-transform: uppercase;
   letter-spacing: 3px;
   color: #d0bfad;
+}
+
+.show-info-btn-container {
+  height: 5rem;
+  background-color: red;
+  width: 100%;
 }
 </style>
