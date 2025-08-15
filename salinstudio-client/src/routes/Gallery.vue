@@ -67,7 +67,7 @@ const handleBack = () => {
 <template>
   <Transition name="page-opacity" mode="out-in">
     <div class="page" v-if="showGallery">
-      <Header position="sticky" heading="gallery">
+      <Header position="sticky" heading="gallery" current-route="Gallery">
         <template #fixture>
           <div class="category-select-container">
             <label for="category" class="category-select-label"

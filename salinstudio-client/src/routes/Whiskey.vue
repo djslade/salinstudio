@@ -8,7 +8,7 @@ import Hero from "../components/Hero.vue";
 
 <template>
   <div class="">
-    <Header position="fixed" />
+    <Header position="fixed" transparent current-route="Home" />
     <main>
       <Hero>
         <template #background>
@@ -55,7 +55,7 @@ import Hero from "../components/Hero.vue";
 .content-heading {
   color: #d0bfad;
   text-transform: uppercase;
-  font-size: 4rem;
+  font-size: 2rem;
   text-align: center;
   font-weight: 400;
 }
@@ -87,5 +87,17 @@ import Hero from "../components/Hero.vue";
   text-transform: uppercase;
   letter-spacing: 3px;
   color: #d0bfad;
+}
+
+@media (min-width: 600px) {
+  .content-heading {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .content-heading {
+    font-size: 4rem;
+  }
 }
 </style>

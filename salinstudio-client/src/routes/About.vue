@@ -5,7 +5,7 @@ import Footer from "../components/Footer.vue";
 
 <template>
   <div class="">
-    <Header position="sticky" heading="About" />
+    <Header position="sticky" heading="About" current-route="About" />
     <main>
       <section class="about-panel">
         <div class="about-img-container">

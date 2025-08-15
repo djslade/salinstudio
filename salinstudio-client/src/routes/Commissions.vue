@@ -5,7 +5,11 @@ import Footer from "../components/Footer.vue";
 
 <template>
   <div class="">
-    <Header position="sticky" heading="Commissions" />
+    <Header
+      position="sticky"
+      heading="Commissions"
+      current-route="Commissions"
+    />
     <main>
       <section class="comm-closed-panel">
         <h1 class="comm-closed-title">Commissions are closed</h1>

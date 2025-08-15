@@ -6,12 +6,16 @@ import { onMounted, onUnmounted, ref } from "vue";
 type Link = {
   to: string;
   label: string;
-  currentRoute?: "Home" | "About" | "Gallery" | "Commissions";
 };
 
 type Position = "fixed" | "sticky";
 
-defineProps<{ position: Position; heading?: string }>();
+defineProps<{
+  position: Position;
+  heading?: string;
+  transparent?: boolean;
+  currentRoute?: "Home" | "About" | "Gallery" | "Commissions";
+}>();
 
 const prevYOffset = ref<number>(window.pageYOffset);
 
@@ -59,7 +63,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header class="header" :style="{ position, opacity: isHidden ? 0 : 1 }">
+  <header
+    class="header"
+    :style="{
+      position,
+      opacity: isHidden ? 0 : 1,
+      backgroundColor: transparent ? 'transparent' : '#261f19',
+    }"
+  >
     <div class="menu-btn-container">
       <button class="menu-btn" @click="() => (menuIsOpen = !menuIsOpen)">
         <div class="menu-btn-icon-container">
@@ -94,6 +105,7 @@ onUnmounted(() => {
         }"
       >
         <NavLink
+          :is-current-route="currentRoute === link.label"
           v-for="link in links"
           :id="'link-id.' + link.label"
           :to="link.to"
@@ -114,11 +126,10 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   z-index: 16;
-  padding: 2rem 6rem;
+  padding: 2rem;
   height: 5rem;
   transition-property: all;
   transition-duration: 0.3s;
-  background-color: #261f19;
 }
 
 .menu-btn-container {
@@ -194,5 +205,17 @@ onUnmounted(() => {
   flex: 1;
   display: flex;
   justify-content: end;
+}
+
+@media (min-width: 600px) {
+  .header {
+    padding: 2rem 4rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .header {
+    padding: 2rem 6rem;
+  }
 }
 </style>

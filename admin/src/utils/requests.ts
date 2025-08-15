@@ -104,11 +104,12 @@ export const getErrorResponseOrThrow = (err: unknown) => {
 };
 
 export const refreshIfUnauthorized = async <T>(
-  requestFn: () => T,
+  requestFn: () => Promise<T>,
   refresh: boolean = true
 ) => {
   try {
-    return requestFn();
+    const res = await requestFn();
+    return res;
   } catch (err) {
     const res = getErrorResponseOrThrow(err);
     if (res.statusCode === 401 && refresh) {
