@@ -32,7 +32,7 @@ services:
     env_file: .env
     pull_policy: always
     ports:
-      - 333:80
+      - 333:3000
     depends_on:
       server:
         condition: service_started
