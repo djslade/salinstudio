@@ -15,7 +15,7 @@ jobs:
         run: echo "VITE_ENDPOINT=${{ secrets.VITE_ENDPOINT }}" > admin/.env
 
       - name: Create .env file for web
-        run: echo "VITE_ENDPOINT=${{ secrets.VITE_ENDPOINT }}" > salinstudio-client/.env
+        run: echo "VITE_SERVER_ENDPOINT=${{ secrets.VITE_ENDPOINT }}" > salinstudio-client/.env
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
