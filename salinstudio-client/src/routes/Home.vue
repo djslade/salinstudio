@@ -1,156 +1,151 @@
 <script setup lang="ts">
-import Main from "../components/Main.vue";
 import HeroCarousel from "../components/HeroCarousel.vue";
-import CtaCard from "../components/CtaCard.vue";
-import { type LinkCard } from "../types/linkCard";
+import Header from "../components/Header.vue";
+import Footer from "../components/Footer.vue";
+import Hero from "../components/Hero.vue";
+import IconButton from "../components/IconButton.vue";
+import { useQuery } from "@tanstack/vue-query";
+import axios from "axios";
+import { useLanguageStore } from "../store/language";
 
-const cards: LinkCard[] = [
-  {
-    imageSrc: "/1748113914558.webp",
-    heading: "About me",
-    to: "/about",
+type Art = {
+  id: string;
+  category: string;
+  fullUrl: string;
+  desktopUrl: string;
+  mobileUrl: string;
+  thumbUrl: string;
+  titleEn: string;
+  titleFi: string;
+  descriptionEn: string;
+  descriptionFi: string;
+};
+
+const { data } = useQuery({
+  queryKey: ["carousel"],
+  queryFn: async () => {
+    const res = await axios.get(
+      `${import.meta.env.VITE_SERVER_ENDPOINT}/art/carousel`
+    );
+    if (res.data.art.length > 0) return res.data.art as Art[];
+    const fallback = await axios.get(
+      `${import.meta.env.VITE_SERVER_ENDPOINT}/art`
+    );
+    return fallback.data.art.slice(0, 5) as Art[];
   },
-  {
-    imageSrc: "/1748113914558.webp",
-    heading: "My work",
-    to: "/gallery",
-  },
-  {
-    imageSrc: "/comm.webp",
-    heading: "Commission art",
-    to: "/commissions",
-  },
-];
+});
+
+const language = useLanguageStore();
 </script>
 
 <template>
-  <Main>
-    <template #content>
-      <section class="hero-panel">
-        <HeroCarousel />
-      </section>
-      <section class="about-panel">
-        <div class="about-text">
-          <div class="about-headings-container">
-            <h1 class="about-heading">Miia Salin</h1>
-            <h2 class="about-subheading">Artist and Visual Storyteller</h2>
+  <div class="">
+    <Header position="fixed" transparent current-route="Home" />
+    <main>
+      <Hero v-if="data">
+        <template #background>
+          <HeroCarousel :images="data" />
+        </template>
+        <template #content>
+          <div class="content-inner">
+            <div
+              v-if="language.language === 'en'"
+              class="content-heading-container"
+            >
+              <h1 class="content-heading">Miia Salin is an</h1>
+              <h1 class="content-heading">
+                <span class="content-keyword">artist</span> and
+                <span class="content-keyword">visual storyteller</span>
+              </h1>
+            </div>
+            <div
+              v-if="language.language === 'fi'"
+              class="content-heading-container"
+            >
+              <h1 class="content-heading">Miia Salin on</h1>
+              <h1 class="content-heading">
+                <span class="content-keyword">taiteilija</span> ja
+                <span class="content-keyword">kuvatarinan kertoja</span>
+              </h1>
+            </div>
+            <div class="content-cta">
+              <IconButton
+                :label="
+                  language.language === 'en'
+                    ? 'Explore her work'
+                    : 'Katso hänen töitään'
+                "
+                icon="mdi-light:arrow-up"
+                :onClick="() => $router.push('/gallery')"
+              />
+            </div>
           </div>
-          <p class="about-p">
-            I create varied art with a particular focus on portraits, still-life
-            and surrealism, alongside an occasional splash of horror.
-          </p>
-        </div>
-        <div class="boxes">
-          <CtaCard
-            v-for="(card, idx) in cards"
-            :key="idx"
-            :to="card.to"
-            :imageSrc="card.imageSrc"
-            :heading="card.heading"
-          />
-        </div>
-      </section>
-    </template>
-  </Main>
+        </template>
+      </Hero>
+    </main>
+    <Footer position="absolute" />
+  </div>
 </template>
 
 <style scoped>
-.about-heading {
-  font-size: 3rem;
-  color: #bcb1a4;
-  font-weight: 500;
-  text-shadow: 1px 1px 2px #000;
-  letter-spacing: 1.5px;
+.content-inner {
+  width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
 }
 
-.hero-panel {
-  max-width: 1200px;
-  width: 100%;
-  padding: 2rem 0;
-  border-radius: 1rem;
-  min-height: calc(100vh - 5rem);
-}
-
-.hero-title {
-  font-size: 8rem;
-  color: white;
-  background-color: #383129;
-  text-shadow: (
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000
-  );
-}
-
-.hero-cap {
-  font-size: 1.5rem;
+.content-heading {
+  color: #d0bfad;
+  text-transform: uppercase;
+  font-size: 2rem;
   text-align: center;
+  font-weight: 400;
 }
 
-.about-panel {
-  max-width: 1200px;
-  width: 100%;
-  padding: 2rem 0;
-  border-radius: 1rem;
-  min-height: calc(100vh - 10rem);
-  display: flex;
-  flex-direction: column;
-  gap: 5rem;
+.content-keyword {
+  color: #b4936f;
 }
 
-.about-text {
-  width: 100%;
-  margin: 0 auto;
+.cta-btn {
+  background-color: transparent;
+  border: transparent;
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.about-headings-container {
-  display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 1rem;
 }
 
-.about-subheading {
-  color: #bcb1a4;
-  font-weight: 700;
-  font-size: 2.25rem;
-  text-shadow: 1px 1px 2px #000;
-  line-height: 1.3;
-  letter-spacing: 2px;
+.cta-btn-icon-container {
+  border: 1px solid #b4936f;
+  border-radius: 50%;
+  padding: 0.5rem;
 }
 
-.about-p {
-  color: #bcb1a4;
+.cta-btn-icon {
+  color: #d0bfad;
   font-size: 1.5rem;
-  font-weight: 400;
-  line-height: 1.5;
+}
+
+.cta-btn-text {
+  text-transform: uppercase;
   letter-spacing: 3px;
+  color: #d0bfad;
 }
 
-.boxes {
-  display: flex;
-  gap: 3rem;
-  border-radius: 1rem;
+@media (min-width: 600px) {
+  .content-heading {
+    font-size: 3rem;
+  }
 }
 
-.card {
-  width: 100%;
-}
+@media (min-width: 900px) {
+  .content-heading {
+    font-size: 4rem;
+  }
 
-.card-img {
-  width: 100%;
-  aspect-ratio: 16/9;
-  object-fit: cover;
-  border-radius: 1rem;
-}
-
-.card-heading {
-  color: #bcb1a4;
-  font-size: 1.5rem;
-  font-weight: 500;
-  text-align: center;
+  .cta-btn-icon-container {
+    padding: 0.8rem;
+  }
 }
 </style>

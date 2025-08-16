@@ -2,12 +2,12 @@ import { createWebHistory, createRouter } from "vue-router";
 import About from "./routes/About.vue";
 import Gallery from "./routes/Gallery.vue";
 import Commissions from "./routes/Commissions.vue";
-import Whiskey from "./routes/Whiskey.vue";
+import Home from "./routes/Home.vue";
 
 const routes = [
   {
     path: "/",
-    component: Whiskey,
+    component: Home,
   },
   {
     path: "/about",
