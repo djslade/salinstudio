@@ -1,25 +1,20 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
 
-type Image = {
-  src: string;
-  alt: string;
+type Art = {
+  id: string;
+  category: string;
+  fullUrl: string;
+  desktopUrl: string;
+  mobileUrl: string;
+  thumbUrl: string;
+  titleEn: string;
+  titleFi: string;
+  descriptionEn: string;
+  descriptionFi: string;
 };
 
-const images: Image[] = [
-  {
-    src: "/test.webp",
-    alt: "",
-  },
-  {
-    src: "/1748116132576.webp",
-    alt: "",
-  },
-  {
-    src: "/1748116388326.webp",
-    alt: "",
-  },
-];
+const { images } = defineProps<{ images: Art[] }>();
 
 const frontImageIdx = ref<number>(0);
 let intervalId: number | undefined;
@@ -50,7 +45,7 @@ onUnmounted(() => {
       :key="idx"
       :style="{ zIndex: getZIndex(idx) }"
     >
-      <img class="hero-img" :src="image.src" :alt="image.alt" />
+      <img class="hero-img" :src="image.fullUrl" :alt="image.descriptionEn" />
       <div class="vert-overlay"></div>
       <div class="horiz-overlay"></div>
     </div>

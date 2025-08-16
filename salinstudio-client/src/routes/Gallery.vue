@@ -5,6 +5,9 @@ import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import { ref } from "vue";
 import Closeup from "../components/Closeup.vue";
+import Loader from "../components/Loader.vue";
+import Select from "../components/Select.vue";
+import { useLanguageStore } from "../store/language";
 
 type Art = {
   id: string;
@@ -27,11 +30,46 @@ type Filter =
   | "digital"
   | "mixed media";
 
+const selectOptions = [
+  {
+    value: "all",
+    label: "All",
+    labelFi: "Kaikki",
+  },
+  {
+    value: "drawings",
+    label: "Drawings",
+    labelFi: "Piirustukset",
+  },
+  {
+    value: "paintings",
+    label: "Paintings",
+    labelFi: "Maalaukset",
+  },
+  {
+    value: "pastels",
+    label: "Pastels",
+    labelFi: "Pastellit",
+  },
+  {
+    value: "digital",
+    label: "Digital",
+    labelFi: "Digi",
+  },
+  {
+    value: "mixed media",
+    label: "Mixed Media",
+    labelFi: "Sekatekniikat",
+  },
+];
+
 const artCategory = ref<Filter>("all");
 
 const showGallery = ref<boolean>(true);
 
 const focusedArt = ref<Art | null>(null);
+
+const language = useLanguageStore();
 
 const { data } = useQuery({
   queryKey: ["art"],
@@ -56,7 +94,6 @@ const handleChange = (evt: { target: { value: Filter } }) => {
 const handleImageSelect = (art: Art) => {
   focusedArt.value = art;
   showGallery.value = false;
-  console.log(focusedArt.value.descriptionEn);
 };
 
 const handleBack = () => {
@@ -67,32 +104,131 @@ const handleBack = () => {
 <template>
   <Transition name="page-opacity" mode="out-in">
     <div class="page" v-if="showGallery">
-      <Header position="sticky" heading="gallery" current-route="Gallery">
+      <Header
+        position="sticky"
+        :heading="language.language === 'en' ? 'gallery' : 'galleria'"
+        current-route="Gallery"
+      >
         <template #fixture>
-          <div class="category-select-container">
-            <label for="category" class="category-select-label"
-              >Choose art category</label
-            >
-            <select
-              name="category"
-              id="category"
-              class="category-select"
-              :value="artCategory"
-              @change="(evt) => handleChange(evt as unknown as { target: { value: Filter}})"
-            >
-              <option value="all">All</option>
-              <option value="drawings">Drawings</option>
-              <option value="paintings">Paintings</option>
-              <option value="pastels">Pastels</option>
-              <option value="digital">Digital</option>
-              <option value="mixed media">Mixed media</option>
-            </select>
-          </div>
+          <Select
+            :value="artCategory"
+            :onChange="handleChange"
+            :options="selectOptions"
+          />
         </template>
       </Header>
       <main>
         <section class="gallery-panel">
-          <div v-if="data" class="gallery-container">
+          <Loader v-if="!data" />
+          <div v-if="data" class="gallery-container gallery-columns-1">
+            <div
+              v-for="(array, idx) in getColumnArrays(
+                data.filter((art) =>
+                  artCategory === 'all'
+                    ? art.category !== 'mixed media'
+                    : art.category === artCategory
+                ),
+                1
+              )"
+              :key="`array-${idx}`"
+              class="gallery-column"
+            >
+              <button
+                class="gallery-img-btn"
+                v-for="(art, idx) in array"
+                :key="`art-${idx}`"
+                @click="() => handleImageSelect(art)"
+              >
+                <img
+                  class="gallery-img"
+                  :src="art.thumbUrl"
+                  :alt="art.titleEn"
+                />
+              </button>
+            </div>
+          </div>
+          <div v-if="data" class="gallery-container gallery-columns-2">
+            <div
+              v-for="(array, idx) in getColumnArrays(
+                data.filter((art) =>
+                  artCategory === 'all'
+                    ? art.category !== 'mixed media'
+                    : art.category === artCategory
+                ),
+                2
+              )"
+              :key="`array-${idx}`"
+              class="gallery-column"
+            >
+              <button
+                class="gallery-img-btn"
+                v-for="(art, idx) in array"
+                :key="`art-${idx}`"
+                @click="() => handleImageSelect(art)"
+              >
+                <img
+                  class="gallery-img"
+                  :src="art.thumbUrl"
+                  :alt="art.titleEn"
+                />
+              </button>
+            </div>
+          </div>
+          <div v-if="data" class="gallery-container gallery-columns-3">
+            <div
+              v-for="(array, idx) in getColumnArrays(
+                data.filter((art) =>
+                  artCategory === 'all'
+                    ? art.category !== 'mixed media'
+                    : art.category === artCategory
+                ),
+                3
+              )"
+              :key="`array-${idx}`"
+              class="gallery-column"
+            >
+              <button
+                class="gallery-img-btn"
+                v-for="(art, idx) in array"
+                :key="`art-${idx}`"
+                @click="() => handleImageSelect(art)"
+              >
+                <img
+                  class="gallery-img"
+                  :src="art.thumbUrl"
+                  :alt="art.titleEn"
+                />
+              </button>
+            </div>
+          </div>
+          <div v-if="data" class="gallery-container gallery-columns-4">
+            <div
+              v-for="(array, idx) in getColumnArrays(
+                data.filter((art) =>
+                  artCategory === 'all'
+                    ? art.category !== 'mixed media'
+                    : art.category === artCategory
+                ),
+                4
+              )"
+              :key="`array-${idx}`"
+              class="gallery-column"
+            >
+              <button
+                class="gallery-img-btn"
+                v-for="(art, idx) in array"
+                :key="`art-${idx}`"
+                @click="() => handleImageSelect(art)"
+              >
+                <img
+                  class="gallery-img"
+                  :src="art.thumbUrl"
+                  :alt="art.titleEn"
+                />
+              </button>
+            </div>
+          </div>
+          <div v-if="data" class="gallery-container gallery-columns-5">
             <div
               v-for="(array, idx) in getColumnArrays(
                 data.filter((art) =>
@@ -139,6 +275,7 @@ const handleBack = () => {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 3px;
+  display: none;
 }
 
 .category-select {
@@ -163,6 +300,7 @@ option {
   text-transform: none;
   font-size: 1rem;
   text-align: left;
+  font-family: sans-serif;
 }
 
 .page {
@@ -183,12 +321,12 @@ option {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  min-height: calc(100vh - 10rem);
 }
 
 .gallery-container {
-  columns: 5;
+  columns: 1;
   margin: 0 auto;
-  min-height: 100vh;
   display: flex;
   gap: 0.5rem;
   width: 100%;
@@ -302,5 +440,85 @@ option {
   height: 5rem;
   background-color: red;
   width: 100%;
+}
+
+.gallery-columns-1 {
+  display: flex;
+}
+
+.gallery-columns-2 {
+  display: none;
+}
+
+.gallery-columns-3 {
+  display: none;
+}
+
+.gallery-columns-4 {
+  display: none;
+}
+
+.gallery-columns-5 {
+  display: none;
+}
+
+@media (min-width: 450px) {
+  .gallery-columns-1 {
+    display: none;
+  }
+
+  .gallery-columns-2 {
+    display: flex;
+  }
+
+  .gallery-container {
+    columns: 2;
+  }
+}
+
+@media (min-width: 600px) {
+  .gallery-columns-2 {
+    display: none;
+  }
+
+  .gallery-columns-3 {
+    display: flex;
+  }
+
+  .gallery-container {
+    columns: 3;
+  }
+}
+
+@media (min-width: 900px) {
+  .category-select-label {
+    display: inline;
+  }
+
+  .gallery-columns-3 {
+    display: none;
+  }
+
+  .gallery-columns-4 {
+    display: flex;
+  }
+
+  .gallery-container {
+    columns: 4;
+  }
+}
+
+@media (min-width: 1500px) {
+  .gallery-columns-4 {
+    display: none;
+  }
+
+  .gallery-columns-5 {
+    display: flex;
+  }
+
+  .gallery-container {
+    columns: 5;
+  }
 }
 </style>

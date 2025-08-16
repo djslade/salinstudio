@@ -1,25 +1,59 @@
 <script setup lang="ts">
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
+import { useLanguageStore } from "../store/language";
+
+const language = useLanguageStore();
 </script>
 
 <template>
   <div class="">
     <Header
       position="sticky"
-      heading="Commissions"
+      :heading="language.language === 'en' ? 'Commissions' : 'Tilaustyöt'"
       current-route="Commissions"
     />
     <main>
-      <section class="comm-closed-panel">
-        <h1 class="comm-closed-title">Commissions are closed</h1>
-        <p class="comm-closed-text">
-          Thank you for your interest, but I am not currently accepting
-          commission requests.
-        </p>
-        <p class="comm-closed-text">
-          Please follow me on Instagram to keep up to date.
-        </p>
+      <section v-if="language.language === 'en'" class="comm-closed-panel">
+        <div class="comm-closed-title-container">
+          <h1 class="comm-closed-title">Commissions are closed</h1>
+        </div>
+        <div class="comm-closed-text-container">
+          <p class="comm-closed-text">
+            Thank you for your interest, but I am not currently accepting
+            commission requests.
+          </p>
+          <p class="comm-closed-text">
+            Please follow me on
+            <a
+              href="https://www.instagram.com/salinmiia/"
+              target="_blank"
+              class="comm-closed-link"
+              >Instagram</a
+            >
+            to find out when I become available for work.
+          </p>
+        </div>
+      </section>
+      <section v-if="language.language === 'fi'" class="comm-closed-panel">
+        <div class="comm-closed-title-container">
+          <h1 class="comm-closed-title">Tilaukset ei oteta vastaan</h1>
+        </div>
+        <div class="comm-closed-text-container">
+          <p class="comm-closed-text">
+            Kiitos kiinnostuksestasi, mutta en ole tällä hetkellä ottamassa
+            vastaan tilauspyyntöjä.
+          </p>
+          <p class="comm-closed-text">
+            Seuraa minua
+            <a
+              href="https://www.instagram.com/salinmiia/"
+              target="_blank"
+              class="comm-closed-link"
+              >Instagramissa</a
+            >, niin saat tietää, kun alan taas ottaa töitä vastaan.
+          </p>
+        </div>
       </section>
     </main>
     <Footer position="static" />
@@ -34,19 +68,50 @@ import Footer from "../components/Footer.vue";
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1.2rem;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.comm-closed-title-container {
+  width: 100%;
+  text-align: center;
 }
 
 .comm-closed-title {
-  font-size: 2.4rem;
+  font-size: 2rem;
   color: #b4936f;
   text-transform: uppercase;
   letter-spacing: 5px;
 }
 
+.comm-closed-text-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .comm-closed-text {
   color: #d0bfad;
   line-height: 1.7;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
+  font-family: sans-serif;
+}
+
+.comm-closed-link {
+  font-weight: bold;
+  color: #d0bfad;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
+.comm-closed-link:hover {
+  color: #b4936f;
+}
+
+@media (min-width: 600px) {
+  .comm-closed-title {
+    font-size: 2.5rem;
+  }
 }
 </style>

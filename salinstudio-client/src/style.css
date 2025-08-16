@@ -5,4 +5,6 @@
   margin: 0;
   box-sizing: border-box;
   font-family: "Libre Baskerville", serif;
+  scrollbar-width: thin;
+  scrollbar-color: #b4936f #261f19;
 }

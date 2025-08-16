@@ -1,36 +1,80 @@
 <script setup lang="ts">
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
+import { useLanguageStore } from "../store/language";
+
+const language = useLanguageStore();
 </script>
 
 <template>
   <div class="">
-    <Header position="sticky" heading="About" current-route="About" />
+    <Header
+      position="sticky"
+      :heading="language.language === 'en' ? 'About' : 'Tietoa'"
+      current-route="About"
+    />
     <main>
       <section class="about-panel">
         <div class="about-img-container">
           <img src="/artist.jpg" alt="" class="about-img" />
         </div>
         <div class="about-text-container">
-          <div class="about-text">
+          <div v-if="language.language === 'en'" class="about-text">
             <p class="about-p">
-              I’m a hardworking 2nd year art student from Finland with limitless
-              imagination and drive. I’ve come a long way for this path, but my
-              hardships have just made my motivation stronger.
+              I’m a hardworking artist from Finland with limitless imagination
+              and drive. I’ve come a long way for this path, but my hardships
+              have just made my determination stronger.
             </p>
             <p class="about-p">
-              I enjoy drawing with pencil, coal and using oil paints, but I’m
-              all in for trying out any and all different forms of art. I’m a
-              great listener and I learn fast. I enjoy surrealism, symbolism,
-              real life experiences and stories. I want to capture the feeling
-              and raw emotion in whatever or whoever I make art of.
+              I enjoy drawing with pencil, coal and using oil paints. I also
+              make some digital art at times, and have great interest in
+              animation and 3D art. I’m a great listener and learn fast. I enjoy
+              surrealism, symbolism, real life experiences and stories. I want
+              to capture the feeling and raw emotion in whatever or whoever I
+              make art of.
             </p>
             <p class="about-p">
               Being international is very important to me, and I’m hoping to
               gain new experiences and opportunities outside of Finland too. I’m
               very sensitive to different situations that people might be in,
               and I will make it as easy as possible to contact me and request
-              artworks.
+              artworks. Follow me on
+              <a
+                href="https://www.instagram.com/salinmiia/"
+                target="_blank"
+                class="about-link"
+                >Instagram</a
+              >
+              to stay up to date with my work.
+            </p>
+          </div>
+          <div v-if="language.language === 'fi'" class="about-text">
+            <p class="about-p">
+              Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma
+              tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo,
+              mutta jokainen vastoinkäyminen on vain vahvistanut
+              päättäväisyyttäni ja intohimoani taiteeseen.
+            </p>
+            <p class="about-p">
+              Työskentelen mielelläni lyijykynällä, hiilellä ja öljyväreillä.
+              Teen toisinaan myös digitaalista taidetta, ja minua kiehtovat
+              erityisesti animaatio sekä 3D-taide. Opin nopeasti, kuuntelen
+              tarkasti ja ammennan inspiraatiota surrealismista, symbolismista,
+              tosielämän kokemuksista ja tarinoista. Pyrin aina tavoittamaan
+              tunteen ja aidon elämyksen riippumatta siitä, mitä tai ketä
+              kuvitan.
+            </p>
+            <p class="about-p">
+              Kansainvälisyys on minulle tärkeää, ja haluan löytää uusia
+              kokemuksia ja mahdollisuuksia myös Suomen rajojen ulkopuolelta.
+              Olen herkkä huomaamaan erilaisia elämäntilanteita, ja haluan, että
+              minuun on helppo ottaa yhteyttä ja tilata taidetta. Seuraa minua
+              <a
+                href="https://www.instagram.com/salinmiia/"
+                target="_blank"
+                class="about-link"
+                >Instagramissa</a
+              >, jos haluat pysyä ajan tasalla uusista töistäni.
             </p>
           </div>
         </div>
@@ -91,8 +135,9 @@ import Footer from "../components/Footer.vue";
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8rem;
-  min-height: calc(100vh - 5rem);
+  flex-direction: column;
+  gap: 4rem;
+  min-height: calc(100vh - 10rem);
 }
 
 .about-img-container {
@@ -101,11 +146,11 @@ import Footer from "../components/Footer.vue";
 }
 
 .about-img {
-  width: 18rem;
-  aspect-ratio: 1/1;
+  width: 24rem;
+  aspect-ratio: 2/3;
   object-fit: cover;
   border-radius: 1rem;
-  filter: grayscale(75%);
+  filter: sepia(20%);
 }
 
 .about-text {
@@ -121,5 +166,29 @@ import Footer from "../components/Footer.vue";
   font-weight: 400;
   line-height: 1.9;
   letter-spacing: 4px;
+  font-family: sans-serif;
+}
+
+.about-link {
+  font-weight: bold;
+  color: #d0bfad;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
+.about-link:hover {
+  color: #b4936f;
+}
+
+@media (min-width: 900px) {
+  .about-panel {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 1200px) {
+  .about-panel {
+    gap: 8rem;
+  }
 }
 </style>

@@ -2,7 +2,8 @@
 import { ref } from "vue";
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
-import { Icon } from "@iconify/vue";
+import IconButton from "./IconButton.vue";
+import { useLanguageStore } from "../store/language";
 
 type Art = {
   id: string;
@@ -20,23 +21,37 @@ type Art = {
 defineProps<{ focusedArt: Art | null; handleBack: () => void }>();
 
 const showDescription = ref<boolean>(false);
+
+const language = useLanguageStore();
 </script>
 
 <template>
   <div class="page">
-    <Header position="sticky" :heading="focusedArt ? focusedArt.titleEn : ''">
+    <Header
+      position="sticky"
+      :heading="
+        language.language === 'en'
+          ? focusedArt
+            ? focusedArt.titleEn
+            : ''
+          : focusedArt
+          ? focusedArt.titleFi
+          : ''
+      "
+      :current-route="'Gallery'"
+    >
       <template #fixture>
         <div class="content-cta">
-          <button class="cta-btn" @click="handleBack">
-            <div class="cta-btn-icon-container">
-              <Icon
-                icon="mdi-light:arrow-left"
-                class="cta-btn-icon"
-                :inline="true"
-              />
-            </div>
-            <span class="cta-btn-text">Back to gallery</span>
-          </button>
+          <IconButton
+            responsiveLabel
+            icon="mdi-light:arrow-left"
+            :label="
+              language.language === 'en'
+                ? 'Back to gallery'
+                : 'Palaa galleriaan'
+            "
+            :onClick="handleBack"
+          />
         </div>
       </template>
     </Header>
@@ -53,13 +68,23 @@ const showDescription = ref<boolean>(false);
             :alt="focusedArt?.titleEn"
           />
           <div
-            v-if="focusedArt?.descriptionEn"
+            v-if="language.language === 'en' && focusedArt?.descriptionEn"
             :class="`closeup-description-container ${
               showDescription && 'description-visible'
             }`"
           >
             <div class="closeup-description-inner-container">
               <p class="closeup-description">{{ focusedArt?.descriptionEn }}</p>
+            </div>
+          </div>
+          <div
+            v-if="language.language === 'fi' && focusedArt?.descriptionFi"
+            :class="`closeup-description-container ${
+              showDescription && 'description-visible'
+            }`"
+          >
+            <div class="closeup-description-inner-container">
+              <p class="closeup-description">{{ focusedArt?.descriptionFi }}</p>
             </div>
           </div>
         </div>
@@ -105,6 +130,9 @@ const showDescription = ref<boolean>(false);
 .closeup-data-container {
   position: relative;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .page {
@@ -122,7 +150,7 @@ const showDescription = ref<boolean>(false);
 
 .closeup-image {
   max-width: 100%;
-  height: 100%;
+  max-height: 100%;
   border-radius: 4px;
 }
 
@@ -149,5 +177,18 @@ const showDescription = ref<boolean>(false);
   text-transform: uppercase;
   letter-spacing: 3px;
   color: #d0bfad;
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .closeup-image {
+    height: 100%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cta-btn-text {
+    display: inline;
+  }
 }
 </style>
