@@ -1,5 +1,8 @@
 FROM node:22-alpine
 
+# Install Perl for exiftool
+RUN apk add --no-cache perl
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
