@@ -30,7 +30,7 @@ export class ImageService {
   }
 
   async embedCopyright(buffer: Buffer): Promise<Buffer> {
-    const tmp = join(tmpdir(), `img-${Date.now()}.jpg`);
+    const tmp = join(tmpdir(), `img-${Date.now()}.webp`);
     await fs.writeFile(tmp, buffer);
 
     await exiftool.write(tmp, {
@@ -132,10 +132,13 @@ export class ImageService {
     return await this.addFingerprint(desktop, config);
   }
 
-  async processImage(buffer: Buffer) {
-    const withCopyright = await this.embedCopyright(buffer);
-    const { width } = await this.getImageMetadata(withCopyright);
-    const config = this.getFingerprintConfig();
+  async processImage(buffer: Buffer, currentDate?: Date) {
+    const processedImage = await sharp(buffer)
+      .webp({ quality: 100 })
+      .toBuffer();
+    const { width } = await this.getImageMetadata(processedImage);
+    const withCopyright = await this.embedCopyright(processedImage);
+    const config = this.getFingerprintConfig(currentDate);
     const full = await this.addFingerprint(withCopyright, config);
     const thumb =
       width > 360 ? await this.genThumbnail(withCopyright, config) : full;

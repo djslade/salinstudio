@@ -1,5 +1,6 @@
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -14,6 +15,17 @@ export class UploadService {
     this.s3Client = new S3Client({
       region: this.configService.getOrThrow('AWS_S3_REGION'),
     });
+  }
+
+  async get(fileName: string): Promise<Buffer | null> {
+    const command = new GetObjectCommand({
+      Bucket: this.configService.getOrThrow('AWS_S3_BUCKET'),
+      Key: fileName,
+    });
+    const res = await this.s3Client.send(command);
+    const body = await res.Body?.transformToByteArray();
+    if (!body) return null;
+    return Buffer.from(body);
   }
 
   async upload(fileName: string, file: Buffer) {

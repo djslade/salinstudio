@@ -55,4 +55,7 @@ export class Art extends BaseEntity {
 
   @Column({ default: 0 })
   homeCarouselIndex: number;
+
+  @Column({ default: false })
+  updatedFingerprint: boolean;
 }

@@ -4,6 +4,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  OnModuleInit,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
@@ -16,6 +17,7 @@ import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { OrderAllDto } from './dto/order-all.dto';
 import { OrderCarouselDto } from './dto/order-carousel.dto';
+import { ConsoleLogger } from 'exiftool-vendored/dist/DefaultExifToolOptions';
 
 type CreateArtParams = {
   fullUrl: string;
@@ -31,7 +33,7 @@ type CreateArtParams = {
 };
 
 @Injectable()
-export class ArtService {
+export class ArtService implements OnModuleInit {
   constructor(
     @Inject(REPOSITORY_NAMES.ART)
     private artRepository: Repository<Art>,
@@ -39,6 +41,10 @@ export class ArtService {
     private imageService: ImageService,
     private configService: ConfigService,
   ) {}
+
+  async onModuleInit() {
+    await this.updateFingerprint();
+  }
 
   async findArtById(id: string): Promise<Art> {
     const art = await this.artRepository.findOne({ where: { id } });
@@ -111,6 +117,7 @@ export class ArtService {
     art.fingerprintChecksum = params.fingerprintChecksum;
     art.totalIndex = totalIndex;
     art.categoryIndex = categoryIndex;
+    art.updatedFingerprint = true;
     return await this.artRepository.save(art);
   }
 
@@ -177,5 +184,58 @@ export class ArtService {
     return await this.artRepository.find({
       where: { fingerprintChecksum: checksum },
     });
+  }
+
+  async updateFingerprint() {
+    const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
+    const outdatedArt = await this.artRepository.find({
+      where: { updatedFingerprint: false },
+    });
+    if (outdatedArt.length === 0) {
+      console.log('no entries to update');
+      return;
+    }
+    console.log(`${outdatedArt.length} entries to update`);
+    for (let art of outdatedArt) {
+      const date = art.createdAt;
+      const image = await this.uploadService.get(
+        art.fullUrl.replace(`${domain}/`, ''),
+      );
+      if (!image) {
+        console.error('skipped over ' + art.id);
+        continue;
+      }
+      const fingerprint = await this.imageService.extractFingerprint(image);
+      if (fingerprint) {
+        const matches = await this.findArtByChecksum(fingerprint.checksum);
+        if (matches.filter((m) => m.id === art.id).length > 0) {
+          art.updatedFingerprint = true;
+          await this.artRepository.save(art);
+          console.log('updated ' + art.id);
+          continue;
+        }
+      }
+      const newImages = await this.imageService.processImage(image, date);
+      await this.uploadService.upload(
+        art.fullUrl.replace(`${domain}/`, ''),
+        newImages.full,
+      );
+      await this.uploadService.upload(
+        art.desktopUrl.replace(`${domain}/`, ''),
+        newImages.desktop,
+      );
+      await this.uploadService.upload(
+        art.mobileUrl.replace(`${domain}/`, ''),
+        newImages.mobile,
+      );
+      await this.uploadService.upload(
+        art.thumbUrl.replace(`${domain}/`, ''),
+        newImages.thumb,
+      );
+      art.fingerprintChecksum = newImages.fingerprintChecksum;
+      art.updatedFingerprint = true;
+      await this.artRepository.save(art);
+      console.log('updated ' + art.id);
+    }
   }
 }
