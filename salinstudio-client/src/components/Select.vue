@@ -39,7 +39,7 @@ const language = useLanguageStore();
         :value="option.value"
         class="option"
       >
-        {{ language.language === "en" ? option.label : option.labelFi }}
+        {{ language.isEn() ? option.label : option.labelFi }}
       </option>
     </select>
   </div>

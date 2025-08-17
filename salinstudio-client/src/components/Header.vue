@@ -126,17 +126,17 @@ onUnmounted(() => {
             v-for="link in links"
             :id="'link-id.' + link.label"
             :to="link.to"
-            :label="language.language === 'en' ? link.label : link.labelFi"
+            :label="language.isEn() ? link.label : link.labelFi"
           />
         </div>
         <IconButton
-          v-if="language.language === 'en'"
+          v-if="language.isEn()"
           iconAsText
           :onClick="language.toFi"
           icon="EN"
         />
         <IconButton
-          v-if="language.language === 'fi'"
+          v-if="language.isFi()"
           iconAsText
           :onClick="language.toEn"
           icon="FI"
@@ -165,17 +165,17 @@ onUnmounted(() => {
             v-for="link in links"
             :id="'link-id.' + link.label"
             :to="link.to"
-            :label="language.language === 'en' ? link.label : link.labelFi"
+            :label="language.isEn() ? link.label : link.labelFi"
           />
         </div>
         <IconButton
-          v-if="language.language === 'en'"
+          v-if="language.isEn()"
           iconAsText
           :onClick="language.toFi"
           icon="EN"
         />
         <IconButton
-          v-if="language.language === 'fi'"
+          v-if="language.isFi()"
           iconAsText
           :onClick="language.toEn"
           icon="FI"

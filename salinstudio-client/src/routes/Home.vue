@@ -48,20 +48,14 @@ const language = useLanguageStore();
         </template>
         <template #content>
           <div class="content-inner">
-            <div
-              v-if="language.language === 'en'"
-              class="content-heading-container"
-            >
+            <div v-if="language.isEn()" class="content-heading-container">
               <h1 class="content-heading">Miia Salin is an</h1>
               <h1 class="content-heading">
                 <span class="content-keyword">artist</span> and
                 <span class="content-keyword">visual storyteller</span>
               </h1>
             </div>
-            <div
-              v-if="language.language === 'fi'"
-              class="content-heading-container"
-            >
+            <div v-if="language.isFi()" class="content-heading-container">
               <h1 class="content-heading">Miia Salin on</h1>
               <h1 class="content-heading">
                 <span class="content-keyword">taiteilija</span> ja
@@ -71,9 +65,7 @@ const language = useLanguageStore();
             <div class="content-cta">
               <IconButton
                 :label="
-                  language.language === 'en'
-                    ? 'Explore her work'
-                    : 'Katso hänen töitään'
+                  language.isEn() ? 'Explore her work' : 'Katso hänen töitään'
                 "
                 icon="mdi-light:arrow-up"
                 :onClick="() => $router.push('/gallery')"

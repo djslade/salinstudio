@@ -106,7 +106,7 @@ const handleBack = () => {
     <div class="page" v-if="showGallery">
       <Header
         position="sticky"
-        :heading="language.language === 'en' ? 'gallery' : 'galleria'"
+        :heading="language.isEn() ? 'gallery' : 'galleria'"
         current-route="Gallery"
       >
         <template #fixture>

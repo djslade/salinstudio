@@ -1,4 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { exiftool } from 'exiftool-vendored';
+import { promises as fs } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import * as sharp from 'sharp';
 
 type FingerprintConfig = {
@@ -26,13 +30,18 @@ export class ImageService {
   }
 
   async embedCopyright(buffer: Buffer): Promise<Buffer> {
-    return sharp(buffer)
-      .withExif({
-        IFD0: {
-          Copyright: '© Miia Salin. All rights reserved.',
-        },
-      })
-      .toBuffer();
+    const tmp = join(tmpdir(), `img-${Date.now()}.jpg`);
+    await fs.writeFile(tmp, buffer);
+
+    await exiftool.write(tmp, {
+      Copyright: '© Miia Salin. All rights reserved.',
+      Artist: 'Miia Salin',
+    });
+
+    const embeddedBuffer = await fs.readFile(tmp);
+    await fs.unlink(tmp);
+
+    return embeddedBuffer;
   }
 
   getFileNames(): FIleNames {

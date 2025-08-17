@@ -10,11 +10,11 @@ const language = useLanguageStore();
   <div class="">
     <Header
       position="sticky"
-      :heading="language.language === 'en' ? 'Commissions' : 'Tilaustyöt'"
+      :heading="language.isEn() ? 'Commissions' : 'Tilaustyöt'"
       current-route="Commissions"
     />
     <main>
-      <section v-if="language.language === 'en'" class="comm-closed-panel">
+      <section v-if="language.isEn()" class="comm-closed-panel">
         <div class="comm-closed-title-container">
           <h1 class="comm-closed-title">Commissions are closed</h1>
         </div>
@@ -35,7 +35,7 @@ const language = useLanguageStore();
           </p>
         </div>
       </section>
-      <section v-if="language.language === 'fi'" class="comm-closed-panel">
+      <section v-if="language.isFi()" class="comm-closed-panel">
         <div class="comm-closed-title-container">
           <h1 class="comm-closed-title">Tilaukset suljettu</h1>
         </div>

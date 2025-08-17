@@ -30,7 +30,7 @@ const language = useLanguageStore();
     <Header
       position="sticky"
       :heading="
-        language.language === 'en'
+        language.isEn()
           ? focusedArt
             ? focusedArt.titleEn
             : ''
@@ -45,11 +45,7 @@ const language = useLanguageStore();
           <IconButton
             responsiveLabel
             icon="mdi-light:arrow-left"
-            :label="
-              language.language === 'en'
-                ? 'Back to gallery'
-                : 'Palaa galleriaan'
-            "
+            :label="language.isEn() ? 'Back to gallery' : 'Palaa galleriaan'"
             :onClick="handleBack"
           />
         </div>
@@ -68,7 +64,7 @@ const language = useLanguageStore();
             :alt="focusedArt?.titleEn"
           />
           <div
-            v-if="language.language === 'en' && focusedArt?.descriptionEn"
+            v-if="language.isEn() && focusedArt?.descriptionEn"
             :class="`closeup-description-container ${
               showDescription && 'description-visible'
             }`"
@@ -78,7 +74,7 @@ const language = useLanguageStore();
             </div>
           </div>
           <div
-            v-if="language.language === 'fi' && focusedArt?.descriptionFi"
+            v-if="language.isFi() && focusedArt?.descriptionFi"
             :class="`closeup-description-container ${
               showDescription && 'description-visible'
             }`"

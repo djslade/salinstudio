@@ -10,7 +10,7 @@ const language = useLanguageStore();
   <div class="">
     <Header
       position="sticky"
-      :heading="language.language === 'en' ? 'About' : 'Tietoa'"
+      :heading="language.isEn() ? 'About' : 'Tietoa'"
       current-route="About"
     />
     <main>
@@ -19,7 +19,7 @@ const language = useLanguageStore();
           <img src="/artist.jpg" alt="" class="about-img" />
         </div>
         <div class="about-text-container">
-          <div v-if="language.language === 'en'" class="about-text">
+          <div v-if="language.isEn()" class="about-text">
             <p class="about-p">
               I’m a hardworking artist from Finland with limitless imagination
               and drive. I’ve come a long way for this path, but my hardships
@@ -48,7 +48,7 @@ const language = useLanguageStore();
               to stay up to date with my work.
             </p>
           </div>
-          <div v-if="language.language === 'fi'" class="about-text">
+          <div v-if="language.isFi()" class="about-text">
             <p class="about-p">
               Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma
               tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo,
