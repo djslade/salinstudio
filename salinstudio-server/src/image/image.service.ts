@@ -106,11 +106,8 @@ export class ImageService {
           top: height - 1,
         },
       ])
+      .webp({ lossless: true, quality: 100 })
       .toBuffer();
-  }
-
-  async toWebp(buffer: Buffer): Promise<Buffer> {
-    return sharp(buffer).webp().toBuffer();
   }
 
   async resizeImage(buffer: Buffer, width: number): Promise<Buffer> {
@@ -153,5 +150,57 @@ export class ImageService {
       desktop,
       fingerprintChecksum: config.checksum,
     };
+  }
+
+  isFingerprintPixel(pixel: Buffer): boolean {
+    return pixel[0] === 77 && pixel[2] === 83;
+  }
+
+  async extractFingerprint(buffer: Buffer): Promise<FingerprintConfig | null> {
+    const { width, height } = await this.getImageMetadata(buffer);
+    const image = sharp(buffer);
+
+    const [topLeft, topRight, bottomLeft, bottomRight] = await Promise.all([
+      image
+        .clone()
+        .extract({ left: 0, top: 0, width: 1, height: 1 })
+        .raw()
+        .toBuffer(),
+      image
+        .clone()
+        .extract({ left: width - 1, top: 0, width: 1, height: 1 })
+        .raw()
+        .toBuffer(),
+      image
+        .clone()
+        .extract({ left: 0, top: height - 1, width: 1, height: 1 })
+        .raw()
+        .toBuffer(),
+      image
+        .clone()
+        .extract({ left: width - 1, top: height - 1, width: 1, height: 1 })
+        .raw()
+        .toBuffer(),
+    ]);
+
+    if (
+      !this.isFingerprintPixel(topLeft) ||
+      !this.isFingerprintPixel(topRight) ||
+      !this.isFingerprintPixel(bottomLeft) ||
+      !this.isFingerprintPixel(bottomRight)
+    ) {
+      return null;
+    }
+
+    const year = topLeft[1];
+    const month = topRight[1];
+    const date = bottomLeft[1];
+    const checksum = bottomRight[1];
+
+    if (checksum !== year + month + date) {
+      return null;
+    }
+
+    return { year, month, date, checksum };
   }
 }

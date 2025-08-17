@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -164,5 +165,17 @@ export class ArtService {
       await this.artRepository.save(art);
     }
     await this.artRepository.delete(id);
+  }
+
+  async checkFingerprint(image: Buffer) {
+    const config = await this.imageService.extractFingerprint(image);
+    if (!config) throw new BadRequestException('Could not verify fingerprint');
+    return config.checksum;
+  }
+
+  async findArtByChecksum(checksum: number): Promise<Art[]> {
+    return await this.artRepository.find({
+      where: { fingerprintChecksum: checksum },
+    });
   }
 }

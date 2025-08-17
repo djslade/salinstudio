@@ -41,6 +41,16 @@ export class ArtController {
     return { message: 'Created', art };
   }
 
+  @Post('checksum')
+  @UseInterceptors(
+    FileInterceptor('file', { limits: { fileSize: 50 * 1024 * 1024 } }),
+  )
+  async verifyChecksum(@UploadedFile() image: Express.Multer.File) {
+    const checksum = await this.artService.checkFingerprint(image.buffer);
+    const art = await this.artService.findArtByChecksum(checksum);
+    return { message: 'OK', art };
+  }
+
   @Get()
   async getAllArt() {
     const art = await this.artService.findAll();
