@@ -39,7 +39,7 @@ jobs:
       - name: Build docker image and push - admin
         uses: docker/build-push-action@v6
         with:
-          context: ./admin
+          context: ./salinstudio-admin
           push: true
           tags: fenroe/salinstudio-admin:latest
 
