@@ -8,3 +8,8 @@
   scrollbar-width: thin;
   scrollbar-color: #b4936f #261f19;
 }
+
+html,
+bndy {
+  background-color: #261f19;
+}
