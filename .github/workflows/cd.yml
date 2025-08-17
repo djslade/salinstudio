@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create .env file for admin
-        run: echo "VITE_ENDPOINT=${{ secrets.VITE_ENDPOINT }}" > admin/.env
+        run: echo "VITE_ENDPOINT=${{ secrets.VITE_ENDPOINT }}" > salinstudio-admin/.env
 
       - name: Create .env file for web
         run: echo "VITE_SERVER_ENDPOINT=${{ secrets.VITE_ENDPOINT }}" > salinstudio-client/.env
