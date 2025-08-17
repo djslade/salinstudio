@@ -138,12 +138,14 @@ const language = useLanguageStore();
 .page {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .lone-closeup-panel {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 10rem);
+  height: calc(100dvh - 10rem);
   width: 100%;
   align-items: center;
 }

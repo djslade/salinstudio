@@ -55,6 +55,7 @@ onUnmounted(() => {
 <style scoped>
 .hero-img-container {
   height: 100vh;
+  height: 100dvh;
   position: relative;
   width: 100%;
   display: flex;

@@ -306,6 +306,7 @@ option {
 .page {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .gallery-heading {
@@ -322,6 +323,7 @@ option {
   flex-direction: column;
   gap: 2rem;
   min-height: calc(100vh - 10rem);
+  min-height: calc(100dvh - 10rem);
 }
 
 .gallery-container {
@@ -338,6 +340,7 @@ option {
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .gallery-img-btn {
@@ -395,6 +398,7 @@ option {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 10rem);
+  height: calc(100dvh - 10rem);
   width: 100%;
   align-items: center;
 }

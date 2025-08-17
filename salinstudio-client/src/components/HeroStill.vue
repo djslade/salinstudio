@@ -11,6 +11,7 @@
 <style scoped>
 .hero-img-container {
   height: 100vh;
+  min-height: 100dvh;
   position: relative;
   width: 100%;
   display: flex;

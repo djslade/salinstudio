@@ -64,6 +64,7 @@ const language = useLanguageStore();
 .comm-closed-panel {
   width: 100%;
   height: calc(100vh - 10rem);
+  height: calc(100dvh - 10rem);
   display: flex;
   flex-direction: column;
   justify-content: center;

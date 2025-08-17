@@ -138,6 +138,7 @@ const language = useLanguageStore();
   flex-direction: column;
   gap: 4rem;
   min-height: calc(100vh - 10rem);
+  min-height: calc(100dvh - 10rem);
 }
 
 .about-img-container {

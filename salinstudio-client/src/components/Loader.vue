@@ -9,6 +9,7 @@
 <style scoped>
 .loader-container {
   height: calc(100vh - 10rem);
+  height: calc(100dvh - 10rem);
   width: 100%;
   display: flex;
   justify-content: center;
