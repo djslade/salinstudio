@@ -100,6 +100,11 @@ onUnmounted(() => {
       <slot name="fixture" />
     </div>
     <div
+      class="mobile-menu-underlay"
+      v-if="menuIsOpen"
+      @click="handleCloseMenu"
+    ></div>
+    <div
       class="mobile-menu"
       :style="{
         width: menuIsOpen ? '100%' : '0',
@@ -258,6 +263,13 @@ onUnmounted(() => {
   transition-duration: 0.6s;
 }
 
+.mobile-menu-underlay {
+  z-index: 5;
+  position: fixed;
+  inset: 0;
+  background-color: transparent;
+}
+
 .mobile-menu {
   display: flex;
   max-width: 300px;
@@ -268,6 +280,7 @@ onUnmounted(() => {
   bottom: 0;
   transition-property: all;
   transition-duration: 0.6s;
+  z-index: 10;
 }
 
 .inner-menu {
@@ -368,6 +381,10 @@ onUnmounted(() => {
   }
 
   .mobile-menu {
+    display: none;
+  }
+
+  .mobile-menu-underlay {
     display: none;
   }
 

@@ -38,7 +38,7 @@ const language = useLanguageStore();
           ? focusedArt.titleFi
           : ''
       "
-      :current-route="'Gallery'"
+      :currentRoute="'Gallery'"
     >
       <template #fixture>
         <div class="content-cta">
