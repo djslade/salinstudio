@@ -162,10 +162,8 @@ const language = useLanguageStore();
 
 .about-p {
   color: #d0bfad;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.9;
-  letter-spacing: 4px;
+  line-height: 1.7;
+  letter-spacing: 2px;
   font-family: sans-serif;
 }
 

@@ -65,7 +65,7 @@ const language = useLanguageStore();
               <h1 class="content-heading">Miia Salin on</h1>
               <h1 class="content-heading">
                 <span class="content-keyword">taiteilija</span> ja
-                <span class="content-keyword">kuvatarinan kertoja</span>
+                <span class="content-keyword">visuaalinen tarinankertoja</span>
               </h1>
             </div>
             <div class="content-cta">

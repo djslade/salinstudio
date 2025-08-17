@@ -37,12 +37,12 @@ const language = useLanguageStore();
       </section>
       <section v-if="language.language === 'fi'" class="comm-closed-panel">
         <div class="comm-closed-title-container">
-          <h1 class="comm-closed-title">Tilaukset ei oteta vastaan</h1>
+          <h1 class="comm-closed-title">Tilaukset suljettu</h1>
         </div>
         <div class="comm-closed-text-container">
           <p class="comm-closed-text">
-            Kiitos kiinnostuksestasi, mutta en ole tällä hetkellä ottamassa
-            vastaan tilauspyyntöjä.
+            Kiitos kiinnostuksestasi, mutta en ota tällä hetkellä tilauspyyntöjä
+            vastaan.
           </p>
           <p class="comm-closed-text">
             Seuraa minua
@@ -51,7 +51,7 @@ const language = useLanguageStore();
               target="_blank"
               class="comm-closed-link"
               >Instagramissa</a
-            >, niin saat tietää, kun alan taas ottaa töitä vastaan.
+            >, niin voit seurata päivityksiä asiaan liittyen.
           </p>
         </div>
       </section>
