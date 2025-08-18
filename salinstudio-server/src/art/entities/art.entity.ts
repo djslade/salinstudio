@@ -58,4 +58,7 @@ export class Art extends BaseEntity {
 
   @Column({ default: false })
   updatedFingerprint: boolean;
+
+  @Column({ unique: true })
+  slug: string;
 }

@@ -69,6 +69,12 @@ export class ArtController {
     return { message: 'OK', art };
   }
 
+  @Get('slug/:id')
+  async getArtBySlug(@Param('id') id: string) {
+    const art = await this.artService.findArtBySlug(id);
+    return { message: 'OK', art };
+  }
+
   @Patch('order/category')
   @UseGuards(AuthGuard)
   async updateCategoryOrder(@Body() body: OrderCategoryDto) {

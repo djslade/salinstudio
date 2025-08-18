@@ -36,10 +36,12 @@
     "class-validator": "^0.14.2",
     "exiftool-vendored": "^30.3.0",
     "mysql2": "^3.14.1",
+    "nanoid": "^5.1.5",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "sharp": "^0.34.1",
+    "slugify": "^1.6.6",
     "typeorm": "^0.3.24"
   },
   "devDependencies": {

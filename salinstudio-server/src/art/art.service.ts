@@ -4,7 +4,6 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  OnModuleInit,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
@@ -17,7 +16,8 @@ import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { OrderAllDto } from './dto/order-all.dto';
 import { OrderCarouselDto } from './dto/order-carousel.dto';
-import { ConsoleLogger } from 'exiftool-vendored/dist/DefaultExifToolOptions';
+import { nanoid } from 'nanoid';
+import slugify from 'slugify';
 
 type CreateArtParams = {
   fullUrl: string;
@@ -42,8 +42,20 @@ export class ArtService {
     private configService: ConfigService,
   ) {}
 
+  generateSlug(title: string): string {
+    const base = slugify(title, { lower: true, strict: true });
+    const id = nanoid(6);
+    return `${base}-${id}`;
+  }
+
   async findArtById(id: string): Promise<Art> {
     const art = await this.artRepository.findOne({ where: { id } });
+    if (!art) throw new NotFoundException('Art not found');
+    return art;
+  }
+
+  async findArtBySlug(slug: string): Promise<Art> {
+    const art = await this.artRepository.findOne({ where: { slug } });
     if (!art) throw new NotFoundException('Art not found');
     return art;
   }
@@ -114,6 +126,7 @@ export class ArtService {
     art.totalIndex = totalIndex;
     art.categoryIndex = categoryIndex;
     art.updatedFingerprint = true;
+    art.slug = this.generateSlug(params.titleEn);
     return await this.artRepository.save(art);
   }
 
