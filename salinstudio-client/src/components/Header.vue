@@ -281,6 +281,7 @@ onUnmounted(() => {
   transition-property: all;
   transition-duration: 0.6s;
   z-index: 10;
+  height: 100dvh;
 }
 
 .inner-menu {

@@ -33,7 +33,7 @@ type CreateArtParams = {
 };
 
 @Injectable()
-export class ArtService implements OnModuleInit {
+export class ArtService {
   constructor(
     @Inject(REPOSITORY_NAMES.ART)
     private artRepository: Repository<Art>,
@@ -41,10 +41,6 @@ export class ArtService implements OnModuleInit {
     private imageService: ImageService,
     private configService: ConfigService,
   ) {}
-
-  async onModuleInit() {
-    await this.updateFingerprint();
-  }
 
   async findArtById(id: string): Promise<Art> {
     const art = await this.artRepository.findOne({ where: { id } });
