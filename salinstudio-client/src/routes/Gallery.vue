@@ -9,19 +9,7 @@ import Loader from "../components/Loader.vue";
 import Select from "../components/Select.vue";
 import { useLanguageStore } from "../store/language";
 import GalleryImages from "../components/GalleryImages.vue";
-
-type Art = {
-  id: string;
-  category: string;
-  fullUrl: string;
-  desktopUrl: string;
-  mobileUrl: string;
-  thumbUrl: string;
-  titleEn: string;
-  titleFi: string;
-  descriptionEn: string;
-  descriptionFi: string;
-};
+import type { Art } from "../types/art";
 
 type Filter =
   | "all"

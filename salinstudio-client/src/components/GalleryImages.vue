@@ -63,7 +63,7 @@ onMounted(async () => {
       v-for="(image, idx) in array"
       :key="`art-${idx}`"
       :style="{ aspectRatio: image.ratio }"
-      @click="() => handleImageSelect(image.metadata?.art!)"
+      @click="() => $router.push(`/gallery/${image.metadata?.art?.slug || ''}`)"
     >
       <img
         class="gallery-img"

@@ -9,4 +9,5 @@ export type Art = {
   titleFi: string;
   descriptionEn: string;
   descriptionFi: string;
+  slug: string;
 };
