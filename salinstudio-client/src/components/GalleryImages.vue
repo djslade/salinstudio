@@ -16,7 +16,6 @@ type Filter =
 const { data } = defineProps<{
   data: Art[];
   category: Filter;
-  handleImageSelect: (art: Art) => void;
   columnCount: number;
 }>();
 

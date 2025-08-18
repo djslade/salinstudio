@@ -4,7 +4,6 @@ import axios from "axios";
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import { ref } from "vue";
-import Closeup from "../components/Closeup.vue";
 import Loader from "../components/Loader.vue";
 import Select from "../components/Select.vue";
 import { useLanguageStore } from "../store/language";
@@ -54,10 +53,6 @@ const selectOptions = [
 
 const artCategory = ref<Filter>("all");
 
-const showGallery = ref<boolean>(true);
-
-const focusedArt = ref<Art | null>(null);
-
 const language = useLanguageStore();
 
 const { data } = useQuery({
@@ -71,20 +66,11 @@ const { data } = useQuery({
 const handleChange = (evt: { target: { value: Filter } }) => {
   artCategory.value = evt.target.value;
 };
-
-const handleImageSelect = (art: Art) => {
-  focusedArt.value = art;
-  showGallery.value = false;
-};
-
-const handleBack = () => {
-  showGallery.value = true;
-};
 </script>
 
 <template>
   <Transition name="page-opacity" mode="out-in">
-    <div class="page" v-if="showGallery">
+    <div class="page">
       <Header
         position="sticky"
         :heading="language.isEn() ? 'gallery' : 'galleria'"
@@ -105,7 +91,6 @@ const handleBack = () => {
             <GalleryImages
               :data="data"
               :category="artCategory"
-              :handleImageSelect="handleImageSelect"
               :columnCount="1"
             />
           </div>
@@ -113,7 +98,6 @@ const handleBack = () => {
             <GalleryImages
               :data="data"
               :category="artCategory"
-              :handleImageSelect="handleImageSelect"
               :columnCount="2"
             />
           </div>
@@ -121,7 +105,6 @@ const handleBack = () => {
             <GalleryImages
               :data="data"
               :category="artCategory"
-              :handleImageSelect="handleImageSelect"
               :columnCount="3"
             />
           </div>
@@ -129,7 +112,6 @@ const handleBack = () => {
             <GalleryImages
               :data="data"
               :category="artCategory"
-              :handleImageSelect="handleImageSelect"
               :columnCount="4"
             />
           </div>
@@ -137,7 +119,6 @@ const handleBack = () => {
             <GalleryImages
               :data="data"
               :category="artCategory"
-              :handleImageSelect="handleImageSelect"
               :columnCount="5"
             />
           </div>
@@ -145,7 +126,6 @@ const handleBack = () => {
       </main>
       <Footer position="static" />
     </div>
-    <Closeup v-else :focused-art="focusedArt" :handle-back="handleBack" />
   </Transition>
 </template>
 
