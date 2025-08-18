@@ -188,10 +188,8 @@ export class ArtService {
       where: { updatedFingerprint: false },
     });
     if (outdatedArt.length === 0) {
-      console.log('no entries to update');
       return;
     }
-    console.log(`${outdatedArt.length} entries to update`);
     for (let art of outdatedArt) {
       const date = art.createdAt;
       const image = await this.uploadService.get(
@@ -207,7 +205,6 @@ export class ArtService {
         if (matches.filter((m) => m.id === art.id).length > 0) {
           art.updatedFingerprint = true;
           await this.artRepository.save(art);
-          console.log('updated ' + art.id);
           continue;
         }
       }
@@ -231,7 +228,6 @@ export class ArtService {
       art.fingerprintChecksum = newImages.fingerprintChecksum;
       art.updatedFingerprint = true;
       await this.artRepository.save(art);
-      console.log('updated ' + art.id);
     }
   }
 }

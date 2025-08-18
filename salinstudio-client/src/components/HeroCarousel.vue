@@ -1,22 +1,17 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
+import type { Art } from "../types/art";
+import type { LoadedImage } from "../types/LoadedImage";
+import { preloadImage } from "../utils/preloadImage";
 
-type Art = {
-  id: string;
-  category: string;
-  fullUrl: string;
-  desktopUrl: string;
-  mobileUrl: string;
-  thumbUrl: string;
-  titleEn: string;
-  titleFi: string;
-  descriptionEn: string;
-  descriptionFi: string;
-};
-
-const { images } = defineProps<{ images: Art[] }>();
+const { images, onLoaded } = defineProps<{
+  images: Art[];
+  onLoaded: () => void;
+}>();
 
 const frontImageIdx = ref<number>(0);
+const loadedImages = ref<LoadedImage[]>([]);
+
 let intervalId: number | undefined;
 
 const getZIndex = (idx: number) => {
@@ -26,10 +21,19 @@ const getZIndex = (idx: number) => {
   return 1;
 };
 
-onMounted(() => {
-  intervalId = setInterval(() => {
-    frontImageIdx.value = (frontImageIdx.value + 1) % images.length;
-  }, 10000);
+onMounted(async () => {
+  try {
+    const results = (await Promise.all(
+      images.map((art) => preloadImage(art.thumbUrl, { art }))
+    )) as LoadedImage[];
+    loadedImages.value = results;
+    onLoaded();
+    intervalId = setInterval(() => {
+      frontImageIdx.value = (frontImageIdx.value + 1) % images.length;
+    }, 10000);
+  } catch (err) {
+    console.error("Image preload failed", err);
+  }
 });
 
 onUnmounted(() => {
@@ -40,12 +44,16 @@ onUnmounted(() => {
 <template>
   <div class="hero-img-container">
     <div
-      v-for="(image, idx) in images"
+      v-for="(image, idx) in loadedImages"
       :class="`canvas ${getZIndex(idx) !== 2 && 'prev'}`"
       :key="idx"
       :style="{ zIndex: getZIndex(idx) }"
     >
-      <img class="hero-img" :src="image.fullUrl" :alt="image.descriptionEn" />
+      <img
+        class="hero-img"
+        :src="image.src"
+        :alt="image.metadata?.art?.titleEn ?? ''"
+      />
       <div class="vert-overlay"></div>
       <div class="horiz-overlay"></div>
     </div>

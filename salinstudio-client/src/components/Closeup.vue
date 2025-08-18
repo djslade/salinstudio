@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
 import IconButton from "./IconButton.vue";
 import { useLanguageStore } from "../store/language";
+import type { Art } from "../types/art";
+import { preloadImage } from "../utils/preloadImage";
+import Loader from "./Loader.vue";
 
-type Art = {
-  id: string;
-  category: string;
-  fullUrl: string;
-  desktopUrl: string;
-  mobileUrl: string;
-  thumbUrl: string;
-  titleEn: string;
-  titleFi: string;
-  descriptionEn: string;
-  descriptionFi: string;
-};
-
-defineProps<{ focusedArt: Art | null; handleBack: () => void }>();
+const { focusedArt } = defineProps<{
+  focusedArt: Art | null;
+  handleBack: () => void;
+}>();
 
 const showDescription = ref<boolean>(false);
+const fullyLoaded = ref<boolean>(false);
 
 const language = useLanguageStore();
+
+onMounted(async () => {
+  if (!focusedArt) return;
+  await preloadImage(focusedArt.desktopUrl);
+  fullyLoaded.value = true;
+});
 </script>
 
 <template>
@@ -52,10 +52,11 @@ const language = useLanguageStore();
       </template>
     </Header>
     <main>
-      <section class="lone-closeup-panel">
+      <section v-if="fullyLoaded" class="lone-closeup-panel">
         <div
           @mouseenter="showDescription = true"
           @mouseleave="showDescription = false"
+          @click="showDescription = !showDescription"
           class="closeup-data-container"
         >
           <img
@@ -85,6 +86,7 @@ const language = useLanguageStore();
           </div>
         </div>
       </section>
+      <Loader v-else />
     </main>
     <Footer position="static" />
   </div>
@@ -94,7 +96,7 @@ const language = useLanguageStore();
 .closeup-description-container {
   inset: 0;
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(38, 31, 25, 0.9);
   opacity: 0;
   transition: opacity 0.3s;
 }

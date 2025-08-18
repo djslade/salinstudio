@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps<{ full?: boolean }>();
+</script>
 
 <template>
-  <div class="loader-container">
+  <div :class="`loader-container ${full && 'full'}`">
     <div class="loader"></div>
   </div>
 </template>
@@ -14,6 +16,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.full {
+  height: 100vh;
+  height: 100dvh;
 }
 
 .loader {

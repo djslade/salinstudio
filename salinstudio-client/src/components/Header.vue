@@ -3,6 +3,7 @@ import NavLink from "./NavLink.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import IconButton from "./IconButton.vue";
 import { useLanguageStore } from "../store/language";
+import Underlay from "./Underlay.vue";
 
 type Link = {
   to: string;
@@ -90,6 +91,7 @@ onUnmounted(() => {
       backgroundColor: transparent ? 'transparent' : '#261f19',
     }"
   >
+    <Underlay v-if="menuIsOpen" :onClick="handleCloseMenu" />
     <div class="menu-btn-container">
       <IconButton :onClick="handleOpenMenu" icon="mdi-light:menu" />
     </div>
@@ -99,11 +101,6 @@ onUnmounted(() => {
     <div class="fixture-container">
       <slot name="fixture" />
     </div>
-    <div
-      class="mobile-menu-underlay"
-      v-if="menuIsOpen"
-      @click="handleCloseMenu"
-    ></div>
     <div
       class="mobile-menu"
       :style="{

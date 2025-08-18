@@ -2,8 +2,17 @@
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import { useLanguageStore } from "../store/language";
+import { onMounted, ref } from "vue";
+import { preloadImage } from "../utils/preloadImage";
+import Loader from "../components/Loader.vue";
 
 const language = useLanguageStore();
+const fullyLoaded = ref<boolean>(false);
+
+onMounted(async () => {
+  await preloadImage("/1755546690870.jpg");
+  fullyLoaded.value = true;
+});
 </script>
 
 <template>
@@ -14,9 +23,9 @@ const language = useLanguageStore();
       current-route="About"
     />
     <main>
-      <section class="about-panel">
+      <section v-if="fullyLoaded" class="about-panel">
         <div class="about-img-container">
-          <img src="/artist.jpg" alt="" class="about-img" />
+          <img src="/1755546690870.jpg" alt="" class="about-img" />
         </div>
         <div class="about-text-container">
           <div v-if="language.isEn()" class="about-text">
@@ -79,6 +88,7 @@ const language = useLanguageStore();
           </div>
         </div>
       </section>
+      <Loader v-else />
     </main>
     <Footer position="static" />
   </div>

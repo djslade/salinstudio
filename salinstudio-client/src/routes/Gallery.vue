@@ -8,6 +8,7 @@ import Closeup from "../components/Closeup.vue";
 import Loader from "../components/Loader.vue";
 import Select from "../components/Select.vue";
 import { useLanguageStore } from "../store/language";
+import GalleryImages from "../components/GalleryImages.vue";
 
 type Art = {
   id: string;
@@ -79,14 +80,6 @@ const { data } = useQuery({
   },
 });
 
-const getColumnArrays = (array: Art[], columnCount: number) => {
-  const columnsArray: Art[][] = [];
-  for (let i = 0; i < columnCount; i++) {
-    columnsArray.push(array.filter((_, idx) => idx % columnCount === i));
-  }
-  return columnsArray;
-};
-
 const handleChange = (evt: { target: { value: Filter } }) => {
   artCategory.value = evt.target.value;
 };
@@ -121,139 +114,44 @@ const handleBack = () => {
         <section class="gallery-panel">
           <Loader v-if="!data" />
           <div v-if="data" class="gallery-container gallery-columns-1">
-            <div
-              v-for="(array, idx) in getColumnArrays(
-                data.filter((art) =>
-                  artCategory === 'all'
-                    ? art.category !== 'mixed media'
-                    : art.category === artCategory
-                ),
-                1
-              )"
-              :key="`array-${idx}`"
-              class="gallery-column"
-            >
-              <button
-                class="gallery-img-btn"
-                v-for="(art, idx) in array"
-                :key="`art-${idx}`"
-                @click="() => handleImageSelect(art)"
-              >
-                <img
-                  class="gallery-img"
-                  :src="art.thumbUrl"
-                  :alt="art.titleEn"
-                />
-              </button>
-            </div>
+            <GalleryImages
+              :data="data"
+              :category="artCategory"
+              :handleImageSelect="handleImageSelect"
+              :columnCount="1"
+            />
           </div>
           <div v-if="data" class="gallery-container gallery-columns-2">
-            <div
-              v-for="(array, idx) in getColumnArrays(
-                data.filter((art) =>
-                  artCategory === 'all'
-                    ? art.category !== 'mixed media'
-                    : art.category === artCategory
-                ),
-                2
-              )"
-              :key="`array-${idx}`"
-              class="gallery-column"
-            >
-              <button
-                class="gallery-img-btn"
-                v-for="(art, idx) in array"
-                :key="`art-${idx}`"
-                @click="() => handleImageSelect(art)"
-              >
-                <img
-                  class="gallery-img"
-                  :src="art.thumbUrl"
-                  :alt="art.titleEn"
-                />
-              </button>
-            </div>
+            <GalleryImages
+              :data="data"
+              :category="artCategory"
+              :handleImageSelect="handleImageSelect"
+              :columnCount="2"
+            />
           </div>
           <div v-if="data" class="gallery-container gallery-columns-3">
-            <div
-              v-for="(array, idx) in getColumnArrays(
-                data.filter((art) =>
-                  artCategory === 'all'
-                    ? art.category !== 'mixed media'
-                    : art.category === artCategory
-                ),
-                3
-              )"
-              :key="`array-${idx}`"
-              class="gallery-column"
-            >
-              <button
-                class="gallery-img-btn"
-                v-for="(art, idx) in array"
-                :key="`art-${idx}`"
-                @click="() => handleImageSelect(art)"
-              >
-                <img
-                  class="gallery-img"
-                  :src="art.thumbUrl"
-                  :alt="art.titleEn"
-                />
-              </button>
-            </div>
+            <GalleryImages
+              :data="data"
+              :category="artCategory"
+              :handleImageSelect="handleImageSelect"
+              :columnCount="3"
+            />
           </div>
           <div v-if="data" class="gallery-container gallery-columns-4">
-            <div
-              v-for="(array, idx) in getColumnArrays(
-                data.filter((art) =>
-                  artCategory === 'all'
-                    ? art.category !== 'mixed media'
-                    : art.category === artCategory
-                ),
-                4
-              )"
-              :key="`array-${idx}`"
-              class="gallery-column"
-            >
-              <button
-                class="gallery-img-btn"
-                v-for="(art, idx) in array"
-                :key="`art-${idx}`"
-                @click="() => handleImageSelect(art)"
-              >
-                <img
-                  class="gallery-img"
-                  :src="art.thumbUrl"
-                  :alt="art.titleEn"
-                />
-              </button>
-            </div>
+            <GalleryImages
+              :data="data"
+              :category="artCategory"
+              :handleImageSelect="handleImageSelect"
+              :columnCount="4"
+            />
           </div>
           <div v-if="data" class="gallery-container gallery-columns-5">
-            <div
-              v-for="(array, idx) in getColumnArrays(
-                data.filter((art) =>
-                  artCategory === 'all'
-                    ? art.category !== 'mixed media'
-                    : art.category === artCategory
-                ),
-                5
-              )"
-              :key="`array-${idx}`"
-              class="gallery-column"
-            >
-              <button
-                class="gallery-img-btn"
-                v-for="(art, idx) in array"
-                :key="`art-${idx}`"
-                @click="() => handleImageSelect(art)"
-              >
-                <img
-                  class="gallery-img"
-                  :src="art.thumbUrl"
-                  :alt="art.titleEn"
-                />
-              </button>
-            </div>
+            <GalleryImages
+              :data="data"
+              :category="artCategory"
+              :handleImageSelect="handleImageSelect"
+              :columnCount="5"
+            />
           </div>
         </section>
       </main>

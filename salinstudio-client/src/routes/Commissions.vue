@@ -76,6 +76,7 @@ const language = useLanguageStore();
 .comm-closed-title-container {
   width: 100%;
   text-align: center;
+  max-width: 900px;
 }
 
 .comm-closed-title {
@@ -90,6 +91,7 @@ const language = useLanguageStore();
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-width: 900px;
 }
 
 .comm-closed-text {
