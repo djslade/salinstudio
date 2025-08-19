@@ -5,7 +5,6 @@ import Commissions from "./routes/Commissions.vue";
 import Home from "./routes/Home.vue";
 import Closeup from "./routes/Closeup.vue";
 import NotFound from "./routes/NotFound.vue";
-import Contact from "./routes/Contact.vue";
 
 const routes = [
   {
