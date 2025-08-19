@@ -46,6 +46,13 @@ const links: Link[] = [
     label: "Commissions",
     labelFi: "Tilaustyöt",
   },
+  /*
+    {
+    to: "/contact",
+    label: "Contact",
+    labelFi: "Tilaustyöt",
+  },
+  */
 ];
 
 const menuIsOpen = ref<boolean>(false);
