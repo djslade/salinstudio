@@ -7,20 +7,7 @@ import OpacityTransition from "./components/OpacityTransition.vue";
 const language = useLanguageStore();
 
 onMounted(() => {
-  const storedLanguage = localStorage.getItem("salinstudio-language");
-  if (storedLanguage && (storedLanguage === "fi" || storedLanguage === "en")) {
-    language.set(storedLanguage);
-  } else {
-    let inferredLanguage = "en";
-    const userLanguage = navigator.language || navigator.languages[0];
-    if (userLanguage.startsWith("fi")) {
-      inferredLanguage = "fi";
-    }
-    localStorage.setItem("salinstudio-language", inferredLanguage);
-    if (inferredLanguage === "en" || inferredLanguage === "fi") {
-      language.set(inferredLanguage);
-    }
-  }
+  language.init();
 });
 </script>
 

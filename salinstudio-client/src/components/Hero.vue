@@ -30,7 +30,7 @@ const getZIndex = (idx: number) => {
 onMounted(async () => {
   try {
     const results = (await Promise.all(
-      data.map((art) => preloadImage(art.fullUrl, { art }))
+      data.map((art) => preloadImage(art.desktopUrl, { art }))
     )) as LoadedImage[];
     loadedImages.value = results;
     fullyLoaded.value = true;

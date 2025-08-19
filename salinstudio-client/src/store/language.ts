@@ -22,5 +22,22 @@ export const useLanguageStore = defineStore("language", {
       this.language = "fi";
       localStorage.setItem("salinstudio-language", "fi");
     },
+    init() {
+      const storedLanguage = localStorage.getItem("salinstudio-language");
+      if (!storedLanguage) {
+        const userLang = navigator.language;
+        if (userLang.startsWith("fi")) {
+          this.toFi();
+        } else {
+          this.toEn();
+        }
+      } else {
+        if (storedLanguage === "fi") {
+          this.toFi();
+        } else {
+          this.toEn();
+        }
+      }
+    },
   },
 });
