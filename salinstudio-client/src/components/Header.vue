@@ -4,14 +4,13 @@ import { onMounted, onUnmounted, ref } from "vue";
 import IconButton from "./IconButton.vue";
 import { useLanguageStore } from "../store/language";
 import Underlay from "./Underlay.vue";
+import type { Position } from "../types/position";
 
 type Link = {
   to: string;
   label: string;
   labelFi: string;
 };
-
-type Position = "fixed" | "sticky";
 
 defineProps<{
   position: Position;

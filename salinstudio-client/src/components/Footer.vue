@@ -1,15 +1,15 @@
 <script setup lang="ts">
-type Position = "absolute" | "static";
+import type { Position } from "../types/position";
 
 defineProps<{ position: Position }>();
 </script>
 
 <template>
-  <header class="footer" :style="{ position }">
+  <footer class="footer" :style="{ position }">
     <div class="inner-footer">
       <span class="attribution">©2025 Miia Salin</span>
     </div>
-  </header>
+  </footer>
 </template>
 
 <style scoped>
