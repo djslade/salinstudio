@@ -73,7 +73,7 @@ const handleScroll = () => {
   const newYOffset = window.pageYOffset;
   const delta = newYOffset - prevYOffset.value;
 
-  if (Math.abs(delta) < 5) return;
+  if (Math.abs(delta) < 5 || newYOffset < 160) return;
   if (newYOffset > prevYOffset.value) {
     if (!isHidden.value) isHidden.value = true;
   }

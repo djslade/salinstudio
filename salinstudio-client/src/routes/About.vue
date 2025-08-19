@@ -30,7 +30,7 @@ onMounted(async () => {
           :class="{ 'about-panel': true, 'is-visible': fullyLoaded }"
         >
           <div class="about-img-container">
-            <img src="/1755546690870.jpg" alt="" class="about-img" />
+            <img src="/1755546690870.jpg" alt="Miia Salin" class="about-img" />
           </div>
           <div class="about-text-container">
             <div v-if="language.isEn()" class="about-text">
@@ -95,7 +95,6 @@ onMounted(async () => {
           </div>
         </section>
       </OpacityTransition>
-
       <Loader v-if="!fullyLoaded" />
     </main>
     <Footer position="static" />
@@ -173,10 +172,11 @@ onMounted(async () => {
 }
 
 .about-img {
-  width: 24rem;
+  max-width: 24rem;
+  width: 100%;
   aspect-ratio: 2/3;
   object-fit: cover;
-  border-radius: 1rem;
+  border-radius: 8px;
   filter: sepia(20%);
 }
 
