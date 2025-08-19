@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import Loader from "../components/Loader.vue";
 import Select from "../components/Select.vue";
 import { useLanguageStore } from "../store/language";
@@ -66,329 +66,60 @@ const { data } = useQuery({
 const handleChange = (evt: { target: { value: Filter } }) => {
   artCategory.value = evt.target.value;
 };
+
+const columnCount = ref(1);
+
+const updateColumns = () => {
+  const width = window.innerWidth;
+  if (width < 600) columnCount.value = 1;
+  if (width < 900) columnCount.value = 2;
+  if (width < 1200) columnCount.value = 3;
+  if (width < 1500) columnCount.value = 4;
+  if (width >= 1500) columnCount.value = 5;
+};
+
+onMounted(() => {
+  updateColumns();
+  window.addEventListener("resize", updateColumns);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateColumns);
+});
 </script>
 
 <template>
-  <Transition name="page-opacity" mode="out-in">
-    <div class="page">
-      <Header
-        position="sticky"
-        :heading="language.isEn() ? 'gallery' : 'galleria'"
-        current-route="Gallery"
-      >
-        <template #fixture>
-          <Select
-            :value="artCategory"
-            :onChange="handleChange"
-            :options="selectOptions"
-          />
-        </template>
-      </Header>
-      <main>
-        <section class="gallery-panel">
-          <Loader v-if="!data" />
-          <div v-if="data" class="gallery-container gallery-columns-1">
-            <GalleryImages
-              :data="data"
-              :category="artCategory"
-              :columnCount="1"
-            />
-          </div>
-          <div v-if="data" class="gallery-container gallery-columns-2">
-            <GalleryImages
-              :data="data"
-              :category="artCategory"
-              :columnCount="2"
-            />
-          </div>
-          <div v-if="data" class="gallery-container gallery-columns-3">
-            <GalleryImages
-              :data="data"
-              :category="artCategory"
-              :columnCount="3"
-            />
-          </div>
-          <div v-if="data" class="gallery-container gallery-columns-4">
-            <GalleryImages
-              :data="data"
-              :category="artCategory"
-              :columnCount="4"
-            />
-          </div>
-          <div v-if="data" class="gallery-container gallery-columns-5">
-            <GalleryImages
-              :data="data"
-              :category="artCategory"
-              :columnCount="5"
-            />
-          </div>
-        </section>
-      </main>
-      <Footer position="static" />
-    </div>
-  </Transition>
+  <div class="page">
+    <Header
+      position="sticky"
+      :heading="language.isEn() ? 'gallery' : 'galleria'"
+      current-route="Gallery"
+    >
+      <template #fixture>
+        <Select
+          :value="artCategory"
+          :onChange="handleChange"
+          :options="selectOptions"
+        />
+      </template>
+    </Header>
+    <main>
+      <GalleryImages
+        v-if="data"
+        :data="data"
+        :category="artCategory"
+        :columnCount="columnCount"
+      />
+      <Loader v-else />
+    </main>
+    <Footer position="static" />
+  </div>
 </template>
 
 <style scoped>
-.category-select-container {
-  display: flex;
-  color: #b4936f;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.category-select-label {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  display: none;
-}
-
-.category-select {
-  background-color: #261f19;
-  color: #d0bfad;
-  border: 1px solid #b4936f;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  text-align: center;
-  font-family: sans-serif;
-  /* for Firefox */
-  -moz-appearance: none;
-  /* for Chrome */
-  -webkit-appearance: none;
-  appearance: none;
-  padding: 0.5rem;
-  border-radius: 8px;
-}
-
-option {
-  text-transform: none;
-  font-size: 1rem;
-  text-align: left;
-  font-family: sans-serif;
-}
-
 .page {
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
-}
-
-.gallery-heading {
-  color: #b4936f;
-  font-size: 1.2rem;
-  letter-spacing: 8px;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-.gallery-panel {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  min-height: calc(100vh - 10rem);
-  min-height: calc(100dvh - 10rem);
-}
-
-.gallery-container {
-  columns: 1;
-  margin: 0 auto;
-  display: flex;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.gallery-column {
-  display: flex;
-  gap: 0.5rem;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-}
-
-.gallery-img-btn {
-  border: none;
-  background-color: transparent;
-  width: 100%;
-  cursor: pointer;
-}
-
-.gallery-img {
-  border-radius: 0.5rem;
-  width: 100%;
-}
-
-.closeup-panel {
-  display: flex;
-  max-width: 1440px;
-  width: 100%;
-  margin: 0 auto;
-  gap: 2rem;
-}
-
-.closeup-image-container {
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.closeup-image {
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 4px;
-}
-
-.closeup-info-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  justify-content: center;
-}
-
-.closeup-info {
-  color: #d0bfad;
-  font-family: sans-serif;
-  letter-spacing: 2px;
-  line-height: 1.5;
-  max-width: 600px;
-  width: 100%;
-}
-
-.lone-closeup-panel {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 10rem);
-  height: calc(100dvh - 10rem);
-  width: 100%;
-  align-items: center;
-}
-
-.page-opacity-enter-active,
-.page-opacity-leave-active {
-  transition-timing-function: ease;
-  transition-duration: 600ms;
-  transition-property: all;
-}
-
-.page-opacity-enter-from,
-.page-opacity-leave-to {
-  opacity: 0;
-}
-
-.cta-btn {
-  background-color: transparent;
-  border: transparent;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.cta-btn-icon-container {
-  border: 1px solid #b4936f;
-  border-radius: 50%;
-  padding: 0.5rem;
-}
-
-.cta-btn-icon {
-  color: #d0bfad;
-  font-size: 1.5rem;
-}
-
-.cta-btn-text {
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: #d0bfad;
-}
-
-.show-info-btn-container {
-  height: 5rem;
-  background-color: red;
-  width: 100%;
-}
-
-.gallery-columns-1 {
-  display: flex;
-}
-
-.gallery-columns-2 {
-  display: none;
-}
-
-.gallery-columns-3 {
-  display: none;
-}
-
-.gallery-columns-4 {
-  display: none;
-}
-
-.gallery-columns-5 {
-  display: none;
-}
-
-@media (min-width: 450px) {
-  .gallery-columns-1 {
-    display: none;
-  }
-
-  .gallery-columns-2 {
-    display: flex;
-  }
-
-  .gallery-container {
-    columns: 2;
-  }
-}
-
-@media (min-width: 600px) {
-  .gallery-columns-2 {
-    display: none;
-  }
-
-  .gallery-columns-3 {
-    display: flex;
-  }
-
-  .gallery-container {
-    columns: 3;
-  }
-}
-
-@media (min-width: 900px) {
-  .category-select-label {
-    display: inline;
-  }
-
-  .gallery-columns-3 {
-    display: none;
-  }
-
-  .gallery-columns-4 {
-    display: flex;
-  }
-
-  .gallery-container {
-    columns: 4;
-  }
-}
-
-@media (min-width: 1500px) {
-  .gallery-columns-4 {
-    display: none;
-  }
-
-  .gallery-columns-5 {
-    display: flex;
-  }
-
-  .gallery-container {
-    columns: 5;
-  }
 }
 </style>

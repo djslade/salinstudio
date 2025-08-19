@@ -1,10 +1,21 @@
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
+
 defineProps<{ full?: boolean }>();
+
+const showLoader = ref<boolean>(false);
+
+onMounted(async () => {
+  let timer: number | undefined;
+  timer = window.setTimeout(() => {
+    showLoader.value = true;
+  }, 500);
+});
 </script>
 
 <template>
   <div :class="`loader-container ${full && 'full'}`">
-    <div class="loader"></div>
+    <div v-if="showLoader" class="loader"></div>
   </div>
 </template>
 

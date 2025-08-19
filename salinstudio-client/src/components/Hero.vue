@@ -6,6 +6,7 @@ import { preloadImage } from "../utils/preloadImage";
 import { useLanguageStore } from "../store/language";
 import IconButton from "../components/IconButton.vue";
 import Loader from "./Loader.vue";
+import OpacityTransition from "./OpacityTransition.vue";
 
 const { data } = defineProps<{
   data: Art[];
@@ -47,53 +48,55 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section v-if="fullyLoaded" class="hero">
-    <div class="hero-img-container">
-      <div
-        v-for="(image, idx) in loadedImages"
-        :class="`canvas ${getZIndex(idx) !== 2 && 'prev'}`"
-        :key="idx"
-        :style="{ zIndex: getZIndex(idx) }"
-      >
-        <img
-          class="hero-img"
-          :src="image.src"
-          :alt="image.metadata?.art?.titleEn ?? ''"
-        />
-        <div class="vert-overlay"></div>
-        <div class="horiz-overlay"></div>
-      </div>
-    </div>
-    <div class="overlay" />
-    <div class="content-container">
-      <div class="content-inner">
-        <div v-if="language.isEn()" class="content-heading-container">
-          <h1 class="content-heading">Miia Salin is an</h1>
-          <h1 class="content-heading">
-            <span class="content-keyword">artist</span> and
-            <span class="content-keyword">visual storyteller</span>
-          </h1>
-        </div>
-        <div v-if="language.isFi()" class="content-heading-container">
-          <h1 class="content-heading">Miia Salin on</h1>
-          <h1 class="content-heading">
-            <span class="content-keyword">taiteilija</span> ja
-            <span class="content-keyword">visuaalinen tarinankertoja</span>
-          </h1>
-        </div>
-        <div class="content-cta">
-          <IconButton
-            :label="
-              language.isEn() ? 'Explore her work' : 'Katso hänen töitään'
-            "
-            icon="mdi-light:arrow-up"
-            :onClick="() => $router.push('/gallery')"
+  <OpacityTransition mode="default">
+    <section v-if="fullyLoaded" class="hero">
+      <div class="hero-img-container">
+        <div
+          v-for="(image, idx) in loadedImages"
+          :class="`canvas ${getZIndex(idx) !== 2 && 'prev'}`"
+          :key="idx"
+          :style="{ zIndex: getZIndex(idx) }"
+        >
+          <img
+            class="hero-img"
+            :src="image.src"
+            :alt="image.metadata?.art?.titleEn ?? ''"
           />
+          <div class="vert-overlay"></div>
+          <div class="horiz-overlay"></div>
         </div>
       </div>
-    </div>
-  </section>
-  <Loader v-else full />
+      <div class="overlay" />
+      <div class="content-container">
+        <div class="content-inner">
+          <div v-if="language.isEn()" class="content-heading-container">
+            <h1 class="content-heading">Miia Salin is an</h1>
+            <h1 class="content-heading">
+              <span class="content-keyword">artist</span> and
+              <span class="content-keyword">visual storyteller</span>
+            </h1>
+          </div>
+          <div v-if="language.isFi()" class="content-heading-container">
+            <h1 class="content-heading">Miia Salin on</h1>
+            <h1 class="content-heading">
+              <span class="content-keyword">taiteilija</span> ja
+              <span class="content-keyword">visuaalinen tarinankertoja</span>
+            </h1>
+          </div>
+          <div class="content-cta">
+            <IconButton
+              :label="
+                language.isEn() ? 'Explore her work' : 'Katso hänen töitään'
+              "
+              icon="mdi-light:arrow-up"
+              :onClick="() => $router.push('/gallery')"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  </OpacityTransition>
+  <Loader v-if="!fullyLoaded" full />
 </template>
 
 <style scoped>

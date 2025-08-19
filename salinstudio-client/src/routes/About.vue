@@ -5,6 +5,7 @@ import { useLanguageStore } from "../store/language";
 import { onMounted, ref } from "vue";
 import { preloadImage } from "../utils/preloadImage";
 import Loader from "../components/Loader.vue";
+import OpacityTransition from "../components/OpacityTransition.vue";
 
 const language = useLanguageStore();
 const fullyLoaded = ref<boolean>(false);
@@ -23,72 +24,79 @@ onMounted(async () => {
       current-route="About"
     />
     <main>
-      <section v-if="fullyLoaded" class="about-panel">
-        <div class="about-img-container">
-          <img src="/1755546690870.jpg" alt="" class="about-img" />
-        </div>
-        <div class="about-text-container">
-          <div v-if="language.isEn()" class="about-text">
-            <p class="about-p">
-              I’m a hardworking artist from Finland with limitless imagination
-              and drive. I’ve come a long way for this path, but my hardships
-              have just made my determination stronger.
-            </p>
-            <p class="about-p">
-              I enjoy drawing with pencil, coal and using oil paints. I also
-              make some digital art at times, and have great interest in
-              animation and 3D art. I’m a great listener and learn fast. I enjoy
-              surrealism, symbolism, real life experiences and stories. I want
-              to capture the feeling and raw emotion in whatever or whoever I
-              make art of.
-            </p>
-            <p class="about-p">
-              Being international is very important to me, and I’m hoping to
-              gain new experiences and opportunities outside of Finland too. I’m
-              very sensitive to different situations that people might be in,
-              and I will make it as easy as possible to contact me and request
-              artworks. Follow me on
-              <a
-                href="https://www.instagram.com/salinmiia/"
-                target="_blank"
-                class="about-link"
-                >Instagram</a
-              >
-              to stay up to date with my work.
-            </p>
+      <OpacityTransition mode="default">
+        <section
+          v-if="fullyLoaded"
+          :class="{ 'about-panel': true, 'is-visible': fullyLoaded }"
+        >
+          <div class="about-img-container">
+            <img src="/1755546690870.jpg" alt="" class="about-img" />
           </div>
-          <div v-if="language.isFi()" class="about-text">
-            <p class="about-p">
-              Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma
-              tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo,
-              mutta jokainen vastoinkäyminen on vain vahvistanut
-              päättäväisyyttäni ja intohimoani taiteeseen.
-            </p>
-            <p class="about-p">
-              Työskentelen mielelläni lyijykynällä, hiilellä ja öljyväreillä.
-              Teen toisinaan myös digitaalista taidetta, ja minua kiehtovat
-              erityisesti animaatio sekä 3D-taide. Opin nopeasti, kuuntelen
-              tarkasti ja ammennan inspiraatiota surrealismista, symbolismista,
-              tosielämän kokemuksista ja tarinoista. Pyrin aina tavoittamaan
-              tunteen ja aidon elämyksen riippumatta siitä, mitä tai ketä
-              kuvitan.
-            </p>
-            <p class="about-p">
-              Kansainvälisyys on minulle tärkeää, ja haluan löytää uusia
-              kokemuksia ja mahdollisuuksia myös Suomen rajojen ulkopuolelta.
-              Olen herkkä huomaamaan erilaisia elämäntilanteita, ja haluan, että
-              minuun on helppo ottaa yhteyttä ja tilata taidetta. Seuraa minua
-              <a
-                href="https://www.instagram.com/salinmiia/"
-                target="_blank"
-                class="about-link"
-                >Instagramissa</a
-              >, jos haluat pysyä ajan tasalla uusista töistäni.
-            </p>
+          <div class="about-text-container">
+            <div v-if="language.isEn()" class="about-text">
+              <p class="about-p">
+                I’m a hardworking artist from Finland with limitless imagination
+                and drive. I’ve come a long way for this path, but my hardships
+                have just made my determination stronger.
+              </p>
+              <p class="about-p">
+                I enjoy drawing with pencil, coal and using oil paints. I also
+                make some digital art at times, and have great interest in
+                animation and 3D art. I’m a great listener and learn fast. I
+                enjoy surrealism, symbolism, real life experiences and stories.
+                I want to capture the feeling and raw emotion in whatever or
+                whoever I make art of.
+              </p>
+              <p class="about-p">
+                Being international is very important to me, and I’m hoping to
+                gain new experiences and opportunities outside of Finland too.
+                I’m very sensitive to different situations that people might be
+                in, and I will make it as easy as possible to contact me and
+                request artworks. Follow me on
+                <a
+                  href="https://www.instagram.com/salinmiia/"
+                  target="_blank"
+                  class="about-link"
+                  >Instagram</a
+                >
+                to stay up to date with my work.
+              </p>
+            </div>
+            <div v-if="language.isFi()" class="about-text">
+              <p class="about-p">
+                Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma
+                tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo,
+                mutta jokainen vastoinkäyminen on vain vahvistanut
+                päättäväisyyttäni ja intohimoani taiteeseen.
+              </p>
+              <p class="about-p">
+                Työskentelen mielelläni lyijykynällä, hiilellä ja öljyväreillä.
+                Teen toisinaan myös digitaalista taidetta, ja minua kiehtovat
+                erityisesti animaatio sekä 3D-taide. Opin nopeasti, kuuntelen
+                tarkasti ja ammennan inspiraatiota surrealismista,
+                symbolismista, tosielämän kokemuksista ja tarinoista. Pyrin aina
+                tavoittamaan tunteen ja aidon elämyksen riippumatta siitä, mitä
+                tai ketä kuvitan.
+              </p>
+              <p class="about-p">
+                Kansainvälisyys on minulle tärkeää, ja haluan löytää uusia
+                kokemuksia ja mahdollisuuksia myös Suomen rajojen ulkopuolelta.
+                Olen herkkä huomaamaan erilaisia elämäntilanteita, ja haluan,
+                että minuun on helppo ottaa yhteyttä ja tilata taidetta. Seuraa
+                minua
+                <a
+                  href="https://www.instagram.com/salinmiia/"
+                  target="_blank"
+                  class="about-link"
+                  >Instagramissa</a
+                >, jos haluat pysyä ajan tasalla uusista töistäni.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
-      <Loader v-else />
+        </section>
+      </OpacityTransition>
+
+      <Loader v-if="!fullyLoaded" />
     </main>
     <Footer position="static" />
   </div>
@@ -149,6 +157,14 @@ onMounted(async () => {
   gap: 4rem;
   min-height: calc(100vh - 10rem);
   min-height: calc(100dvh - 10rem);
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 600ms;
+  transition-timing-function: ease;
+}
+
+.about-panel.is-visible {
+  opacity: 1;
 }
 
 .about-img-container {

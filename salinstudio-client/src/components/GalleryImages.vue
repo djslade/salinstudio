@@ -4,6 +4,7 @@ import Loader from "./Loader.vue";
 import { preloadImage } from "../utils/preloadImage";
 import type { Art } from "../types/art";
 import type { LoadedImage } from "../types/LoadedImage";
+import OpacityTransition from "./OpacityTransition.vue";
 
 type Filter =
   | "all"
@@ -44,37 +45,63 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    v-if="fullyLoaded"
-    v-for="(array, idx) in getColumnArrays(
-      loadedImages.filter((image) =>
-        category === 'all'
-          ? image.metadata?.art?.category !== 'mixed media'
-          : image.metadata?.art?.category === category
-      ),
-      columnCount
-    )"
-    :key="`array-${idx}`"
-    class="gallery-column"
-  >
-    <button
-      class="gallery-img-btn"
-      v-for="(image, idx) in array"
-      :key="`art-${idx}`"
-      :style="{ aspectRatio: image.ratio }"
-      @click="() => $router.push(`/gallery/${image.metadata?.art?.slug || ''}`)"
-    >
-      <img
-        class="gallery-img"
-        :src="image.src"
-        :alt="image.metadata?.art?.titleEn || ''"
-      />
-    </button>
-  </div>
-  <Loader v-else />
+  <OpacityTransition mode="default">
+    <section v-if="fullyLoaded" class="gallery-container">
+      <div class="gallery-panel">
+        <div
+          v-for="(array, idx) in getColumnArrays(
+            loadedImages.filter((image) =>
+              category === 'all'
+                ? image.metadata?.art?.category !== 'mixed media'
+                : image.metadata?.art?.category === category
+            ),
+            columnCount
+          )"
+          :key="`array-${idx}`"
+          class="gallery-column"
+        >
+          <button
+            class="gallery-img-btn"
+            v-for="(image, idx) in array"
+            :key="`art-${idx}`"
+            :style="{ aspectRatio: image.ratio }"
+            @click="
+              () => $router.push(`/gallery/${image.metadata?.art?.slug || ''}`)
+            "
+          >
+            <img
+              class="gallery-img"
+              :src="image.src"
+              :alt="image.metadata?.art?.titleEn || ''"
+            />
+          </button>
+        </div>
+      </div>
+    </section>
+  </OpacityTransition>
+  <Loader v-if="!fullyLoaded" />
 </template>
 
 <style scoped>
+.gallery-container {
+  margin: 0 auto;
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  transition-property: opacity;
+  transition-duration: 600ms;
+  transition-timing-function: ease;
+}
+
+.gallery-panel {
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  min-height: calc(100vh - 10rem);
+  min-height: calc(100dvh - 10rem);
+  width: 100%;
+}
+
 .gallery-column {
   display: flex;
   gap: 0.5rem;
