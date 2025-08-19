@@ -6,8 +6,7 @@ defineProps<{ full?: boolean }>();
 const showLoader = ref<boolean>(false);
 
 onMounted(async () => {
-  let timer: number | undefined;
-  timer = window.setTimeout(() => {
+  window.setTimeout(() => {
     showLoader.value = true;
   }, 500);
 });

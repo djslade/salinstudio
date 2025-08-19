@@ -71,11 +71,11 @@ const columnCount = ref(1);
 
 const updateColumns = () => {
   const width = window.innerWidth;
-  if (width < 600) columnCount.value = 1;
-  if (width < 900) columnCount.value = 2;
-  if (width < 1200) columnCount.value = 3;
-  if (width < 1500) columnCount.value = 4;
-  if (width >= 1500) columnCount.value = 5;
+  if (width < 450) columnCount.value = 1;
+  else if (width < 900) columnCount.value = 2;
+  else if (width < 1200) columnCount.value = 3;
+  else if (width < 1500) columnCount.value = 4;
+  else columnCount.value = 5;
 };
 
 onMounted(() => {

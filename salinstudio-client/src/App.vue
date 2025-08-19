@@ -2,6 +2,7 @@
 import { onMounted } from "vue";
 import { RouterView } from "vue-router";
 import { useLanguageStore } from "./store/language";
+import OpacityTransition from "./components/OpacityTransition.vue";
 
 const language = useLanguageStore();
 
@@ -26,9 +27,9 @@ onMounted(() => {
 <template>
   <div class="app">
     <RouterView v-slot="{ Component }">
-      <Transition name="page-opacity" mode="out-in">
+      <OpacityTransition mode="out-in">
         <component :is="Component" />
-      </Transition>
+      </OpacityTransition>
     </RouterView>
   </div>
 </template>
