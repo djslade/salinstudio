@@ -16,7 +16,7 @@ defineProps<{
   position: Position;
   heading?: string;
   transparent?: boolean;
-  currentRoute?: "Home" | "About" | "Gallery" | "Commissions";
+  currentRoute?: "Home" | "About" | "Gallery" | "Commissions" | "Contact";
 }>();
 
 const prevYOffset = ref<number>(window.pageYOffset);
@@ -46,13 +46,11 @@ const links: Link[] = [
     label: "Commissions",
     labelFi: "Tilaustyöt",
   },
-  /*
-    {
+  {
     to: "/contact",
     label: "Contact",
-    labelFi: "Tilaustyöt",
+    labelFi: "Yhteys",
   },
-  */
 ];
 
 const menuIsOpen = ref<boolean>(false);

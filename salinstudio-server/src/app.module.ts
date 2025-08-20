@@ -4,6 +4,7 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { ArtModule } from './art/art.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MulterModule } from '@nestjs/platform-express';
         fileSize: 50 * 1024 * 1024,
       },
     }),
+    MailerModule,
   ],
 })
 export class AppModule {}

@@ -72,6 +72,8 @@ jobs:
           echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
           echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
           echo "MODE=${{ secrets.MODE }}" >> .env
+          echo "MAIL_KEY=${{ secrets.MAIL_KEY }}" >> .env
+          echo "MAIL_SEND_TO_ADDRESS=${{ secrets.MAIL_SEND_TO_ADDRESS }}" >> .env
 
       - name: Move files to server
         uses: appleboy/scp-action@master

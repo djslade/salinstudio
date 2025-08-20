@@ -11,7 +11,7 @@ const language = useLanguageStore();
 const fullyLoaded = ref<boolean>(false);
 
 onMounted(async () => {
-  await preloadImage("/1755546690870.jpg");
+  await preloadImage("/desktop/1755546690870.jpg");
   fullyLoaded.value = true;
 });
 </script>
@@ -30,7 +30,11 @@ onMounted(async () => {
           :class="{ 'about-panel': true, 'is-visible': fullyLoaded }"
         >
           <div class="about-img-container">
-            <img src="/1755546690870.jpg" alt="Miia Salin" class="about-img" />
+            <img
+              src="/desktop/1755546690870.jpg"
+              alt="Miia Salin"
+              class="about-img"
+            />
           </div>
           <div class="about-text-container">
             <div v-if="language.isEn()" class="about-text">

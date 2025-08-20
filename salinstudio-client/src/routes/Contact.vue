@@ -1,34 +1,257 @@
 <script setup lang="ts">
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
+import { RouterLink } from "vue-router";
+import { ref } from "vue";
+import axios from "axios";
+import { useLanguageStore } from "../store/language";
+import Loader from "../components/Loader.vue";
+import OpacityTransition from "../components/OpacityTransition.vue";
+
+type FormSubmissioNStage = "not sent" | "sending" | "sent";
+
+const language = useLanguageStore();
+
+const stage = ref<FormSubmissioNStage>("not sent");
+
+const name = ref<string>("");
+const email = ref<string>("");
+const message = ref<string>("");
+
+const fieldEmptyError = ref<boolean>(false);
+const invalidEmailError = ref<boolean>(false);
+const internalError = ref<boolean>(false);
+const buttonDisabled = ref<boolean>(false);
+
+const checkIfValid = () => {
+  if (fieldEmptyError.value) {
+    if (!nameIsNotEmpty()) return;
+    if (!emailIsNotEmpty()) return;
+    if (!messageIsNotEmpty()) return;
+    setTimeout(() => {
+      fieldEmptyError.value = false;
+    }, 300);
+  }
+  if (invalidEmailError.value) {
+    if (!nameIsNotEmpty()) return;
+    setTimeout(() => {
+      invalidEmailError.value = false;
+    }, 300);
+  }
+};
+
+const nameIsNotEmpty = () => {
+  return name.value.trim() !== "";
+};
+
+const emailIsNotEmpty = () => {
+  return email.value.trim() !== "";
+};
+
+const emailIsValid = () => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email.value);
+};
+
+const messageIsNotEmpty = () => {
+  return message.value.trim() !== "";
+};
+
+const getErrorMessage = () => {
+  if (fieldEmptyError.value) {
+    return language.isEn()
+      ? "Please fill in all required fields"
+      : "Täytä kaikki pakolliset kentät";
+  }
+  if (invalidEmailError.value) {
+    return language.isEn()
+      ? "Please enter a valid email address"
+      : "Anna voimassa oleva sähköpostiosoite";
+  }
+  if (internalError.value) {
+    return language.isEn()
+      ? "Sorry, your message could not be delivered"
+      : "Valitettavasti viestiäsi ei voitu toimittaa";
+  }
+  return "";
+};
+
+const handleSubmit = async () => {
+  if (buttonDisabled.value) return;
+  if (stage.value !== "not sent") return;
+
+  if (fieldEmptyError.value || invalidEmailError.value) return;
+
+  if (!nameIsNotEmpty() || !emailIsNotEmpty() || !messageIsNotEmpty()) {
+    fieldEmptyError.value = true;
+    return;
+  }
+
+  if (!emailIsValid()) {
+    invalidEmailError.value = true;
+    return;
+  }
+
+  try {
+    buttonDisabled.value = true;
+    const body = {
+      topic: "contact",
+      name: name.value,
+      emailAddress: email.value,
+      message: message.value,
+    };
+
+    stage.value = "sending";
+
+    await axios.post(`${import.meta.env.VITE_SERVER_ENDPOINT}/mailer`, body);
+
+    stage.value = "sent";
+  } catch (err) {
+    internalError.value = true;
+    stage.value = "not sent";
+  } finally {
+    buttonDisabled.value = false;
+  }
+};
 </script>
 
 <template>
   <div class="">
-    <Header heading="Contact" position="sticky" />
-    <main>
-      <section class="contact-panel">
-        <form action="">
-          <h1>Let's connect</h1>
-          <p>
-            I’d love to hear from you! Please use the form below to get in
-            touch, and I’ll reply as soon as I can.
-          </p>
-          <p>If you’re interested in commissioning artwork, click here.</p>
-        </form>
-        <div class="">
-          <label for="">Name</label>
-          <input />
-        </div>
-        <div class="">
-          <label for="">Email</label>
-          <input />
-        </div>
-        <div class="">
-          <label for="">Message</label>
-          <textarea />
-        </div>
-      </section>
+    <Header
+      :heading="language.isEn() ? 'Contact' : 'Yhteys'"
+      position="sticky"
+      currentRoute="Contact"
+    />
+    <main class="main">
+      <OpacityTransition mode="default">
+        <section v-if="stage === 'not sent'" class="contact-panel">
+          <div class="contact-inner-container">
+            <div class="contact-form-text-container">
+              <h1 class="contact-form-heading">
+                {{ language.isEn() ? "Get in touch" : "Ota yhteyttä" }}
+              </h1>
+              <div class="contact-form-p-container">
+                <p class="contact-form-p" v-if="language.isEn()">
+                  If you’re looking for commissioned artwork,
+                  <RouterLink to="/commissions" class="contact-redirect-link"
+                    >click here</RouterLink
+                  >. For all other questions, you can contact me via this form.
+                  I look forward to hearing from you!
+                </p>
+                <p class="contact-form-p" v-if="language.isFi()">
+                  Jos etsit tilaustyötä,
+                  <RouterLink to="/commissions" class="contact-redirect-link"
+                    >klikkaa tästä</RouterLink
+                  >. Kaikissa muissa kysymyksissä voit ottaa minuun yhteyttä
+                  tämän lomakkeen kautta. Odotan innolla viestiäsi!
+                </p>
+              </div>
+            </div>
+            <form class="contact-form">
+              <div class="contact-form-content">
+                <div class="contact-form-row">
+                  <div class="contact-form-control">
+                    <label
+                      for="name"
+                      aria-hidden="true"
+                      class="contact-form-label"
+                    >
+                      {{ language.isEn() ? "Name" : "Nimi" }}
+                    </label>
+                    <input
+                      v-model="name"
+                      name="name"
+                      type="text"
+                      id="name"
+                      class="contact-form-input"
+                      :placeholder="language.isEn() ? 'Name' : 'Nimi'"
+                      @input="checkIfValid"
+                    />
+                  </div>
+                  <div class="contact-form-control">
+                    <label
+                      for="email"
+                      aria-hidden="true"
+                      class="contact-form-label"
+                    >
+                      {{ language.isEn() ? "Email" : "Sähköposti" }}
+                    </label>
+                    <input
+                      v-model="email"
+                      name="email"
+                      type="email"
+                      id="email"
+                      class="contact-form-input"
+                      :placeholder="language.isEn() ? 'Email' : 'Sähköposti'"
+                      @input="checkIfValid"
+                    />
+                  </div>
+                </div>
+                <div class="contact-form-row">
+                  <div class="contact-form-control">
+                    <label
+                      for="message"
+                      aria-hidden="true"
+                      class="contact-form-label"
+                    >
+                      {{ language.isEn() ? "Message" : "Viesti" }}
+                    </label>
+                    <textarea
+                      v-model="message"
+                      name="message"
+                      id="message"
+                      class="contact-form-textarea"
+                      :rows="5"
+                      :placeholder="language.isEn() ? 'Message' : 'Viesti'"
+                      @input="checkIfValid"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="contact-form-submit-container">
+                <div class="contact-form-button-container">
+                  <button
+                    class="contact-form-button"
+                    type="button"
+                    @click="handleSubmit"
+                  >
+                    {{ language.isEn() ? "Send" : "Lähetä" }}
+                  </button>
+                </div>
+                <div class="contact-form-error-container">
+                  <span class="contact-form-error">{{
+                    getErrorMessage()
+                  }}</span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+        <Loader v-else-if="stage === 'sending'" />
+        <section v-else class="contact-panel">
+          <div class="contact-sent-text-container">
+            <h1 class="contact-sent-heading">Message sent</h1>
+            <div class="contact-sent-p-container" v-if="language.isEn()">
+              <p class="contact-sent-p">
+                I have recieved your message and will respond as soon as I can.
+              </p>
+              <p class="contact-sent-p">
+                Thank you for taking the time to reach out. I truly appreciate
+                it.
+              </p>
+            </div>
+            <div class="contact-sent-p-container" v-if="language.isFi()">
+              <p class="contact-sent-p">
+                Olen vastaanottanut viestisi ja vastaan siihen niin pian kuin
+                mahdollista.
+              </p>
+              <p class="contact-sent-p">
+                Kiitos, että käytit aikaa yhteydenottoon. Arvostan sitä todella.
+              </p>
+            </div>
+          </div>
+        </section>
+      </OpacityTransition>
     </main>
     <Footer position="static" />
   </div>
@@ -43,5 +266,224 @@ import Footer from "../components/Footer.vue";
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 3rem;
+  padding: 1rem;
+}
+
+.contact-inner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  width: 100%;
+  gap: 2rem;
+  align-items: center;
+}
+
+.contact-form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.contact-form-row {
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.contact-form-control {
+  flex: 1;
+}
+
+.contact-form-heading {
+  font-size: 2rem;
+  color: #b4936f;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+}
+
+.contact-form-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 900px;
+  width: 100%;
+  width: 100%;
+}
+
+.contact-form-p-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.contact-form-p {
+  color: #d0bfad;
+  line-height: 1.7;
+  letter-spacing: 2px;
+  font-family: sans-serif;
+}
+
+.contact-redirect-link {
+  font-weight: bold;
+  color: #d0bfad;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
+.contact-redirect-link:hover {
+  color: #b4936f;
+}
+
+.contact-form-label {
+  display: none;
+}
+
+.contact-form-submit-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-form-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.contact-form-error-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: 1rem;
+}
+
+.contact-form-error {
+  color: #b4936f;
+  font-family: sans-serif;
+}
+
+input,
+textarea,
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  font-family: sans-serif;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #d0bfad;
+  color: #d0bfad;
+  font-size: 1rem;
+  width: 100%;
+  padding: 0.5rem 0;
+  outline: none;
+  resize: none;
+  -webkit-text-fill-color: #d0bfad;
+  -webkit-box-shadow: 0 0 0px 1000px #261f19 inset;
+}
+
+.contact-form-button {
+  background-color: transparent;
+  border: 1px solid #b4936f;
+  color: #d0bfad;
+  padding: 1rem;
+  border-radius: 8px;
+  max-width: 300px;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition-property: all;
+  transition-duration: 0.4s;
+  font-weight: 700;
+}
+
+.contact-form-button:hover {
+  background-color: #b4936f;
+}
+
+.contact-sent-heading {
+  font-size: 2rem;
+  color: #b4936f;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  text-align: center;
+}
+
+.contact-sent-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 900px;
+  width: 100%;
+  width: 100%;
+}
+
+.contact-sent-p-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.contact-sent-p {
+  color: #d0bfad;
+  line-height: 1.7;
+  letter-spacing: 2px;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .contact-panel {
+    padding: 2rem;
+  }
+
+  .contact-form-row {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 900px) {
+  .contact-panel {
+    padding: 4rem;
+  }
+
+  .contact-inner-container {
+    flex-direction: row;
+    gap: 4rem;
+  }
+
+  .contact-form-button-container {
+    justify-content: end;
+  }
+
+  .contact-form-error-container {
+    justify-content: end;
+  }
+
+  .contact-form-row {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 1200px) {
+  .contact-form-row {
+    flex-direction: row;
+  }
 }
 </style>

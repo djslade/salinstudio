@@ -5,6 +5,7 @@ import Commissions from "./routes/Commissions.vue";
 import Home from "./routes/Home.vue";
 import Closeup from "./routes/Closeup.vue";
 import NotFound from "./routes/NotFound.vue";
+import Contact from "./routes/Contact.vue";
 
 const routes = [
   {
@@ -27,12 +28,10 @@ const routes = [
     path: "/commissions",
     component: Commissions,
   },
-  /*
-    {
+  {
     path: "/contact",
     component: Contact,
   },
-  */
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
