@@ -139,7 +139,7 @@ const handleSubmit = async () => {
                   I look forward to hearing from you!
                 </p>
                 <p class="contact-form-p" v-if="language.isFi()">
-                  Jos etsit tilaustyötä,
+                  Jos haluat tilata minulta taidetta,
                   <RouterLink to="/commissions" class="contact-redirect-link"
                     >klikkaa tästä</RouterLink
                   >. Kaikissa muissa kysymyksissä voit ottaa minuun yhteyttä
@@ -230,7 +230,9 @@ const handleSubmit = async () => {
         <Loader v-else-if="stage === 'sending'" />
         <section v-else class="contact-panel">
           <div class="contact-sent-text-container">
-            <h1 class="contact-sent-heading">Message sent</h1>
+            <h1 class="contact-sent-heading">
+              {{ language.isEn() ? "Message sent" : "Viesti lähetetty" }}
+            </h1>
             <div class="contact-sent-p-container" v-if="language.isEn()">
               <p class="contact-sent-p">
                 I have recieved your message and will respond as soon as I can.
