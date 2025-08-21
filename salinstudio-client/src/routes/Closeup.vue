@@ -52,7 +52,6 @@ const language = useLanguageStore();
           <IconButton
             responsiveLabel
             icon="mdi-light:arrow-left"
-            :label="language.isEn() ? 'Back to gallery' : 'Palaa galleriaan'"
             :onClick="() => $router.back()"
           />
         </div>

@@ -6,6 +6,7 @@ import { onMounted, ref } from "vue";
 import { preloadImage } from "../utils/preloadImage";
 import Loader from "../components/Loader.vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
+import PanelParagraph from "../components/PanelParagraph.vue";
 
 const language = useLanguageStore();
 const fullyLoaded = ref<boolean>(false);
@@ -38,20 +39,20 @@ onMounted(async () => {
           </div>
           <div class="about-text-container">
             <div v-if="language.isEn()" class="about-text">
-              <p class="about-p">
+              <PanelParagraph>
                 I’m a hardworking artist from Finland with limitless imagination
                 and drive. I’ve come a long way for this path, but my hardships
                 have just made my determination stronger.
-              </p>
-              <p class="about-p">
+              </PanelParagraph>
+              <PanelParagraph>
                 I enjoy drawing with pencil, coal and using oil paints. I also
                 make some digital art at times, and have great interest in
                 animation and 3D art. I’m a great listener and learn fast. I
                 enjoy surrealism, symbolism, real life experiences and stories.
                 I want to capture the feeling and raw emotion in whatever or
                 whoever I make art of.
-              </p>
-              <p class="about-p">
+              </PanelParagraph>
+              <PanelParagraph>
                 Being international is very important to me, and I’m hoping to
                 gain new experiences and opportunities outside of Finland too.
                 I’m very sensitive to different situations that people might be
@@ -64,16 +65,16 @@ onMounted(async () => {
                   >Instagram</a
                 >
                 to stay up to date with my work.
-              </p>
+              </PanelParagraph>
             </div>
             <div v-if="language.isFi()" class="about-text">
-              <p class="about-p">
+              <PanelParagraph>
                 Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma
                 tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo,
                 mutta jokainen vastoinkäyminen on vain vahvistanut
                 päättäväisyyttäni ja intohimoani taiteeseen.
-              </p>
-              <p class="about-p">
+              </PanelParagraph>
+              <PanelParagraph>
                 Työskentelen mielelläni lyijykynällä, hiilellä ja öljyväreillä.
                 Teen toisinaan myös digitaalista taidetta, ja minua kiehtovat
                 erityisesti animaatio sekä 3D-taide. Opin nopeasti, kuuntelen
@@ -81,8 +82,8 @@ onMounted(async () => {
                 symbolismista, tosielämän kokemuksista ja tarinoista. Pyrin aina
                 tavoittamaan tunteen ja aidon elämyksen riippumatta siitä, mitä
                 tai ketä kuvitan.
-              </p>
-              <p class="about-p">
+              </PanelParagraph>
+              <PanelParagraph>
                 Kansainvälisyys on minulle tärkeää, ja haluan löytää uusia
                 kokemuksia ja mahdollisuuksia myös Suomen rajojen ulkopuolelta.
                 Olen herkkä huomaamaan erilaisia elämäntilanteita, ja haluan,
@@ -94,7 +95,7 @@ onMounted(async () => {
                   class="about-link"
                   >Instagramissa</a
                 >, jos haluat pysyä ajan tasalla uusista töistäni.
-              </p>
+              </PanelParagraph>
             </div>
           </div>
         </section>

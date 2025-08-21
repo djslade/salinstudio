@@ -21,7 +21,7 @@ defineProps<{
   transition-duration: 0.3s;
   letter-spacing: 5px;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .nav-link:hover {
@@ -35,6 +35,20 @@ defineProps<{
   transition-duration: 0.3s;
   letter-spacing: 5px;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
+}
+
+@media (min-width: 600px) {
+  .nav-link,
+  .current-route-span {
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .nav-link,
+  .current-route-span {
+    font-size: 0.8rem;
+  }
 }
 </style>

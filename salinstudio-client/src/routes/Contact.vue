@@ -7,6 +7,8 @@ import axios from "axios";
 import { useLanguageStore } from "../store/language";
 import Loader from "../components/Loader.vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
+import PanelHeading from "../components/PanelHeading.vue";
+import PanelParagraph from "../components/PanelParagraph.vue";
 
 type FormSubmissioNStage = "not sent" | "sending" | "sent";
 
@@ -127,17 +129,18 @@ const handleSubmit = async () => {
         <section v-if="stage === 'not sent'" class="contact-panel">
           <div class="contact-inner-container">
             <div class="contact-form-text-container">
-              <h1 class="contact-form-heading">
-                {{ language.isEn() ? "Get in touch" : "Ota yhteyttä" }}
-              </h1>
+              <PanelHeading
+                :text="language.isEn() ? 'Get in touch' : 'Ota yhteyttä'"
+                textAlign="center"
+              />
               <div class="contact-form-p-container">
-                <p class="contact-form-p" v-if="language.isEn()">
+                <PanelParagraph v-if="language.isEn()">
                   If you’re looking for commissioned artwork,
                   <RouterLink to="/commissions" class="contact-redirect-link"
                     >click here</RouterLink
                   >. For all other questions, you can contact me via this form.
                   I look forward to hearing from you!
-                </p>
+                </PanelParagraph>
                 <p class="contact-form-p" v-if="language.isFi()">
                   Jos haluat tilata minulta taidetta,
                   <RouterLink to="/commissions" class="contact-redirect-link"
@@ -230,9 +233,10 @@ const handleSubmit = async () => {
         <Loader v-else-if="stage === 'sending'" />
         <section v-else class="contact-panel">
           <div class="contact-sent-text-container">
-            <h1 class="contact-sent-heading">
-              {{ language.isEn() ? "Message sent" : "Viesti lähetetty" }}
-            </h1>
+            <PanelHeading
+              :text="language.isEn() ? 'Message sent' : 'Viesti lähetetty'"
+              textAlign="center"
+            />
             <div class="contact-sent-p-container" v-if="language.isEn()">
               <p class="contact-sent-p">
                 I have recieved your message and will respond as soon as I can.
@@ -269,13 +273,13 @@ const handleSubmit = async () => {
   justify-content: center;
   align-items: center;
   gap: 3rem;
-  padding: 1rem;
+  padding: 6rem 1rem;
 }
 
 .contact-inner-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 4rem;
 }
 
 .contact-form {
@@ -307,10 +311,11 @@ const handleSubmit = async () => {
 }
 
 .contact-form-heading {
-  font-size: 2rem;
+  font-size: 1.6rem;
   color: #b4936f;
   text-transform: uppercase;
   letter-spacing: 5px;
+  text-align: center;
 }
 
 .contact-form-text-container {
@@ -389,7 +394,7 @@ textarea:-webkit-autofill:focus {
   border: none;
   border-bottom: 1px solid #d0bfad;
   color: #d0bfad;
-  font-size: 1rem;
+  font-size: 0.8rem;
   width: 100%;
   padding: 0.5rem 0;
   outline: none;
@@ -402,7 +407,7 @@ textarea:-webkit-autofill:focus {
   background-color: transparent;
   border: 1px solid #b4936f;
   color: #d0bfad;
-  padding: 1rem;
+  padding: 0.8rem;
   border-radius: 8px;
   max-width: 300px;
   width: 100%;
@@ -412,6 +417,7 @@ textarea:-webkit-autofill:focus {
   transition-property: all;
   transition-duration: 0.4s;
   font-weight: 700;
+  font-size: 0.7rem;
 }
 
 .contact-form-button:hover {
@@ -451,23 +457,46 @@ textarea:-webkit-autofill:focus {
 }
 
 @media (min-width: 600px) {
+  .contact-form-heading {
+    font-size: 1.8rem;
+  }
+
   .contact-panel {
-    padding: 2rem;
+    padding: 6rem 2rem;
   }
 
   .contact-form-row {
     flex-direction: row;
   }
+
+  .contact-form-button-container {
+    justify-content: end;
+  }
+
+  .contact-form-button {
+    font-size: 0.8rem;
+    padding: 0.9rem;
+  }
+
+  input,
+  textarea,
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    font-size: 0.9rem;
+  }
 }
 
 @media (min-width: 900px) {
-  .contact-panel {
-    padding: 4rem;
+  .contact-form-heading {
+    font-size: 2rem;
   }
 
-  .contact-inner-container {
-    flex-direction: row;
-    gap: 4rem;
+  .contact-panel {
+    padding: 4rem;
   }
 
   .contact-form-button-container {
@@ -478,14 +507,35 @@ textarea:-webkit-autofill:focus {
     justify-content: end;
   }
 
-  .contact-form-row {
-    flex-direction: column;
+  .contact-form-button {
+    font-size: 0.9rem;
+    padding: 1rem;
+  }
+
+  input,
+  textarea,
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    font-size: 1rem;
   }
 }
 
 @media (min-width: 1200px) {
   .contact-form-row {
     flex-direction: row;
+  }
+
+  .contact-inner-container {
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  .contact-form-heading {
+    text-align: left;
   }
 }
 </style>

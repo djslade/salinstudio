@@ -18,18 +18,31 @@ const setAnimationState = () => {
   const currentHeadingWidth = headingRef.value.offsetWidth;
   headingWidth.value = currentHeadingWidth;
   if (currentHeadingWidth > currentContainerWidth) {
-    playAnimation.value = true;
+    playAnimation.value = false;
+    requestAnimationFrame(() => {
+      playAnimation.value = true;
+    });
+  } else {
+    playAnimation.value = false;
   }
 };
 
+let observer: ResizeObserver;
+
 onMounted(async () => {
   await document.fonts.ready;
-  setAnimationState();
-  document.addEventListener("resize", setAnimationState);
+
+  observer = new ResizeObserver(() => {
+    setAnimationState();
+  });
+
+  if (containerRef.value) {
+    observer.observe(containerRef.value);
+  }
 });
 
 onUnmounted(() => {
-  document.removeEventListener("resize", setAnimationState);
+  observer.disconnect();
 });
 </script>
 
@@ -37,16 +50,15 @@ onUnmounted(() => {
   <div class="container" ref="container-ref">
     <div
       :class="`marquee ${playAnimation && 'animate'}`"
-      :style="{ '--end-x': `-${headingWidth * 2}px` }"
+      :style="{
+        '--end-x': `-${headingWidth * 2}px`,
+        gap: playAnimation ? `${containerWidth}px` : 0,
+      }"
     >
-      <h1
-        class="marquee-text"
-        :style="{ paddingRight: playAnimation ? `${containerWidth}px` : 0 }"
-        ref="heading-ref"
-      >
+      <h1 class="marquee-text" ref="heading-ref">
         {{ heading }}
       </h1>
-      <h1 v-if="playAnimation" class="marquee-text clone">{{ heading }}</h1>
+      <h1 v-if="playAnimation" class="marquee-text">{{ heading }}</h1>
     </div>
   </div>
 </template>
@@ -64,6 +76,7 @@ onUnmounted(() => {
   display: inline-flex;
   white-space: nowrap;
   width: 100%;
+  justify-content: center;
 }
 
 .marquee.animate {
@@ -77,6 +90,18 @@ onUnmounted(() => {
   letter-spacing: 8px;
   text-transform: uppercase;
   text-align: center;
+}
+
+@media (min-width: 600px) {
+  .marquee-text {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .marquee-text {
+    font-size: 1.2rem;
+  }
 }
 
 @keyframes scroll-left {

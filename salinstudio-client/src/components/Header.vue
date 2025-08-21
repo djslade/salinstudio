@@ -5,6 +5,7 @@ import IconButton from "./IconButton.vue";
 import { useLanguageStore } from "../store/language";
 import Underlay from "./Underlay.vue";
 import type { Position } from "../types/position";
+import PageTitle from "./PageTitle.vue";
 
 type Link = {
   to: string;
@@ -71,7 +72,12 @@ const handleScroll = () => {
   const newYOffset = window.pageYOffset;
   const delta = newYOffset - prevYOffset.value;
 
-  if (Math.abs(delta) < 5 || newYOffset < 160) return;
+  if (newYOffset < 160) {
+    if (isHidden.value) isHidden.value = false;
+    return;
+  }
+
+  if (Math.abs(delta) < 5) return;
   if (newYOffset > prevYOffset.value) {
     if (!isHidden.value) isHidden.value = true;
   }
@@ -104,7 +110,7 @@ onUnmounted(() => {
       <IconButton :onClick="handleOpenMenu" icon="mdi-light:menu" />
     </div>
     <div class="heading-container">
-      <h1 v-if="heading" class="page-heading">{{ heading }}</h1>
+      <PageTitle v-if="heading" :heading="heading" />
     </div>
     <div class="fixture-container">
       <slot name="fixture" />
@@ -192,8 +198,6 @@ onUnmounted(() => {
 
 <style scoped>
 .header {
-  background-color: transparent;
-  position: fixed;
   top: 0;
   width: 100%;
   display: flex;
@@ -365,6 +369,12 @@ onUnmounted(() => {
   font-size: 0.75rem;
 }
 
+@media (max-height: 500px) and (orientation: landscape) {
+  .header {
+    position: static !important;
+  }
+}
+
 @media (min-width: 600px) {
   .header {
     padding: 2rem 4rem;
@@ -407,6 +417,10 @@ onUnmounted(() => {
 
   .fixture-container {
     flex: 1;
+  }
+
+  .heading-container {
+    flex: 3;
   }
 }
 </style>

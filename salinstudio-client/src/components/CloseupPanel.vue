@@ -55,10 +55,11 @@ onMounted(async () => {
 .panel {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 10rem);
-  height: calc(100dvh - 10rem);
+  min-height: calc(100vh - 10rem);
+  min-height: calc(100dvh - 10rem);
   width: 100%;
   align-items: center;
+  justify-content: center;
 }
 
 .data-container {
@@ -67,6 +68,9 @@ onMounted(async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 500px;
+  flex: 1;
+  padding: 1rem;
 }
 
 .image {
@@ -105,11 +109,26 @@ onMounted(async () => {
   max-width: 600px;
   text-align: center;
   margin: auto;
+  font-size: 0.8rem;
+}
+
+@media (min-width: 600px) {
+  .description {
+    font-size: 0.9rem;
+  }
 }
 
 @media (min-width: 900px) {
-  .closeup-image {
+  .panel {
+    height: calc(100vh - 10rem);
+    height: calc(100dvh - 10rem);
+  }
+  .image {
     height: 100%;
+  }
+
+  .description {
+    font-size: 1rem;
   }
 }
 </style>

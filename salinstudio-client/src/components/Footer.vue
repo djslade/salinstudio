@@ -42,4 +42,10 @@ defineProps<{ position: Position }>();
   text-transform: uppercase;
   letter-spacing: 4px;
 }
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .footer {
+    position: static !important;
+  }
+}
 </style>

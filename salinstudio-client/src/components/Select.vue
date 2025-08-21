@@ -64,7 +64,7 @@ const language = useLanguageStore();
   background-color: #261f19;
   color: #d0bfad;
   border: 1px solid #b4936f;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 3px;
   text-align: center;
@@ -81,14 +81,24 @@ const language = useLanguageStore();
 
 .option {
   text-transform: none;
-  font-size: 1rem;
+  font-size: 0.8rem;
   text-align: left;
   font-family: sans-serif;
+}
+
+@media (min-width: 600px) {
+  .select {
+    font-size: 0.75rem;
+  }
 }
 
 @media (min-width: 900px) {
   .category-select-label {
     display: inline;
+  }
+
+  .select {
+    font-size: 0.8rem;
   }
 }
 </style>

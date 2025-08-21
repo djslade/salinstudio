@@ -2,6 +2,8 @@
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import { useLanguageStore } from "../store/language";
+import PanelHeading from "../components/PanelHeading.vue";
+import PanelParagraph from "../components/PanelParagraph.vue";
 
 const language = useLanguageStore();
 </script>
@@ -16,14 +18,14 @@ const language = useLanguageStore();
     <main>
       <section v-if="language.isEn()" class="comm-closed-panel">
         <div class="comm-closed-title-container">
-          <h1 class="comm-closed-title">Commissions are closed</h1>
+          <PanelHeading text="Commissions are closed" textAlign="center" />
         </div>
         <div class="comm-closed-text-container">
-          <p class="comm-closed-text">
+          <PanelParagraph textAlign="center">
             Thank you for your interest, but I am not currently accepting
             commission requests.
-          </p>
-          <p class="comm-closed-text">
+          </PanelParagraph>
+          <PanelParagraph textAlign="center">
             Please follow me on
             <a
               href="https://www.instagram.com/salinmiia/"
@@ -32,7 +34,7 @@ const language = useLanguageStore();
               >Instagram</a
             >
             to find out when I become available for work.
-          </p>
+          </PanelParagraph>
         </div>
       </section>
       <section v-if="language.isFi()" class="comm-closed-panel">

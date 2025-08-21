@@ -65,13 +65,14 @@ const isHovered = ref<boolean>(false);
 
 .cta-btn-icon {
   color: #d0bfad;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 .cta-btn-text {
   text-transform: uppercase;
   letter-spacing: 3px;
   color: #d0bfad;
+  font-size: 0.7rem;
 }
 
 .cta-btn-responsive-text {
@@ -102,6 +103,28 @@ const isHovered = ref<boolean>(false);
   letter-spacing: 3px;
   color: #d0bfad;
   display: none;
+}
+
+@media (min-width: 600px) {
+  .responsive-label,
+  .cta-btn-text {
+    font-size: 0.75rem;
+  }
+
+  .cta-btn-icon {
+    font-size: 1.35rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .responsive-label,
+  .cta-btn-text {
+    font-size: 0.8rem;
+  }
+
+  .cta-btn-icon {
+    font-size: 1.5rem;
+  }
 }
 
 @media (min-width: 1200px) {
