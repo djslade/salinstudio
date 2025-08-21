@@ -141,13 +141,13 @@ const handleSubmit = async () => {
                   >. For all other questions, you can contact me via this form.
                   I look forward to hearing from you!
                 </PanelParagraph>
-                <p class="contact-form-p" v-if="language.isFi()">
+                <PanelParagraph v-if="language.isFi()">
                   Jos haluat tilata minulta taidetta,
                   <RouterLink to="/commissions" class="contact-redirect-link"
                     >klikkaa tästä</RouterLink
                   >. Kaikissa muissa kysymyksissä voit ottaa minuun yhteyttä
                   tämän lomakkeen kautta. Odotan innolla viestiäsi!
-                </p>
+                </PanelParagraph>
               </div>
             </div>
             <form class="contact-form">
@@ -238,22 +238,22 @@ const handleSubmit = async () => {
               textAlign="center"
             />
             <div class="contact-sent-p-container" v-if="language.isEn()">
-              <p class="contact-sent-p">
+              <PanelParagraph>
                 I have recieved your message and will respond as soon as I can.
-              </p>
-              <p class="contact-sent-p">
+              </PanelParagraph>
+              <PanelParagraph>
                 Thank you for taking the time to reach out. I truly appreciate
                 it.
-              </p>
+              </PanelParagraph>
             </div>
             <div class="contact-sent-p-container" v-if="language.isFi()">
-              <p class="contact-sent-p">
+              <PanelParagraph>
                 Olen vastaanottanut viestisi ja vastaan siihen niin pian kuin
                 mahdollista.
-              </p>
-              <p class="contact-sent-p">
+              </PanelParagraph>
+              <PanelParagraph>
                 Kiitos, että käytit aikaa yhteydenottoon. Arvostan sitä todella.
-              </p>
+              </PanelParagraph>
             </div>
           </div>
         </section>

@@ -119,7 +119,7 @@ onUnmounted(() => {
       class="mobile-menu"
       :style="{
         width: menuIsOpen ? '100%' : '0',
-        transitionDelay: menuIsOpen ? '0s' : '0.8s',
+        transitionDelay: menuIsOpen ? '0s' : '0.4s',
       }"
     >
       <div
@@ -127,7 +127,7 @@ onUnmounted(() => {
         :style="{
           opacity: menuIsOpen ? '1' : '0',
           visibility: menuIsOpen ? 'visible' : 'hidden',
-          transitionDelay: menuIsOpen ? '0.8s' : '0s',
+          transitionDelay: menuIsOpen ? '0.4s' : '0s',
         }"
       >
         <IconButton :onClick="handleCloseMenu" icon="mdi-light:arrow-left" />
@@ -158,7 +158,7 @@ onUnmounted(() => {
       class="menu"
       :style="{
         width: menuIsOpen ? '100%' : '0',
-        transitionDelay: menuIsOpen ? '0s' : '0.8s',
+        transitionDelay: menuIsOpen ? '0s' : '0.4s',
       }"
     >
       <div
@@ -166,7 +166,7 @@ onUnmounted(() => {
         :style="{
           opacity: menuIsOpen ? '1' : '0',
           visibility: menuIsOpen ? 'visible' : 'hidden',
-          transitionDelay: menuIsOpen ? '0.8s' : '0s',
+          transitionDelay: menuIsOpen ? '0.4s' : '0s',
         }"
       >
         <IconButton :onClick="handleCloseMenu" icon="mdi-light:arrow-left" />
@@ -269,7 +269,7 @@ onUnmounted(() => {
   z-index: 18;
   background-color: #1e1914;
   transition-property: all;
-  transition-duration: 0.6s;
+  transition-duration: 0.4s;
 }
 
 .mobile-menu-underlay {
@@ -288,7 +288,7 @@ onUnmounted(() => {
   left: 0;
   bottom: 0;
   transition-property: all;
-  transition-duration: 0.6s;
+  transition-duration: 0.4s;
   z-index: 10;
   height: 100dvh;
 }
@@ -296,7 +296,7 @@ onUnmounted(() => {
 .inner-menu {
   padding: 2rem 6rem;
   transition-property: all;
-  transition-duration: 0.6s;
+  transition-duration: 0.4s;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -323,7 +323,7 @@ onUnmounted(() => {
 
 .mobile-inner-menu {
   transition-property: all;
-  transition-duration: 0.6s;
+  transition-duration: 0.4s;
   display: flex;
   flex-direction: column;
   justify-content: center;

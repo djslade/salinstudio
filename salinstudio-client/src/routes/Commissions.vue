@@ -39,14 +39,14 @@ const language = useLanguageStore();
       </section>
       <section v-if="language.isFi()" class="comm-closed-panel">
         <div class="comm-closed-title-container">
-          <h1 class="comm-closed-title">Tilaukset suljettu</h1>
+          <PanelHeading text="Tilaukset suljettu" textAlign="center" />
         </div>
         <div class="comm-closed-text-container">
-          <p class="comm-closed-text">
+          <PanelParagraph>
             Kiitos kiinnostuksestasi, mutta en ota tällä hetkellä tilauspyyntöjä
             vastaan.
-          </p>
-          <p class="comm-closed-text">
+          </PanelParagraph>
+          <PanelParagraph>
             Seuraa minua
             <a
               href="https://www.instagram.com/salinmiia/"
@@ -54,7 +54,7 @@ const language = useLanguageStore();
               class="comm-closed-link"
               >Instagramissa</a
             >, niin voit seurata päivityksiä asiaan liittyen.
-          </p>
+          </PanelParagraph>
         </div>
       </section>
     </main>
