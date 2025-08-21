@@ -42,11 +42,11 @@ const language = useLanguageStore();
           <PanelHeading text="Tilaukset suljettu" textAlign="center" />
         </div>
         <div class="comm-closed-text-container">
-          <PanelParagraph>
+          <PanelParagraph textAlign="center">
             Kiitos kiinnostuksestasi, mutta en ota tällä hetkellä tilauspyyntöjä
             vastaan.
           </PanelParagraph>
-          <PanelParagraph>
+          <PanelParagraph textAlign="center">
             Seuraa minua
             <a
               href="https://www.instagram.com/salinmiia/"
