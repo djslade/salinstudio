@@ -12,7 +12,7 @@ defineProps<{ mode: "default" | "in-out" | "out-in" }>();
 .page-opacity-enter-active,
 .page-opacity-leave-active {
   transition-timing-function: ease;
-  transition-duration: 600ms;
+  transition-duration: 400ms;
   transition-property: opacity;
 }
 

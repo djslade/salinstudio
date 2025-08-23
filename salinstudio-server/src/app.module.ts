@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ArtModule } from './art/art.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { MailerModule } from './mailer/mailer.module';
+import { VisitorModule } from './visitor/visitor.module';
+import { ActionModule } from './action/action.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { MailerModule } from './mailer/mailer.module';
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ArtModule,
+    VisitorModule,
+    ActionModule,
     MulterModule.register({
       limits: {
         fileSize: 50 * 1024 * 1024,

@@ -1,4 +1,3 @@
-import { createWebHistory, createRouter } from "vue-router";
 import About from "./routes/About.vue";
 import Gallery from "./routes/Gallery.vue";
 import Commissions from "./routes/Commissions.vue";
@@ -7,7 +6,7 @@ import Closeup from "./routes/Closeup.vue";
 import NotFound from "./routes/NotFound.vue";
 import Contact from "./routes/Contact.vue";
 
-const routes = [
+export const routes = [
   {
     path: "/",
     component: Home,
@@ -38,8 +37,3 @@ const routes = [
     component: NotFound,
   },
 ];
-
-export const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});

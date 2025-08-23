@@ -8,6 +8,9 @@ async function bootstrap() {
   app.useBodyParser('json', { limit: '50mb' });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.enableCors();
+
+  app.set('trust proxy', true);
+
   await app.listen(3000);
 }
 void bootstrap();
