@@ -36,6 +36,11 @@ export class VisitorService {
   }
 
   async findAllVisitors(): Promise<Visitor[]> {
-    return await this.visitorRepository.find({ relations: { actions: true } });
+    return await this.visitorRepository
+      .createQueryBuilder('visitor')
+      .innerJoinAndSelect('visitor.actions', 'action')
+      .orderBy('visitor.createdAt', 'DESC')
+      .addOrderBy('action.createdAt', 'DESC')
+      .getMany();
   }
 }

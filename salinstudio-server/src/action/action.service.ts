@@ -26,4 +26,11 @@ export class ActionService {
 
     return await this.actionRepository.save(event);
   }
+
+  async getAllActions(): Promise<Action[]> {
+    return await this.actionRepository.find({
+      relations: { visitor: true },
+      order: { createdAt: 'DESC' },
+    });
+  }
 }

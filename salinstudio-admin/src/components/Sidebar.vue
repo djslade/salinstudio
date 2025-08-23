@@ -5,7 +5,25 @@ import { ref } from "vue";
 const items = ref([
   {
     label: "Main",
-    items: [{ label: "Dashboard", route: "/" }],
+    items: [
+      {
+        label: "Dashboard",
+        route: "/",
+      },
+    ],
+  },
+  {
+    label: "Analytics",
+    items: [
+      {
+        label: "Visitors",
+        route: "/visitors",
+      },
+      {
+        label: "Traffic",
+        route: "/visitors/actions",
+      },
+    ],
   },
   {
     label: "Art",

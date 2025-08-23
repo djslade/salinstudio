@@ -7,6 +7,8 @@ import ListView from "./routes/List.vue";
 import GalleryView from "./routes/Gallery.vue";
 import LogoutView from "./routes/Logout.vue";
 import Carouselview from "./routes/Carousel.vue";
+import VisitorsView from "./routes/Visitors.vue";
+import VisitorActionsView from "./routes/VisitorActions.vue";
 import { isVisitorMember } from "./utils/visitor";
 import { clearTokens, hasTokens } from "./utils/tokens";
 
@@ -15,6 +17,18 @@ const routes = [
     path: "/",
     name: "Home",
     component: HomeView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/visitors",
+    name: "Visitors",
+    component: VisitorsView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/visitors/actions",
+    name: "Visitor Actions",
+    component: VisitorActionsView,
     meta: { requiresAuth: true },
   },
   {
