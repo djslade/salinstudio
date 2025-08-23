@@ -29,6 +29,13 @@ export class VisitorService {
   }
 
   async findVisitorById(id: string): Promise<Visitor | null> {
-    return await this.visitorRepository.findOne({ where: { id } });
+    return await this.visitorRepository.findOne({
+      where: { id },
+      relations: { actions: true },
+    });
+  }
+
+  async findAllVisitors(): Promise<Visitor[]> {
+    return await this.visitorRepository.find({ relations: { actions: true } });
   }
 }

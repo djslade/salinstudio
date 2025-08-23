@@ -44,7 +44,7 @@ export class IPService {
         isTester: true,
       };
     }
-    const endpoint = `http://ip-api.com/json/${ip}?fields=246035`;
+    const endpoint = `http://ip-api.com/json/${ip}?fields=1294611`;
     const res = await fetch(endpoint);
     const remainingRequests: number = parseInt(res.headers['X-Rl']);
     if (remainingRequests === 0) {
