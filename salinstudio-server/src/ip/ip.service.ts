@@ -36,6 +36,7 @@ export class IPService {
       return {
         continent: '',
         country: '',
+        countryCode: '',
         city: '',
         timezone: '',
         mobile: false,
@@ -43,18 +44,19 @@ export class IPService {
         isTester: true,
       };
     }
-    const endpoint = `http://ip-api.com/json/${ip}?fields=1294609`;
+    const endpoint = `http://ip-api.com/json/${ip}?fields=246035`;
     const res = await fetch(endpoint);
     const remainingRequests: number = parseInt(res.headers['X-Rl']);
     if (remainingRequests === 0) {
       const expiresInSeconds: number = parseInt(res.headers['X-Ttl']);
       await this.createThrottle(expiresInSeconds);
     }
-    const { continent, country, city, timezone, mobile, proxy } =
+    const { continent, country, countryCode, city, timezone, mobile, proxy } =
       await res.json();
     return {
       continent,
       country,
+      countryCode,
       city,
       timezone,
       mobile,

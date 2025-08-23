@@ -13,6 +13,9 @@ export class Visitor extends BaseEntity {
   @Column()
   country: string;
 
+  @Column({ default: '' })
+  countryCode: string;
+
   @Column()
   city: string;
 

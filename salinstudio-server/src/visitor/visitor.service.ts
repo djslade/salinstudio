@@ -18,6 +18,7 @@ export class VisitorService {
       throw new BadRequestException('could not get location data for visitor');
     const visitor = this.visitorRepository.create();
     visitor.country = ipData.country;
+    visitor.countryCode = ipData.countryCode;
     visitor.continent = ipData.continent;
     visitor.city = ipData.city;
     visitor.timezone = ipData.timezone;
