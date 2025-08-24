@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from "@tanstack/vue-query";
 import { DataTable, Column } from "primevue";
-import { getRequest } from "../utils/requests";
+import { getRequest, refreshIfUnauthorized } from "../utils/requests";
 import type { Action } from "../types/data";
 
 type GetAllActionsRes = {
@@ -11,9 +11,13 @@ type GetAllActionsRes = {
 const { data, isFetching } = useQuery({
   queryKey: ["actions"],
   queryFn: async () => {
-    const res = await getRequest<GetAllActionsRes>("/action", {
-      accessToken: true,
-    });
+    const res = await refreshIfUnauthorized<GetAllActionsRes>(
+      async () =>
+        await getRequest("/visitor", {
+          accessToken: true,
+        })
+    );
+    if (!res) throw new Error();
     return res.actions;
   },
 });
