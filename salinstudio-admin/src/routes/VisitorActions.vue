@@ -13,7 +13,7 @@ const { data, isFetching } = useQuery({
   queryFn: async () => {
     const res = await refreshIfUnauthorized<GetAllActionsRes>(
       async () =>
-        await getRequest("/actions", {
+        await getRequest("/action", {
           accessToken: true,
         })
     );
