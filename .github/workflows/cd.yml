@@ -17,6 +17,10 @@ jobs:
       - name: Create .env file for web
         run: echo "VITE_SERVER_ENDPOINT=${{ secrets.VITE_ENDPOINT }}" > salinstudio-client/.env
 
+      - name: Inject prerender.io token into nginx config
+        run: |
+          sed -i "s/YOUR_TOKEN/${{ secrets.PRERENDER_TOKEN }}/g" salinstudio-client/nginx.conf
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 

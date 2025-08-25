@@ -19,12 +19,13 @@ const { data } = useQuery({
     const res = await axios.get(
       `${import.meta.env.VITE_SERVER_ENDPOINT}/art/slug/${route.params.id}`
     );
+
     return res.data.art as Art;
   },
   retry: (failureCount, err: AxiosError) => {
     if (err.status === 404) {
       router.replace({
-        name: "NotFound",
+        name: "not found",
         params: { pathMatch: route.path.substring(1).split("/") },
         query: route.query,
         hash: route.hash,
@@ -45,7 +46,7 @@ const language = useLanguageStore();
       :heading="
         language.isEn() ? (data ? data.titleEn : '') : data ? data.titleFi : ''
       "
-      :currentRoute="'Gallery'"
+      :currentRoute="'Closeup'"
     >
       <template #fixture>
         <div class="content-cta">

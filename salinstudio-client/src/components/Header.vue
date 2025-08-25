@@ -6,6 +6,7 @@ import { useLanguageStore } from "../store/language";
 import Underlay from "./Underlay.vue";
 import type { Position } from "../types/position";
 import PageTitle from "./PageTitle.vue";
+import { useRoute, useRouter } from "vue-router";
 
 type Link = {
   to: string;
@@ -13,11 +14,18 @@ type Link = {
   labelFi: string;
 };
 
-defineProps<{
+const { currentRoute } = defineProps<{
   position: Position;
   heading?: string;
   transparent?: boolean;
-  currentRoute?: "Home" | "About" | "Gallery" | "Commissions" | "Contact";
+  currentRoute?:
+    | "Home"
+    | "About"
+    | "Gallery"
+    | "Closeup"
+    | "Commissions"
+    | "Contact"
+    | "NotFound";
 }>();
 
 const prevYOffset = ref<number>(window.pageYOffset);
@@ -25,6 +33,9 @@ const prevYOffset = ref<number>(window.pageYOffset);
 const isHidden = ref<boolean>(false);
 
 const language = useLanguageStore();
+
+const route = useRoute();
+const router = useRouter();
 
 const links: Link[] = [
   {
@@ -87,6 +98,37 @@ const handleScroll = () => {
   prevYOffset.value = newYOffset;
 };
 
+const updateLocale = () => {
+  if (route.name === "Closeup") {
+    router.replace({
+      name: route.name,
+      params: { id: route.params.id, locale: language.language },
+      query: route.query,
+    });
+  } else if (route.name === "NotFound") {
+    router.replace({
+      name: route.name,
+      params: { pathMatch: route.params.pathMatch, locale: language.language },
+    });
+  } else {
+    router.replace({
+      name: route.name,
+      params: { locale: language.language },
+      query: route.query,
+    });
+  }
+};
+
+const changeToEn = () => {
+  language.toEn();
+  updateLocale();
+};
+
+const changeToFi = () => {
+  language.toFi();
+  updateLocale();
+};
+
 onMounted(() => {
   document.addEventListener("scroll", handleScroll, { passive: true });
 });
@@ -133,23 +175,27 @@ onUnmounted(() => {
         <IconButton :onClick="handleCloseMenu" icon="mdi-light:arrow-left" />
         <div class="mobile-menu-links-container">
           <NavLink
-            :is-current-route="currentRoute === link.label"
+            :isCurrentRoute="
+              link.label === 'Gallery'
+                ? currentRoute === 'Closeup' || currentRoute === link.label
+                : currentRoute === link.label
+            "
             v-for="link in links"
             :id="'link-id.' + link.label"
-            :to="link.to"
+            :name="link.label"
             :label="language.isEn() ? link.label : link.labelFi"
           />
         </div>
         <IconButton
           v-if="language.isEn()"
           iconAsText
-          :onClick="language.toFi"
+          :onClick="changeToFi"
           icon="EN"
         />
         <IconButton
           v-if="language.isFi()"
           iconAsText
-          :onClick="language.toEn"
+          :onClick="changeToEn"
           icon="FI"
         />
       </div>
@@ -172,23 +218,27 @@ onUnmounted(() => {
         <IconButton :onClick="handleCloseMenu" icon="mdi-light:arrow-left" />
         <div class="menu-links-container">
           <NavLink
-            :is-current-route="currentRoute === link.label"
+            :isCurrentRoute="
+              link.label === 'Gallery'
+                ? currentRoute === 'Closeup' || currentRoute === link.label
+                : currentRoute === link.label
+            "
             v-for="link in links"
             :id="'link-id.' + link.label"
-            :to="link.to"
+            :name="link.label"
             :label="language.isEn() ? link.label : link.labelFi"
           />
         </div>
         <IconButton
           v-if="language.isEn()"
           iconAsText
-          :onClick="language.toFi"
+          :onClick="changeToFi"
           icon="EN"
         />
         <IconButton
           v-if="language.isFi()"
           iconAsText
-          :onClick="language.toEn"
+          :onClick="changeToEn"
           icon="FI"
         />
       </div>

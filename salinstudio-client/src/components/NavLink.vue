@@ -2,7 +2,7 @@
 import { RouterLink } from "vue-router";
 
 defineProps<{
-  to: string;
+  name: string;
   label: string;
   isCurrentRoute: boolean;
 }>();
@@ -10,7 +10,9 @@ defineProps<{
 
 <template>
   <span v-if="isCurrentRoute" class="current-route-span">{{ label }}</span>
-  <RouterLink v-else class="nav-link" :to="to">{{ label }}</RouterLink>
+  <RouterLink v-else class="nav-link" :to="{ name, params: $route.params }">{{
+    label
+  }}</RouterLink>
 </template>
 
 <style scoped>

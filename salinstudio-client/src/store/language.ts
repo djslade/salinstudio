@@ -7,6 +7,7 @@ export const useLanguageStore = defineStore("language", {
   actions: {
     set(newLanguage: "en" | "fi") {
       this.language = newLanguage;
+      localStorage.setItem("salinstudio-language", newLanguage);
     },
     isEn() {
       return this.language === "en";

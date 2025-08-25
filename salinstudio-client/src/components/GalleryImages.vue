@@ -5,6 +5,7 @@ import { preloadImage } from "../utils/preloadImage";
 import type { Art } from "../types/art";
 import type { LoadedImage } from "../types/LoadedImage";
 import OpacityTransition from "./OpacityTransition.vue";
+import { useLanguageStore } from "../store/language";
 
 type Filter =
   | "all"
@@ -19,6 +20,8 @@ const { data } = defineProps<{
   category: Filter;
   columnCount: number;
 }>();
+
+const language = useLanguageStore();
 
 const loadedImages = ref<LoadedImage[]>([]);
 const fullyLoaded = ref<boolean>(false);
@@ -66,7 +69,14 @@ onMounted(async () => {
             :key="`art-${idx}`"
             :style="{ aspectRatio: image.ratio }"
             @click="
-              () => $router.push(`/gallery/${image.metadata?.art?.slug || ''}`)
+              () =>
+                $router.push({
+                  name: 'Closeup',
+                  params: {
+                    id: image.metadata?.art?.slug || '',
+                    locale: language.language,
+                  },
+                })
             "
           >
             <img

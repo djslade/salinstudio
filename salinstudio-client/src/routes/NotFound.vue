@@ -27,7 +27,13 @@ const language = useLanguageStore();
         <IconButton
           label="Back to home"
           icon="mdi-light:arrow-up"
-          :onClick="() => $router.push('/')"
+          :onClick="
+            () =>
+              $router.push({
+                name: 'Home',
+                params: { locale: $route.params.locale },
+              })
+          "
         />
       </section>
       <section v-if="language.isFi()" class="comm-closed-panel">

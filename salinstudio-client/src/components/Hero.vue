@@ -7,12 +7,15 @@ import { useLanguageStore } from "../store/language";
 import IconButton from "../components/IconButton.vue";
 import Loader from "./Loader.vue";
 import OpacityTransition from "./OpacityTransition.vue";
+import { useRouter } from "vue-router";
 
 const { data } = defineProps<{
   data: Art[];
 }>();
 
 const language = useLanguageStore();
+
+const router = useRouter();
 
 const frontImageIdx = ref<number>(0);
 const loadedImages = ref<LoadedImage[]>([]);
@@ -25,6 +28,13 @@ const getZIndex = (idx: number) => {
   if (frontImageIdx.value === data.length - 1 && idx === 0) return 2;
   if (idx === frontImageIdx.value + 1) return 2;
   return 1;
+};
+
+const goToGallery = () => {
+  router.push({
+    name: "Gallery",
+    params: { locale: language.language },
+  });
 };
 
 onMounted(async () => {
@@ -89,7 +99,7 @@ onUnmounted(() => {
                 language.isEn() ? 'Explore her work' : 'Katso hänen töitään'
               "
               icon="mdi-light:arrow-up"
-              :onClick="() => $router.push('/gallery')"
+              :onClick="goToGallery"
             />
           </div>
         </div>
