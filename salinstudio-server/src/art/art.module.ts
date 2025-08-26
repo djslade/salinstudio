@@ -11,5 +11,6 @@ import { ImageModule } from '../image/image.module';
   imports: [DatabaseModule, AuthModule, UploadModule, ImageModule],
   providers: [...artProviders, ArtService],
   controllers: [ArtController],
+  exports: [ArtService],
 })
 export class ArtModule {}

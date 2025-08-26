@@ -7,6 +7,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { MailerModule } from './mailer/mailer.module';
 import { VisitorModule } from './visitor/visitor.module';
 import { ActionModule } from './action/action.module';
+import { SitemapModule } from './sitemap/sitemap.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ActionModule } from './action/action.module';
     ArtModule,
     VisitorModule,
     ActionModule,
+    SitemapModule,
     MulterModule.register({
       limits: {
         fileSize: 50 * 1024 * 1024,
