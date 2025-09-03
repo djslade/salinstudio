@@ -9,9 +9,16 @@ import { useQuery } from "@tanstack/vue-query";
 import axios, { AxiosError } from "axios";
 import { useRoute, useRouter } from "vue-router";
 import CloseupPanel from "../components/CloseupPanel.vue";
+import { useImageStore } from "../store/images";
+import { onMounted, ref, watch } from "vue";
+import OpacityTransition from "../components/OpacityTransition.vue";
+import { useMetadata } from "../hooks/useMetadata";
 
 const route = useRoute();
 const router = useRouter();
+const pageReady = ref<boolean>(false);
+
+const { setMetadata } = useMetadata();
 
 const { data } = useQuery({
   queryKey: [`art.${route.params.id}`],
@@ -37,6 +44,31 @@ const { data } = useQuery({
 });
 
 const language = useLanguageStore();
+const images = useImageStore();
+
+const onPageLoad = async (art?: Art) => {
+  if (!art) return;
+
+  const title = `${
+    route.params.locale === "fi" ? art.titleFi : art.titleEn
+  } - Miia Salin`;
+
+  setMetadata({
+    title,
+    description:
+      route.params.locale === "fi" ? art.descriptionFi : art.descriptionEn,
+    imageUrl: art.desktopUrl,
+  });
+
+  await images.preloadAndSet(art.desktopUrl);
+
+  pageReady.value = true;
+  window.prerenderReady = true;
+};
+
+onMounted(async () => await onPageLoad(data.value));
+
+watch(data, async (art) => await onPageLoad(art));
 </script>
 
 <template>
@@ -59,8 +91,10 @@ const language = useLanguageStore();
       </template>
     </Header>
     <main>
-      <CloseupPanel v-if="data" :data="data" />
-      <Loader v-else />
+      <OpacityTransition mode="default">
+        <CloseupPanel v-if="pageReady && data" :data="data" />
+      </OpacityTransition>
+      <Loader v-if="!pageReady" />
     </main>
     <Footer position="static" />
   </div>

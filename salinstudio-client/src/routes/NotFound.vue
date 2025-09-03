@@ -3,8 +3,21 @@ import { useLanguageStore } from "../store/language";
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import IconButton from "../components/IconButton.vue";
+import { onMounted, onUnmounted } from "vue";
+import { useMetadata } from "../hooks/useMetadata";
 
 const language = useLanguageStore();
+
+const { setMetadata, clearNoIndex, setNoIndex } = useMetadata();
+
+onMounted(async () => {
+  setMetadata({});
+  setNoIndex();
+});
+
+onUnmounted(async () => {
+  clearNoIndex();
+});
 </script>
 
 <template>
@@ -48,7 +61,13 @@ const language = useLanguageStore();
         <IconButton
           label="Takaisin etusivulle"
           icon="mdi-light:arrow-up"
-          :onClick="() => $router.push('/')"
+          :onClick="
+            () =>
+              $router.push({
+                name: 'Home',
+                params: { locale: $route.params.locale },
+              })
+          "
         />
       </section>
     </main>

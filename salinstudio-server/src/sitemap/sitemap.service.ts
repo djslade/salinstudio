@@ -47,8 +47,8 @@ const staticRoutes = [
 export class SitemapService {
   constructor(private artService: ArtService) {}
 
-  setUrl(locale: string, ...params: string[]) {
-    let url = `${baseUrl}/${locale}`;
+  setUrl(...params: string[]) {
+    let url = `${baseUrl}`;
     if (params.length > 0) {
       params.forEach((param) => (url += `/${param}`));
     }
@@ -62,24 +62,21 @@ export class SitemapService {
     lastMod: string,
     ...params: string[]
   ) {
-    const locales = ['en', 'fi'];
-    for (let locale of locales) {
-      const urlElement = root.ele('url');
-      urlElement.ele('loc').txt(this.setUrl(locale, ...params));
-      urlElement.ele('xhtml:link', {
-        rel: 'alternate',
-        hreflang: 'en',
-        href: this.setUrl('en', ...params),
-      });
-      urlElement.ele('xhtml:link', {
-        rel: 'alternate',
-        hreflang: 'fi',
-        href: this.setUrl('fi', ...params),
-      });
-      urlElement.ele('changefreq').txt(changeFreq);
-      urlElement.ele('priority').txt(priority);
-      urlElement.ele('lastmod').txt(lastMod);
-    }
+    const urlElement = root.ele('url');
+    urlElement.ele('loc').txt(this.setUrl(...params));
+    urlElement.ele('xhtml:link', {
+      rel: 'alternate',
+      hreflang: 'en',
+      href: this.setUrl('en', ...params),
+    });
+    urlElement.ele('xhtml:link', {
+      rel: 'alternate',
+      hreflang: 'fi',
+      href: this.setUrl('fi', ...params),
+    });
+    urlElement.ele('changefreq').txt(changeFreq);
+    urlElement.ele('priority').txt(priority);
+    urlElement.ele('lastmod').txt(lastMod);
   }
 
   async newSitemap() {

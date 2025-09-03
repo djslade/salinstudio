@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
-import { RouterLink } from "vue-router";
-import { ref } from "vue";
+import { RouterLink, useRoute } from "vue-router";
+import { onMounted, ref } from "vue";
 import axios from "axios";
 import { useLanguageStore } from "../store/language";
 import Loader from "../components/Loader.vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
 import PanelHeading from "../components/PanelHeading.vue";
 import PanelParagraph from "../components/PanelParagraph.vue";
+import { useMetadata } from "../hooks/useMetadata";
 
 type FormSubmissioNStage = "not sent" | "sending" | "sent";
+
+const textEn =
+  "If you’re looking for commissioned artwork, click here. For all other questions, you can contact me via this form. I look forward to hearing from you!";
+
+const textFi =
+  "Jos haluat tilata minulta taidetta, klikkaa tästä. Kaikissa muissa kysymyksissä voit ottaa minuun yhteyttä tämän lomakkeen kautta. Odotan innolla viestiäsi!";
+
+const route = useRoute();
 
 const language = useLanguageStore();
 
@@ -24,6 +33,8 @@ const fieldEmptyError = ref<boolean>(false);
 const invalidEmailError = ref<boolean>(false);
 const internalError = ref<boolean>(false);
 const buttonDisabled = ref<boolean>(false);
+
+const { setMetadata } = useMetadata();
 
 const checkIfValid = () => {
   if (fieldEmptyError.value) {
@@ -115,6 +126,17 @@ const handleSubmit = async () => {
     buttonDisabled.value = false;
   }
 };
+
+const pageReady = ref<boolean>(false);
+
+onMounted(async () => {
+  setMetadata({
+    description: route.params.locale === "fi" ? textFi : textEn,
+  });
+
+  pageReady.value = true;
+  window.prerenderReady = true;
+});
 </script>
 
 <template>
@@ -124,7 +146,7 @@ const handleSubmit = async () => {
       position="sticky"
       currentRoute="Contact"
     />
-    <main class="main">
+    <main class="main" v-if="pageReady">
       <OpacityTransition mode="default">
         <section v-if="stage === 'not sent'" class="contact-panel">
           <div class="contact-inner-container">

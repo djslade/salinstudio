@@ -3,17 +3,34 @@ import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import { useLanguageStore } from "../store/language";
 import { onMounted, ref } from "vue";
-import { preloadImage } from "../utils/preloadImage";
 import Loader from "../components/Loader.vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
 import PanelParagraph from "../components/PanelParagraph.vue";
+import { useImageStore } from "../store/images";
+import { useRoute } from "vue-router";
+import { useMetadata } from "../hooks/useMetadata";
 
+const route = useRoute();
 const language = useLanguageStore();
-const fullyLoaded = ref<boolean>(false);
+const images = useImageStore();
+
+const { setMetadata } = useMetadata();
+
+const pageReady = ref<boolean>(false);
 
 onMounted(async () => {
-  await preloadImage("/desktop/1755546690870.jpg");
-  fullyLoaded.value = true;
+  setMetadata({
+    description:
+      route.params.locale === "fi"
+        ? "Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo, mutta jokainen vastoinkäyminen on vain vahvistanut päättäväisyyttäni ja intohimoani taiteeseen."
+        : "I’m a hardworking artist from Finland with limitless imagination and drive. I’ve come a long way for this path, but my hardships have just made my determination stronger.",
+    imageUrl: "/desktop/1755546690870.jpg",
+  });
+
+  await images.preloadAndSet("/desktop/1755546690870.jpg");
+
+  pageReady.value = true;
+  window.prerenderReady = true;
 });
 </script>
 
@@ -27,8 +44,8 @@ onMounted(async () => {
     <main>
       <OpacityTransition mode="default">
         <section
-          v-if="fullyLoaded"
-          :class="{ 'about-panel': true, 'is-visible': fullyLoaded }"
+          v-if="pageReady"
+          :class="{ 'about-panel': true, 'is-visible': pageReady }"
         >
           <div class="about-img-container">
             <img
@@ -38,35 +55,6 @@ onMounted(async () => {
             />
           </div>
           <div class="about-text-container">
-            <div v-if="language.isEn()" class="about-text">
-              <PanelParagraph>
-                I’m a hardworking artist from Finland with limitless imagination
-                and drive. I’ve come a long way for this path, but my hardships
-                have just made my determination stronger.
-              </PanelParagraph>
-              <PanelParagraph>
-                I enjoy drawing with pencil, coal and using oil paints. I also
-                make some digital art at times, and have great interest in
-                animation and 3D art. I’m a great listener and learn fast. I
-                enjoy surrealism, symbolism, real life experiences and stories.
-                I want to capture the feeling and raw emotion in whatever or
-                whoever I make art of.
-              </PanelParagraph>
-              <PanelParagraph>
-                Being international is very important to me, and I’m hoping to
-                gain new experiences and opportunities outside of Finland too.
-                I’m very sensitive to different situations that people might be
-                in, and I will make it as easy as possible to contact me and
-                request artworks. Follow me on
-                <a
-                  href="https://www.instagram.com/salinmiia/"
-                  target="_blank"
-                  class="about-link"
-                  >Instagram</a
-                >
-                to stay up to date with my work.
-              </PanelParagraph>
-            </div>
             <div v-if="language.isFi()" class="about-text">
               <PanelParagraph>
                 Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma
@@ -97,10 +85,39 @@ onMounted(async () => {
                 >, jos haluat pysyä ajan tasalla uusista töistäni.
               </PanelParagraph>
             </div>
+            <div v-else class="about-text">
+              <PanelParagraph>
+                I’m a hardworking artist from Finland with limitless imagination
+                and drive. I’ve come a long way for this path, but my hardships
+                have just made my determination stronger.
+              </PanelParagraph>
+              <PanelParagraph>
+                I enjoy drawing with pencil, coal and using oil paints. I also
+                make some digital art at times, and have great interest in
+                animation and 3D art. I’m a great listener and learn fast. I
+                enjoy surrealism, symbolism, real life experiences and stories.
+                I want to capture the feeling and raw emotion in whatever or
+                whoever I make art of.
+              </PanelParagraph>
+              <PanelParagraph>
+                Being international is very important to me, and I’m hoping to
+                gain new experiences and opportunities outside of Finland too.
+                I’m very sensitive to different situations that people might be
+                in, and I will make it as easy as possible to contact me and
+                request artworks. Follow me on
+                <a
+                  href="https://www.instagram.com/salinmiia/"
+                  target="_blank"
+                  class="about-link"
+                  >Instagram</a
+                >
+                to stay up to date with my work.
+              </PanelParagraph>
+            </div>
           </div>
         </section>
       </OpacityTransition>
-      <Loader v-if="!fullyLoaded" />
+      <Loader v-if="!pageReady" />
     </main>
     <Footer position="static" />
   </div>

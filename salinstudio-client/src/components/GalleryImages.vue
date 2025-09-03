@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import Loader from "./Loader.vue";
-import { preloadImage } from "../utils/preloadImage";
 import type { Art } from "../types/art";
-import type { LoadedImage } from "../types/LoadedImage";
-import OpacityTransition from "./OpacityTransition.vue";
-import { useLanguageStore } from "../store/language";
+import { useImageStore } from "../store/images";
 
 type Filter =
   | "all"
@@ -15,81 +10,65 @@ type Filter =
   | "digital"
   | "mixed media";
 
-const { data } = defineProps<{
+defineProps<{
   data: Art[];
   category: Filter;
   columnCount: number;
 }>();
 
-const language = useLanguageStore();
+const images = useImageStore();
 
-const loadedImages = ref<LoadedImage[]>([]);
-const fullyLoaded = ref<boolean>(false);
-
-const getColumnArrays = (array: LoadedImage[], columnCount: number) => {
-  const columnsArray: LoadedImage[][] = [];
+const getColumnArrays = (array: Art[], columnCount: number) => {
+  const columnsArray: Art[][] = [];
   for (let i = 0; i < columnCount; i++) {
     columnsArray.push(array.filter((_, idx) => idx % columnCount === i));
   }
   return columnsArray;
 };
-
-onMounted(async () => {
-  try {
-    const results = (await Promise.all(
-      data.map((art) => preloadImage(art.thumbUrl, { art }))
-    )) as LoadedImage[];
-    loadedImages.value = results;
-    fullyLoaded.value = true;
-  } catch (err) {
-    console.error("Image preload failed", err);
-  }
-});
 </script>
 
 <template>
-  <OpacityTransition mode="default">
-    <section v-if="fullyLoaded" class="gallery-container">
-      <div class="gallery-panel">
-        <div
-          v-for="(array, idx) in getColumnArrays(
-            loadedImages.filter((image) =>
-              category === 'all'
-                ? image.metadata?.art?.category !== 'mixed media'
-                : image.metadata?.art?.category === category
-            ),
-            columnCount
-          )"
-          :key="`array-${idx}`"
-          class="gallery-column"
+  <section class="gallery-container">
+    <div class="gallery-panel">
+      <div
+        v-for="(array, idx) in getColumnArrays(
+          data.filter((image) =>
+            category === 'all'
+              ? image.category !== 'mixed media'
+              : image.category === category
+          ),
+          columnCount
+        )"
+        :key="`array-${idx}`"
+        class="gallery-column"
+      >
+        <button
+          class="gallery-img-btn"
+          v-for="(image, idx) in array"
+          :key="`art-${idx}`"
+          :style="{
+            aspectRatio: images.getRatio(image.thumbUrl),
+          }"
+          @click="
+            () =>
+              $router.push({
+                name: 'Closeup',
+                params: {
+                  ...$route.params,
+                  id: image.slug,
+                },
+              })
+          "
         >
-          <button
-            class="gallery-img-btn"
-            v-for="(image, idx) in array"
-            :key="`art-${idx}`"
-            :style="{ aspectRatio: image.ratio }"
-            @click="
-              () =>
-                $router.push({
-                  name: 'Closeup',
-                  params: {
-                    id: image.metadata?.art?.slug || '',
-                    locale: language.language,
-                  },
-                })
-            "
-          >
-            <img
-              class="gallery-img"
-              :src="image.src"
-              :alt="image.metadata?.art?.titleEn || ''"
-            />
-          </button>
-        </div>
+          <img
+            class="gallery-img"
+            :src="image.thumbUrl"
+            :alt="image.descriptionEn"
+          />
+        </button>
       </div>
-    </section>
-  </OpacityTransition>
-  <Loader v-if="!fullyLoaded" />
+    </div>
+  </section>
 </template>
 
 <style scoped>

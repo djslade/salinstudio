@@ -6,6 +6,10 @@ import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import type { Art } from "../types/art";
 import Loader from "../components/Loader.vue";
+import { onMounted, ref, watch } from "vue";
+import { useImageStore } from "../store/images";
+import OpacityTransition from "../components/OpacityTransition.vue";
+import { useMetadata } from "../hooks/useMetadata";
 
 const { data } = useQuery({
   queryKey: ["carousel"],
@@ -20,14 +24,41 @@ const { data } = useQuery({
     return fallback.data.art.slice(0, 5) as Art[];
   },
 });
+
+const images = useImageStore();
+
+const pageReady = ref<boolean>(false);
+
+const { setMetadata } = useMetadata();
+
+const onPageLoad = async (art?: Art[]) => {
+  if (!art) return;
+
+  setMetadata({
+    imageUrl: art[0].desktopUrl,
+  });
+
+  for (let a of art) {
+    await images.preloadAndSet(a.desktopUrl);
+  }
+
+  pageReady.value = true;
+  window.prerenderReady = true;
+};
+
+onMounted(async () => await onPageLoad(data.value));
+
+watch(data, async (art) => await onPageLoad(art));
 </script>
 
 <template>
   <div class="">
     <Header position="fixed" transparent current-route="Home" />
     <main>
-      <Hero v-if="data" :data="data" />
-      <Loader v-else full />
+      <OpacityTransition mode="default">
+        <Hero v-if="pageReady && data" :data="data" />
+      </OpacityTransition>
+      <Loader v-if="!pageReady" full />
     </main>
     <Footer position="absolute" />
   </div>

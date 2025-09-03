@@ -4,8 +4,32 @@ import Footer from "../components/Footer.vue";
 import { useLanguageStore } from "../store/language";
 import PanelHeading from "../components/PanelHeading.vue";
 import PanelParagraph from "../components/PanelParagraph.vue";
+import { onMounted, ref } from "vue";
+import { useMetadata } from "../hooks/useMetadata";
+import { useRoute } from "vue-router";
+
+const pageReady = ref<boolean>(false);
+
+const closedTextFi =
+  " Kiitos kiinnostuksestasi, mutta en ota tällä hetkellä tilauspyyntöjä vastaan. Seuraa minua Instagramissa, niin voit seurata päivityksiä asiaan liittyen.";
+
+const closedTextEn =
+  "Thank you for your interest, but I am not currently accepting commission requests. Please follow me on Instagram to find out when I become available for work.";
+
+const route = useRoute();
 
 const language = useLanguageStore();
+
+const { setMetadata } = useMetadata();
+
+onMounted(async () => {
+  setMetadata({
+    description: route.params.locale === "fi" ? closedTextFi : closedTextEn,
+  });
+
+  pageReady.value = true;
+  window.prerenderReady = true;
+});
 </script>
 
 <template>
@@ -15,7 +39,7 @@ const language = useLanguageStore();
       :heading="language.isEn() ? 'Commissions' : 'Tilaustyöt'"
       current-route="Commissions"
     />
-    <main>
+    <main v-if="pageReady">
       <section v-if="language.isEn()" class="comm-closed-panel">
         <div class="comm-closed-title-container">
           <PanelHeading text="Commissions are closed" textAlign="center" />

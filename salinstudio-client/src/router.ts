@@ -5,8 +5,23 @@ import Home from "./routes/Home.vue";
 import Closeup from "./routes/Closeup.vue";
 import NotFound from "./routes/NotFound.vue";
 import Contact from "./routes/Contact.vue";
+import type { Art } from "./types/art";
+import type { RouteRecordRaw } from "vue-router";
 
-export const routes = [
+type Route = RouteRecordRaw & {
+  path: string;
+  component: unknown;
+  name: string;
+  meta?: {
+    title?: string;
+    titleFi?: string;
+    data?: {
+      art?: Art | Art[];
+    };
+  };
+};
+
+export const routes: Route[] = [
   {
     path: "/:locale(en|fi)?",
     component: Home,

@@ -1,3 +1,5 @@
+import { useRoute } from "vue-router";
+
 export const defaultTitle = "Artist and Visual Storyteller - Miia Salin";
 
 export const defaultDescription =
@@ -62,12 +64,6 @@ const deleteMetaByName = (name: string) => {
   element.remove();
 };
 
-const deleteMetaByProperty = (property: string) => {
-  const element = document.querySelector(`meta[property="${property}"]`);
-  if (!element) return;
-  element.remove();
-};
-
 const updateCanonicalUrl = (url: string) => {
   let element = document.querySelector('link[rel="canonical"');
   if (!element) {
@@ -78,82 +74,74 @@ const updateCanonicalUrl = (url: string) => {
   element.setAttribute("href", url);
 };
 
-export const setStaticMetadata = () => {
-  updateMetaTag("keywords", keywords.join(", "));
-  updateMetaProperty("og:type", "website");
-};
-
-export const setUrl = (url: string) => {
+const setUrl = (url: string) => {
   updateCanonicalUrl(url);
   updateMetaProperty("og:url", url);
 };
 
-export const setTitle = (title: string) => {
+const setTitle = (title: string) => {
   document.title = title;
   updateMetaProperty("og:title", title);
   updateMetaProperty("twitter:title", title);
 };
 
-export const setDescription = (description: string) => {
+const setDescription = (description: string) => {
   updateMetaTag("description", description);
   updateMetaProperty("og:description", description);
   updateMetaProperty("twitter:description", description);
 };
 
-export const clearDescription = () => {
-  deleteMetaByName("description");
-  deleteMetaByProperty("og:description");
-  deleteMetaByProperty("twitter:description");
-};
-
-export const setImages = (imageUrl: string) => {
+const setImages = (imageUrl: string) => {
   updateMetaProperty("og:image", imageUrl);
   updateMetaProperty("twitter:card", imageUrl);
   updateMetaProperty("twitter:image", imageUrl);
 };
 
-export const clearImages = () => {
-  deleteMetaByProperty("og:image");
-  deleteMetaByProperty("twitter:card");
-  deleteMetaByProperty("twitter:image");
-};
-
-export const setNoIndex = () => {
-  updateMetaTag("prerender-status-code", "404");
-  updateMetaTag("robots", "noindex");
-};
-
-export const clearNoIndex = () => {
-  deleteMetaByName("prerender-status-code");
-  deleteMetaByName("robots");
-};
-
-export const setHtmlLang = (lang: string) => {
-  const element = document.querySelector("html");
-  if (!element) return;
-  element.setAttribute("lang", lang);
+const setStaticMetadata = () => {
+  updateMetaTag("keywords", keywords.join(", "));
+  updateMetaProperty("og:type", "website");
 };
 
 type Metadata = {
-  locale: string;
   title?: string;
   description?: string;
   imageUrl?: string;
 };
 
-export const setMetadata = (metadata: Metadata) => {
-  let { title, description, imageUrl, locale } = metadata;
-  if (!title) {
-    title = defaultTitle;
-  }
-  if (!description) {
-    description = locale === "fi" ? defaultDescriptionFi : defaultDescription;
-  }
-  if (!imageUrl) {
-    imageUrl = defaultImageUrl;
-  }
-  setTitle(title);
-  setDescription(description);
-  setUrl(window.location.href);
-  setImages(imageUrl);
+export const useMetadata = () => {
+  const route = useRoute();
+
+  const setMetadata = (metadata: Metadata) => {
+    let { title, description, imageUrl } = metadata;
+    const locale = route.params.locale;
+    if (!title) {
+      title =
+        route.params.locale === "fi"
+          ? (route.meta.titleFi as string)
+          : (route.meta.title as string);
+    }
+    if (!description) {
+      description = locale === "fi" ? defaultDescriptionFi : defaultDescription;
+    }
+    if (!imageUrl) {
+      imageUrl = defaultImageUrl;
+    }
+    setTitle(title);
+    setDescription(description);
+    setUrl(window.location.href);
+    setImages(imageUrl);
+    setStaticMetadata();
+  };
+
+  const setNoIndex = () => {
+    updateMetaTag("prerender-status-code", "404");
+    updateMetaTag("robots", "noindex");
+  };
+
+  const clearNoIndex = () => {
+    deleteMetaByName("prerender-status-code");
+    deleteMetaByName("robots");
+  };
+
+  return { setMetadata, setNoIndex, clearNoIndex };
 };

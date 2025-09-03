@@ -1,54 +1,42 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useLanguageStore } from "../store/language";
-import { preloadImage } from "../utils/preloadImage";
-import Loader from "./Loader.vue";
 import type { Art } from "../types/art";
-import OpacityTransition from "./OpacityTransition.vue";
 
-const { data } = defineProps<{ data: Art }>();
+defineProps<{ data: Art }>();
 
 const showDescription = ref<boolean>(false);
-const fullyLoaded = ref<boolean>(false);
 
 const language = useLanguageStore();
-
-onMounted(async () => {
-  await preloadImage(data.desktopUrl);
-  fullyLoaded.value = true;
-});
 </script>
 
 <template>
-  <OpacityTransition mode="default">
-    <section v-if="fullyLoaded" class="panel">
+  <section class="panel">
+    <div
+      @mouseenter="showDescription = true"
+      @mouseleave="showDescription = false"
+      @click="showDescription = !showDescription"
+      class="data-container"
+    >
+      <img class="image" :src="data.desktopUrl" :alt="data.titleEn" />
       <div
-        @mouseenter="showDescription = true"
-        @mouseleave="showDescription = false"
-        @click="showDescription = !showDescription"
-        class="data-container"
+        v-if="language.isEn() && data.descriptionEn"
+        :class="`description-container ${showDescription && 'visible'}`"
       >
-        <img class="image" :src="data.desktopUrl" :alt="data.titleEn" />
-        <div
-          v-if="language.isEn() && data.descriptionEn"
-          :class="`description-container ${showDescription && 'visible'}`"
-        >
-          <div class="description-inner-container">
-            <p class="description">{{ data.descriptionEn }}</p>
-          </div>
-        </div>
-        <div
-          v-if="language.isFi() && data.descriptionFi"
-          :class="`description-container ${showDescription && 'visible'}`"
-        >
-          <div class="description-inner-container">
-            <p class="description">{{ data.descriptionFi }}</p>
-          </div>
+        <div class="description-inner-container">
+          <p class="description">{{ data.descriptionEn }}</p>
         </div>
       </div>
-    </section>
-  </OpacityTransition>
-  <Loader v-if="!fullyLoaded" />
+      <div
+        v-if="language.isFi() && data.descriptionFi"
+        :class="`description-container ${showDescription && 'visible'}`"
+      >
+        <div class="description-inner-container">
+          <p class="description">{{ data.descriptionFi }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <style scoped>
