@@ -25,6 +25,10 @@ const analytics = useAnalyticsStore();
 const language = useLanguageStore();
 
 router.beforeEach(async (to, _, next) => {
+  const res = await fetch(window.location.href, { method: "HEAD" });
+  if (res.headers.get("x-is-bot") === "1") {
+    analytics.disable();
+  }
   if (to.query.hideme === "true") {
     analytics.disable();
   }
