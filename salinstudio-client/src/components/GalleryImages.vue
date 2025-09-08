@@ -85,7 +85,7 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
 .gallery-panel {
   padding: 1rem;
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   min-height: calc(100vh - 10rem);
   min-height: calc(100dvh - 10rem);
   width: 100%;
@@ -93,7 +93,7 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
 
 .gallery-column {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
@@ -102,6 +102,8 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
 
 .gallery-img-btn {
   border: none;
+  margin: 0;
+  padding: 0;
   background-color: transparent;
   width: 100%;
   cursor: pointer;

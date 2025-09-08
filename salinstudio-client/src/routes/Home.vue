@@ -38,12 +38,16 @@ const onPageLoad = async (art?: Art[]) => {
     imageUrl: art[0].desktopUrl,
   });
 
+  let counter = 0;
+
   for (let a of art) {
     await images.preloadAndSet(a.desktopUrl);
+    counter++;
+    if (!pageReady.value && counter > 0) {
+      pageReady.value = true;
+      window.prerenderReady = true;
+    }
   }
-
-  pageReady.value = true;
-  window.prerenderReady = true;
 };
 
 onMounted(async () => await onPageLoad(data.value));
