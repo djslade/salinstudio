@@ -48,6 +48,7 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
           :key="`art-${idx}`"
           :style="{
             aspectRatio: images.getRatio(image.thumbUrl),
+            backgroundImage: `url(${image.thumbUrl})`,
           }"
           @click="
             () =>
@@ -59,13 +60,7 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
                 },
               })
           "
-        >
-          <img
-            class="gallery-img"
-            :src="image.thumbUrl"
-            :alt="image.descriptionEn"
-          />
-        </button>
+        ></button>
       </div>
     </div>
   </section>
@@ -104,13 +99,10 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
   border: none;
   margin: 0;
   padding: 0;
-  background-color: transparent;
   width: 100%;
   cursor: pointer;
-}
-
-.gallery-img {
-  border-radius: 0.5rem;
-  width: 100%;
+  object-fit: cover;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>
