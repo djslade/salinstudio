@@ -43,7 +43,7 @@ const onPageLoad = async (art?: Art[]) => {
   for (let a of art) {
     await images.preloadAndSet(a.desktopUrl);
     counter++;
-    if (!pageReady.value && counter > 0) {
+    if (!pageReady.value && counter > 1) {
       pageReady.value = true;
       window.prerenderReady = true;
     }

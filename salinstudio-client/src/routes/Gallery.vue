@@ -95,7 +95,7 @@ const onPageLoad = async (art?: Art[]) => {
   let counter = 0;
 
   for (let a of art) {
-    await images.preloadAndSet(a.thumbUrl);
+    await images.preloadAndSet(a.mobileUrl);
     counter++;
     if (!pageReady.value && counter > columnCount.value * 3) {
       pageReady.value = true;
