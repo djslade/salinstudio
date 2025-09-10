@@ -47,8 +47,8 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
           v-for="(image, idx) in array"
           :key="`art-${idx}`"
           :style="{
-            aspectRatio: images.getRatio(image.mobileUrl),
-            backgroundImage: `url(${image.mobileUrl})`,
+            aspectRatio: images.getRatio(image.thumbUrl),
+            backgroundImage: `url(${image.thumbUrl})`,
           }"
           @click="
             () =>

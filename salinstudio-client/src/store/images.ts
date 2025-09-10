@@ -9,6 +9,10 @@ export const useImageStore = defineStore("images", {
     get(key: string) {
       return this.images.get(key);
     },
+    getWithFallback(key: string, fallback: string) {
+      const target = this.images.get(key);
+      if (!target) return this.images.get(fallback);
+    },
     set(key: string, value: LoadedImage) {
       this.images.set(key, value);
     },
@@ -16,6 +20,11 @@ export const useImageStore = defineStore("images", {
       const image = this.images.get(key);
       if (!image) return 0;
       return image.ratio;
+    },
+    getSrc(key: string, fallback: string) {
+      const image = this.getWithFallback(key, fallback);
+      if (!image) return "";
+      return image.src;
     },
     async preload(
       src: string,

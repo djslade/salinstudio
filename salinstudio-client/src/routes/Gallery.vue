@@ -78,11 +78,7 @@ const columnCount = ref(1);
 
 const updateColumns = () => {
   const width = window.innerWidth;
-  if (width < 360) columnCount.value = 1;
-  else if (width < 900) columnCount.value = 2;
-  else if (width < 1200) columnCount.value = 3;
-  else if (width < 1500) columnCount.value = 4;
-  else columnCount.value = 5;
+  columnCount.value = Math.ceil(width / 360);
 };
 
 const onPageLoad = async (art?: Art[]) => {
@@ -95,7 +91,7 @@ const onPageLoad = async (art?: Art[]) => {
   let counter = 0;
 
   for (let a of art) {
-    await images.preloadAndSet(a.mobileUrl);
+    await images.preloadAndSet(a.thumbUrl);
     counter++;
     if (!pageReady.value && counter > columnCount.value * 3) {
       pageReady.value = true;
