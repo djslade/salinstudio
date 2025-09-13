@@ -2,6 +2,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  OnModuleInit,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { exiftool } from 'exiftool-vendored';
@@ -30,7 +31,7 @@ type FIleNames = {
 };
 
 @Injectable()
-export class ImageService {
+export class ImageService implements OnModuleInit {
   constructor(
     @Inject(REPOSITORY_NAMES.IMAGE) private imageRepository: Repository<Image>,
     private uploadService: UploadService,
@@ -42,6 +43,16 @@ export class ImageService {
       width: width ?? 0,
       height: height ?? 0,
     };
+  }
+
+  async onModuleInit() {
+    const images = await this.imageRepository.find({
+      where: { aspectRatio: 0 },
+    });
+    for (let image of images) {
+      await this.setAspectRatio(image.id);
+    }
+    console.log('all done');
   }
 
   async embedCopyright(buffer: Buffer): Promise<Buffer> {
@@ -151,7 +162,7 @@ export class ImageService {
     const processedImage = await sharp(buffer)
       .webp({ quality: 100 })
       .toBuffer();
-    const { width } = await this.getImageMetadata(processedImage);
+    const { width, height } = await this.getImageMetadata(processedImage);
     const withCopyright = await this.embedCopyright(processedImage);
     const config = this.getFingerprintConfig(currentDate);
     const full = await this.addFingerprint(withCopyright, config);
@@ -161,12 +172,15 @@ export class ImageService {
       width > 600 ? await this.genMobile(withCopyright, config) : full;
     const desktop =
       width > 1200 ? await this.genDesktop(withCopyright, config) : full;
+    const aspectRatio = width / height;
+
     return {
       full,
       thumb,
       mobile,
       desktop,
       fingerprintChecksum: config.checksum,
+      aspectRatio,
     };
   }
 
@@ -248,6 +262,7 @@ export class ImageService {
       image.mobileUrl = `${domain}/${fileNames.mobileUrl}`;
       image.thumbUrl = `${domain}/${fileNames.thumbUrl}`;
       image.fingerprintChecksum = processedImages.fingerprintChecksum;
+      image.aspectRatio = processedImages.aspectRatio;
 
       await this.imageRepository.save(image);
 
@@ -275,5 +290,21 @@ export class ImageService {
     ];
     for (let url of urls) await this.uploadService.delete(url);
     await this.imageRepository.delete(image);
+  }
+
+  async setAspectRatio(id: string) {
+    const image = await this.imageRepository.findOne({ where: { id } });
+    if (!image) return;
+    const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
+    const key = image.fullUrl.replace(`${domain}/`, '');
+    const file = await this.uploadService.get(key);
+    if (!file) return;
+    const { width, height } = await sharp(file).metadata();
+    if (!width || !height) return;
+    image.aspectRatio = width / height;
+    await this.imageRepository.save(image);
+    console.log(
+      `${image.id} aspect ratio updated to ${image.aspectRatio} and saved`,
+    );
   }
 }

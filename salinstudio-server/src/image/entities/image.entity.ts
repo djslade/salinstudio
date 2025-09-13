@@ -20,6 +20,9 @@ export class Image extends BaseEntity {
   @Column()
   fingerprintChecksum: number;
 
+  @Column('float', { default: 0 })
+  aspectRatio: number;
+
   @OneToOne(() => Art)
   art: Art;
 
