@@ -57,10 +57,10 @@ const onPageLoad = async (art?: Art) => {
     title,
     description:
       route.params.locale === "fi" ? art.descriptionFi : art.descriptionEn,
-    imageUrl: art.desktopUrl,
+    imageUrl: art.image.desktopUrl,
   });
 
-  await images.preloadAndSet(art.desktopUrl);
+  await images.preloadAndSet(art.image.desktopUrl);
 
   pageReady.value = true;
   window.prerenderReady = true;

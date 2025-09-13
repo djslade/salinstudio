@@ -85,13 +85,13 @@ const onPageLoad = async (art?: Art[]) => {
   if (!art) return;
 
   setMetadata({
-    imageUrl: art[0].desktopUrl,
+    imageUrl: art[0].image.desktopUrl,
   });
 
   let counter = 0;
 
   for (let a of art) {
-    await images.preloadAndSet(a.thumbUrl);
+    await images.preloadAndSet(a.image.thumbUrl);
     counter++;
     if (!pageReady.value && counter > columnCount.value * 3) {
       pageReady.value = true;

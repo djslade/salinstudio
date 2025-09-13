@@ -18,7 +18,7 @@ const language = useLanguageStore();
       @click="showDescription = !showDescription"
       class="data-container"
     >
-      <img class="image" :src="data.desktopUrl" :alt="data.titleEn" />
+      <img class="image" :src="data.image.desktopUrl" :alt="data.titleEn" />
       <div
         v-if="language.isEn() && data.descriptionEn"
         :class="`description-container ${showDescription && 'visible'}`"

@@ -44,11 +44,11 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
       >
         <button
           class="gallery-img-btn"
-          v-for="(image, idx) in array"
+          v-for="(art, idx) in array"
           :key="`art-${idx}`"
           :style="{
-            aspectRatio: images.getRatio(image.thumbUrl),
-            backgroundImage: `url(${image.thumbUrl})`,
+            aspectRatio: images.getRatio(art.image.thumbUrl),
+            backgroundImage: `url(${art.image.thumbUrl})`,
           }"
           @click="
             () =>
@@ -56,7 +56,7 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
                 name: 'Closeup',
                 params: {
                   ...$route.params,
-                  id: image.slug,
+                  id: art.slug,
                 },
               })
           "
