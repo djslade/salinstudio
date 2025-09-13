@@ -9,7 +9,6 @@ import Select from "../components/Select.vue";
 import { useLanguageStore } from "../store/language";
 import GalleryImages from "../components/GalleryImages.vue";
 import type { Art } from "../types/art";
-import { useImageStore } from "../store/images";
 import OpacityTransition from "../components/OpacityTransition.vue";
 import { useMetadata } from "../hooks/useMetadata";
 
@@ -58,7 +57,6 @@ const artCategory = ref<Filter>("all");
 const pageReady = ref<boolean>(false);
 
 const language = useLanguageStore();
-const images = useImageStore();
 
 const { setMetadata } = useMetadata();
 
@@ -88,16 +86,8 @@ const onPageLoad = async (art?: Art[]) => {
     imageUrl: art[0].image.desktopUrl,
   });
 
-  let counter = 0;
-
-  for (let a of art) {
-    await images.preloadAndSet(a.image.thumbUrl);
-    counter++;
-    if (!pageReady.value && counter > columnCount.value * 3) {
-      pageReady.value = true;
-      window.prerenderReady = true;
-    }
-  }
+  pageReady.value = true;
+  window.prerenderReady = true;
 };
 
 onMounted(async () => {

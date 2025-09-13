@@ -3,4 +3,5 @@ export type Image = {
   desktopUrl: string;
   mobileUrl: string;
   thumbUrl: string;
+  aspectRatio: number;
 };

@@ -2,7 +2,6 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
-  OnModuleInit,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { exiftool } from 'exiftool-vendored';
@@ -31,7 +30,7 @@ type FIleNames = {
 };
 
 @Injectable()
-export class ImageService implements OnModuleInit {
+export class ImageService {
   constructor(
     @Inject(REPOSITORY_NAMES.IMAGE) private imageRepository: Repository<Image>,
     private uploadService: UploadService,
@@ -43,16 +42,6 @@ export class ImageService implements OnModuleInit {
       width: width ?? 0,
       height: height ?? 0,
     };
-  }
-
-  async onModuleInit() {
-    const images = await this.imageRepository.find({
-      where: { aspectRatio: 0 },
-    });
-    for (let image of images) {
-      await this.setAspectRatio(image.id);
-    }
-    console.log('all done');
   }
 
   async embedCopyright(buffer: Buffer): Promise<Buffer> {

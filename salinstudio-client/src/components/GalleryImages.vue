@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Art } from "../types/art";
-import { useImageStore } from "../store/images";
 
 type Filter =
   | "all"
@@ -15,8 +14,6 @@ defineProps<{
   category: Filter;
   columnCount: number;
 }>();
-
-const images = useImageStore();
 
 const getColumnArrays = (array: Art[], columnCount: number) => {
   const columnsArray: Art[][] = [];
@@ -47,7 +44,7 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
           v-for="(art, idx) in array"
           :key="`art-${idx}`"
           :style="{
-            aspectRatio: images.getRatio(art.image.thumbUrl),
+            aspectRatio: art.image.aspectRatio,
             backgroundImage: `url(${art.image.thumbUrl})`,
           }"
           @click="
