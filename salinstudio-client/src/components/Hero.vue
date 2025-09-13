@@ -52,7 +52,7 @@ onUnmounted(() => {
         :key="idx"
         :style="{ zIndex: getZIndex(idx) }"
       >
-        <img class="hero-img" :src="art.desktopUrl" :alt="art.titleEn" />
+        <img class="hero-img" :src="art.image.desktopUrl" :alt="art.titleEn" />
         <div class="vert-overlay"></div>
         <div class="horiz-overlay"></div>
       </div>

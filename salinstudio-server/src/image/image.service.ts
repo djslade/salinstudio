@@ -1,9 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { exiftool } from 'exiftool-vendored';
 import { promises as fs } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import * as sharp from 'sharp';
+import { REPOSITORY_NAMES } from 'src/config/constants';
+import { Repository } from 'typeorm';
+import { Image } from './entities/image.entity';
+import { UploadService } from 'src/upload/upload.service';
+import { ConfigService } from '@nestjs/config';
 
 type FingerprintConfig = {
   year: number;
@@ -21,6 +31,11 @@ type FIleNames = {
 
 @Injectable()
 export class ImageService {
+  constructor(
+    @Inject(REPOSITORY_NAMES.IMAGE) private imageRepository: Repository<Image>,
+    private uploadService: UploadService,
+    private configService: ConfigService,
+  ) {}
   async getImageMetadata(buffer: Buffer) {
     const { width, height } = await sharp(buffer).metadata();
     return {
@@ -205,5 +220,60 @@ export class ImageService {
     }
 
     return { year, month, date, checksum };
+  }
+
+  async createImage(file: Buffer) {
+    try {
+      const processedImages = await this.processImage(file);
+      const fileNames = this.getFileNames();
+      const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
+
+      await this.uploadService.upload(fileNames.fullUrl, processedImages.full);
+      await this.uploadService.upload(
+        fileNames.desktopUrl,
+        processedImages.desktop,
+      );
+      await this.uploadService.upload(
+        fileNames.mobileUrl,
+        processedImages.mobile,
+      );
+      await this.uploadService.upload(
+        fileNames.thumbUrl,
+        processedImages.thumb,
+      );
+
+      const image = this.imageRepository.create();
+      image.fullUrl = `${domain}/${fileNames.fullUrl}`;
+      image.desktopUrl = `${domain}/${fileNames.desktopUrl}`;
+      image.mobileUrl = `${domain}/${fileNames.mobileUrl}`;
+      image.thumbUrl = `${domain}/${fileNames.thumbUrl}`;
+      image.fingerprintChecksum = processedImages.fingerprintChecksum;
+
+      await this.imageRepository.save(image);
+
+      return image;
+    } catch (err) {
+      if (err.message.includes('VipsJpeg')) {
+        throw new UnprocessableEntityException(
+          'This file is corrupt and cannot be processed',
+        );
+      }
+      throw new InternalServerErrorException(
+        'Could not process images at this time',
+      );
+    }
+  }
+
+  async delete(id: string) {
+    const image = await this.imageRepository.findOne({ where: { id } });
+    if (!image) return;
+    const urls = [
+      image.fullUrl,
+      image.desktopUrl,
+      image.mobileUrl,
+      image.thumbUrl,
+    ];
+    for (let url of urls) await this.uploadService.delete(url);
+    await this.imageRepository.delete(image);
   }
 }

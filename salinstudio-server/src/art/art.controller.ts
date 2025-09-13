@@ -19,10 +19,14 @@ import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { OrderCarouselDto } from './dto/order-carousel.dto';
+import { ImageService } from 'src/image/image.service';
 
 @Controller('art')
 export class ArtController {
-  constructor(private artService: ArtService) {}
+  constructor(
+    private artService: ArtService,
+    private imageService: ImageService,
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard)
@@ -30,17 +34,18 @@ export class ArtController {
     FileInterceptor('file', { limits: { fileSize: 50 * 1024 * 1024 } }),
   )
   async createArt(
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @Body() body: CreateArtDto,
   ) {
-    const urls = await this.artService.handleImage(image.buffer);
+    const image = await this.imageService.createImage(file.buffer);
     const art = await this.artService.createArt({
-      ...urls,
       ...body,
+      image,
     });
     return { message: 'Created', art };
   }
 
+  /* TODO: Move this to an image controller or refactor it here
   @Post('checksum')
   @UseInterceptors(
     FileInterceptor('file', { limits: { fileSize: 50 * 1024 * 1024 } }),
@@ -50,6 +55,7 @@ export class ArtController {
     const art = await this.artService.findArtByChecksum(checksum);
     return { message: 'OK', art };
   }
+*/
 
   @Get()
   async getAllArt() {
@@ -60,6 +66,7 @@ export class ArtController {
   @Get('carousel')
   async getHomeCarouselArt() {
     const art = await this.artService.findHomeCarouselArt();
+    console.log(art);
     return { message: 'OK', art };
   }
 

@@ -1,13 +1,12 @@
+import type { Image } from "./image";
+
 export type Art = {
   id: string;
   category: string;
-  fullUrl: string;
-  desktopUrl: string;
-  mobileUrl: string;
-  thumbUrl: string;
   titleEn: string;
   titleFi: string;
   descriptionEn: string;
   descriptionFi: string;
   slug: string;
+  image: Image;
 };

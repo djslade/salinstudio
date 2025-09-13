@@ -35,13 +35,13 @@ const onPageLoad = async (art?: Art[]) => {
   if (!art) return;
 
   setMetadata({
-    imageUrl: art[0].desktopUrl,
+    imageUrl: art[0].image.desktopUrl,
   });
 
   let counter = 0;
 
   for (let a of art) {
-    await images.preloadAndSet(a.desktopUrl);
+    await images.preloadAndSet(a.image.desktopUrl);
     counter++;
     if (!pageReady.value && counter > 1) {
       pageReady.value = true;

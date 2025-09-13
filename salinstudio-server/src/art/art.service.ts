@@ -1,35 +1,23 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Art, ArtCategory } from './entities/art.entity';
-import { UploadService } from '../upload/upload.service';
 import { ImageService } from '../image/image.service';
-import { ConfigService } from '@nestjs/config';
 import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { OrderAllDto } from './dto/order-all.dto';
 import { OrderCarouselDto } from './dto/order-carousel.dto';
 import { nanoid } from 'nanoid';
 import slugify from 'slugify';
+import { Image } from 'src/image/entities/image.entity';
 
 type CreateArtParams = {
-  fullUrl: string;
-  desktopUrl: string;
-  mobileUrl: string;
-  thumbUrl: string;
   titleEn: string;
   titleFi: string;
   descriptionEn: string;
   descriptionFi: string;
   category: ArtCategory;
-  fingerprintChecksum: number;
+  image: Image;
 };
 
 @Injectable()
@@ -37,9 +25,7 @@ export class ArtService {
   constructor(
     @Inject(REPOSITORY_NAMES.ART)
     private artRepository: Repository<Art>,
-    private uploadService: UploadService,
     private imageService: ImageService,
-    private configService: ConfigService,
   ) {}
 
   generateSlug(title: string): string {
@@ -49,62 +35,35 @@ export class ArtService {
   }
 
   async findArtById(id: string): Promise<Art> {
-    const art = await this.artRepository.findOne({ where: { id } });
+    const art = await this.artRepository.findOne({
+      where: { id },
+      relations: { image: true },
+    });
     if (!art) throw new NotFoundException('Art not found');
     return art;
   }
 
   async findArtBySlug(slug: string): Promise<Art> {
-    const art = await this.artRepository.findOne({ where: { slug } });
+    const art = await this.artRepository.findOne({
+      where: { slug },
+      relations: { image: true },
+    });
     if (!art) throw new NotFoundException('Art not found');
     return art;
   }
 
   async findAll(): Promise<Art[]> {
-    return await this.artRepository.find({ order: { totalIndex: 'DESC' } });
+    return await this.artRepository.find({
+      relations: { image: true },
+      order: { totalIndex: 'DESC' },
+    });
   }
 
   async findHomeCarouselArt(): Promise<Art[]> {
-    return await this.artRepository.find({ where: { onHomeCarousel: true } });
-  }
-
-  async handleImage(image: Buffer) {
-    try {
-      const processedImages = await this.imageService.processImage(image);
-      const fileNames = this.imageService.getFileNames();
-      const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
-
-      await this.uploadService.upload(fileNames.fullUrl, processedImages.full);
-      await this.uploadService.upload(
-        fileNames.desktopUrl,
-        processedImages.desktop,
-      );
-      await this.uploadService.upload(
-        fileNames.mobileUrl,
-        processedImages.mobile,
-      );
-      await this.uploadService.upload(
-        fileNames.thumbUrl,
-        processedImages.thumb,
-      );
-
-      return {
-        fullUrl: `${domain}/${fileNames.fullUrl}`,
-        desktopUrl: `${domain}/${fileNames.desktopUrl}`,
-        mobileUrl: `${domain}/${fileNames.mobileUrl}`,
-        thumbUrl: `${domain}/${fileNames.thumbUrl}`,
-        fingerprintChecksum: processedImages.fingerprintChecksum,
-      };
-    } catch (err) {
-      if (err.message.includes('VipsJpeg')) {
-        throw new UnprocessableEntityException(
-          'This file is corrupt and cannot be processed',
-        );
-      }
-      throw new InternalServerErrorException(
-        'Could not process images at this time',
-      );
-    }
+    return await this.artRepository.find({
+      where: { onHomeCarousel: true },
+      relations: { image: true },
+    });
   }
 
   async createArt(params: CreateArtParams): Promise<Art> {
@@ -113,20 +72,16 @@ export class ArtService {
     const categoryIndex = await this.artRepository.count({
       where: { category: params.category },
     });
-    art.fullUrl = params.fullUrl;
-    art.desktopUrl = params.desktopUrl;
-    art.mobileUrl = params.mobileUrl;
-    art.thumbUrl = params.thumbUrl;
     art.titleEn = params.titleEn;
     art.titleFi = params.titleFi;
     art.descriptionEn = params.descriptionEn;
     art.descriptionFi = params.descriptionFi;
     art.category = params.category;
-    art.fingerprintChecksum = params.fingerprintChecksum;
     art.totalIndex = totalIndex;
     art.categoryIndex = categoryIndex;
     art.updatedFingerprint = true;
     art.slug = this.generateSlug(params.titleEn);
+    art.image = params.image;
     return await this.artRepository.save(art);
   }
 
@@ -160,13 +115,6 @@ export class ArtService {
 
   async delete(id: string): Promise<void> {
     const artToDelete = await this.findArtById(id);
-    const urls = [
-      artToDelete.fullUrl,
-      artToDelete.desktopUrl,
-      artToDelete.mobileUrl,
-      artToDelete.thumbUrl,
-    ];
-    for (let url of urls) await this.uploadService.delete(url);
     const allArt = await this.findAll();
     for (let art of allArt) {
       if (art.totalIndex > artToDelete.totalIndex) {
@@ -180,67 +128,7 @@ export class ArtService {
       }
       await this.artRepository.save(art);
     }
+    await this.imageService.delete(artToDelete.image.id);
     await this.artRepository.delete(id);
-  }
-
-  async checkFingerprint(image: Buffer) {
-    const config = await this.imageService.extractFingerprint(image);
-    if (!config) throw new BadRequestException('Could not verify fingerprint');
-    return config.checksum;
-  }
-
-  async findArtByChecksum(checksum: number): Promise<Art[]> {
-    return await this.artRepository.find({
-      where: { fingerprintChecksum: checksum },
-    });
-  }
-
-  async updateFingerprint() {
-    const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
-    const outdatedArt = await this.artRepository.find({
-      where: { updatedFingerprint: false },
-    });
-    if (outdatedArt.length === 0) {
-      return;
-    }
-    for (let art of outdatedArt) {
-      const date = art.createdAt;
-      const image = await this.uploadService.get(
-        art.fullUrl.replace(`${domain}/`, ''),
-      );
-      if (!image) {
-        console.error('skipped over ' + art.id);
-        continue;
-      }
-      const fingerprint = await this.imageService.extractFingerprint(image);
-      if (fingerprint) {
-        const matches = await this.findArtByChecksum(fingerprint.checksum);
-        if (matches.filter((m) => m.id === art.id).length > 0) {
-          art.updatedFingerprint = true;
-          await this.artRepository.save(art);
-          continue;
-        }
-      }
-      const newImages = await this.imageService.processImage(image, date);
-      await this.uploadService.upload(
-        art.fullUrl.replace(`${domain}/`, ''),
-        newImages.full,
-      );
-      await this.uploadService.upload(
-        art.desktopUrl.replace(`${domain}/`, ''),
-        newImages.desktop,
-      );
-      await this.uploadService.upload(
-        art.mobileUrl.replace(`${domain}/`, ''),
-        newImages.mobile,
-      );
-      await this.uploadService.upload(
-        art.thumbUrl.replace(`${domain}/`, ''),
-        newImages.thumb,
-      );
-      art.fingerprintChecksum = newImages.fingerprintChecksum;
-      art.updatedFingerprint = true;
-      await this.artRepository.save(art);
-    }
   }
 }

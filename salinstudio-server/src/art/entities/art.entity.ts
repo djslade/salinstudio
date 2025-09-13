@@ -1,5 +1,7 @@
+import { Image } from '../../image/entities/image.entity';
+import { Collection } from '../../collection/entities/collection.entity';
 import { BaseEntity } from '../../database/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, OneToOne } from 'typeorm';
 
 export type ArtCategory =
   | 'drawings'
@@ -11,18 +13,6 @@ export type ArtCategory =
 @Entity()
 export class Art extends BaseEntity {
   @Column()
-  fullUrl: string;
-
-  @Column()
-  desktopUrl: string;
-
-  @Column()
-  mobileUrl: string;
-
-  @Column()
-  thumbUrl: string;
-
-  @Column()
   titleEn: string;
 
   @Column()
@@ -33,9 +23,6 @@ export class Art extends BaseEntity {
 
   @Column()
   descriptionFi: string;
-
-  @Column()
-  fingerprintChecksum: number;
 
   @Column({
     type: 'enum',
@@ -61,4 +48,11 @@ export class Art extends BaseEntity {
 
   @Column({ unique: true })
   slug: string;
+
+  @ManyToMany(() => Collection, (collection) => collection.art)
+  collections: Collection[];
+
+  @OneToOne(() => Image)
+  @JoinColumn()
+  image: Image;
 }
