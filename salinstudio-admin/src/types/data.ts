@@ -1,9 +1,13 @@
-export type Art = {
-  id: string;
+type Image = {
   fullUrl: string;
   desktopUrl: string;
   mobileUrl: string;
   thumbUrl: string;
+  aspectRatio: number;
+};
+
+export type Art = {
+  id: string;
   titleEn: string;
   titleFi: string;
   descriptionEn: string;
@@ -13,6 +17,7 @@ export type Art = {
   createdAt: string;
   updatedAt: string;
   onHomeCarousel: boolean;
+  image: Image;
 };
 
 export type Category = {

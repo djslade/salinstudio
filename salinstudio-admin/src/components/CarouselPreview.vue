@@ -37,7 +37,7 @@ onUnmounted(() => {
       }`"
       :style="{ zIndex: getZIndex(idx) }"
     >
-      <img :src="a.desktopUrl" :alt="a.titleEn" class="h-full" />
+      <img :src="a.image.desktopUrl" :alt="a.titleEn" class="h-full" />
     </div>
   </div>
 </template>

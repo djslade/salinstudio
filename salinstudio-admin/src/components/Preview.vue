@@ -116,7 +116,7 @@ watch(selectedArt, () => {
         <img
           v-for="art in array"
           :key="`art-${art.id}`"
-          :src="art.thumbUrl"
+          :src="art.image.thumbUrl"
           :alt="art.titleEn"
           class="rounded-xl"
           @contextmenu="(evt) => onImageRightClick(evt, art)"

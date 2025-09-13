@@ -84,14 +84,14 @@ const submit = async () => {
         </template>
         <template #image>
           <img
-            :src="art.thumbUrl"
+            :src="art.image.thumbUrl"
             :alt="art.titleEn"
             class="aspect-video object-cover w-full rounded-lg"
           />
         </template>
         <template #original="slotProps">
           <img
-            :src="art.desktopUrl"
+            :src="art.image.desktopUrl"
             :alt="art.titleEn"
             :style="slotProps.style"
             class="max-w-screen-lg max-h-[90vh]"
