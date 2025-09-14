@@ -47,6 +47,19 @@ const items = ref([
     ],
   },
   {
+    label: "Collections",
+    items: [
+      {
+        label: "New",
+        route: "/collections/new",
+      },
+      {
+        label: "Collection list",
+        route: "/collections/list",
+      },
+    ],
+  },
+  {
     label: "Other",
     items: [
       {

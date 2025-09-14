@@ -9,6 +9,8 @@ import LogoutView from "./routes/Logout.vue";
 import Carouselview from "./routes/Carousel.vue";
 import VisitorsView from "./routes/Visitors.vue";
 import VisitorActionsView from "./routes/VisitorActions.vue";
+import CollectionsList from "./routes/CollectionsList.vue";
+import CollectionsNew from "./routes/CollectionsNew.vue";
 import { isVisitorMember } from "./utils/visitor";
 import { clearTokens, hasTokens } from "./utils/tokens";
 
@@ -53,6 +55,18 @@ const routes = [
     path: "/carousel",
     name: "Carousel",
     component: Carouselview,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/collections/new",
+    name: "CollectionsNew",
+    component: CollectionsNew,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/collections/list",
+    name: "CollectionsList",
+    component: CollectionsList,
     meta: { requiresAuth: true },
   },
   {

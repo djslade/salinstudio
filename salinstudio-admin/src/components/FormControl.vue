@@ -6,16 +6,25 @@ import {
   Message,
   Select,
   Textarea,
+  MultiSelect,
 } from "primevue";
 import { FormField } from "@primevue/forms";
+import type { Collection } from "../types/data";
 
-type FormControlType = "text" | "password" | "secret" | "textarea" | "select";
+type FormControlType =
+  | "text"
+  | "password"
+  | "secret"
+  | "textarea"
+  | "select"
+  | "multiselect";
 
 defineProps<{
   type: FormControlType;
   name: string;
   label: string;
   fluid?: boolean;
+  options?: Collection[];
 }>();
 
 const categories = [
@@ -59,6 +68,14 @@ const categories = [
         :options="categories"
         optionLabel="name"
         optionValue="value"
+        :fluid="fluid"
+      />
+      <MultiSelect
+        v-if="type === 'multiselect'"
+        :options="options"
+        optionLabel="titleEn"
+        optionValue="id"
+        filter
         :fluid="fluid"
       />
       <label>{{ label }}</label>

@@ -8,6 +8,7 @@ import { MailerModule } from './mailer/mailer.module';
 import { VisitorModule } from './visitor/visitor.module';
 import { ActionModule } from './action/action.module';
 import { SitemapModule } from './sitemap/sitemap.module';
+import { CollectionModule } from './collection/collection.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { SitemapModule } from './sitemap/sitemap.module';
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ArtModule,
+    CollectionModule,
     VisitorModule,
     ActionModule,
     SitemapModule,

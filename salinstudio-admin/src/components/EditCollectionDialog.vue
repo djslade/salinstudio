@@ -5,32 +5,22 @@ import LoadingPanel from "./LoadingPanel.vue";
 import FormControl from "./FormControl.vue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
 import { useFormUtils } from "../hooks/useFormUtils";
-import type { Art, Collection } from "../types/data";
-import { updateArtResolver } from "../utils/resolvers";
+import type { Collection } from "../types/data";
+import { createUpdateCollectionResolver } from "../utils/resolvers";
 import {
-  getRequest,
   putRequest,
   refreshIfUnauthorized,
   showRequestError,
 } from "../utils/requests";
 import { useToast } from "primevue";
-import { useQuery } from "@tanstack/vue-query";
 
 const toast = useToast();
-const { art } = defineProps<{
-  art: Art;
+const { collection } = defineProps<{
+  collection: Collection;
   visible: boolean;
   cancel: () => void;
   close: () => void;
 }>();
-
-const { data } = useQuery({
-  queryKey: ["allCollections"],
-  queryFn: async () => {
-    const res = await getRequest<{ collections: Collection[] }>("/collection");
-    return res.collections;
-  },
-});
 
 const {
   formValues,
@@ -42,22 +32,18 @@ const {
   setStepEnd,
   saveFormValues,
 } = useFormUtils({
-  collections: art.collections?.map((col) => col.id) || [],
-  category: art.category,
-  titleEn: art.titleEn,
-  titleFi: art.titleFi,
-  descriptionEn: art.descriptionEn,
-  descriptionFi: art.descriptionFi,
+  titleEn: collection.titleEn,
+  titleFi: collection.titleFi,
+  descriptionEn: collection.descriptionEn,
+  descriptionFi: collection.descriptionFi,
 });
 
 const submit = async (evt: FormSubmitEvent) => {
   if (!evt.valid) return;
-  if (!art) return;
+  if (!collection) return;
   try {
     setStepSubmitting();
     saveFormValues({
-      collections: evt.values.collections,
-      category: evt.values.category,
       titleEn: evt.values.titleEn,
       titleFi: evt.values.titleFi,
       descriptionEn: evt.values.descriptionEn,
@@ -66,15 +52,12 @@ const submit = async (evt: FormSubmitEvent) => {
     await refreshIfUnauthorized(
       async () =>
         await putRequest(
-          `/art/${art.id}`,
+          `/collection/${collection.id}`,
           {
-            collections: evt.values.collections,
-            category: evt.values.category,
             titleEn: evt.values.titleEn,
             titleFi: evt.values.titleFi,
             descriptionEn: evt.values.descriptionEn,
             descriptionFi: evt.values.descriptionFi,
-            onHomeCarousel: art.onHomeCarousel,
           },
           { accessToken: true }
         )
@@ -119,21 +102,13 @@ const submit = async (evt: FormSubmitEvent) => {
     </Card>
   </div>
   <Form
-    v-if="isStart() && data"
+    v-if="isStart()"
     class="flex flex-col gap-5"
     :initialValues="formValues"
-    :resolver="updateArtResolver"
+    :resolver="createUpdateCollectionResolver"
     @submit="submit"
   >
     <div class="gap-5 flex flex-col py-5">
-      <FormControl name="category" type="select" label="Category" fluid />
-      <FormControl
-        name="collections"
-        type="multiselect"
-        label="Collections"
-        :options="data"
-        fluid
-      />
       <div class="flex w-full gap-3">
         <FormControl name="titleEn" type="text" label="Title (English)" fluid />
         <FormControl name="titleFi" type="text" label="Title (Finnish)" fluid />

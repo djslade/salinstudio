@@ -24,6 +24,7 @@ type RequestBody =
       descriptionFi?: string;
       onHomeCarousel?: boolean;
       ids?: string[];
+      collections?: string[];
     }
   | null;
 

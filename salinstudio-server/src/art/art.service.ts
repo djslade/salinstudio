@@ -10,6 +10,8 @@ import { OrderCarouselDto } from './dto/order-carousel.dto';
 import { nanoid } from 'nanoid';
 import slugify from 'slugify';
 import { Image } from 'src/image/entities/image.entity';
+import { CollectionService } from 'src/collection/collection.service';
+import { Collection } from 'src/collection/entities/collection.entity';
 
 type CreateArtParams = {
   titleEn: string;
@@ -26,6 +28,7 @@ export class ArtService {
     @Inject(REPOSITORY_NAMES.ART)
     private artRepository: Repository<Art>,
     private imageService: ImageService,
+    private collectionService: CollectionService,
   ) {}
 
   generateSlug(title: string): string {
@@ -37,7 +40,7 @@ export class ArtService {
   async findArtById(id: string): Promise<Art> {
     const art = await this.artRepository.findOne({
       where: { id },
-      relations: { image: true },
+      relations: { image: true, collections: { image: true } },
     });
     if (!art) throw new NotFoundException('Art not found');
     return art;
@@ -54,7 +57,7 @@ export class ArtService {
 
   async findAll(): Promise<Art[]> {
     return await this.artRepository.find({
-      relations: { image: true },
+      relations: { image: true, collections: { image: true } },
       order: { totalIndex: 'DESC' },
     });
   }
@@ -110,7 +113,20 @@ export class ArtService {
   }
 
   async update(id: string, body: UpdateArtDto): Promise<void> {
-    await this.artRepository.update({ id }, { ...body });
+    const art = await this.artRepository.findOne({ where: { id } });
+    if (!art) throw new NotFoundException();
+    art.category = body.category;
+    art.titleEn = body.titleEn;
+    art.titleFi = body.titleFi;
+    art.descriptionEn = body.descriptionEn;
+    art.descriptionFi = body.descriptionFi;
+    const collections: Collection[] = [];
+    for (let id of body.collections) {
+      const collection = await this.collectionService.getCollectionById(id);
+      collections.push(collection);
+    }
+    art.collections = collections;
+    await this.artRepository.save(art);
   }
 
   async delete(id: string): Promise<void> {
@@ -128,7 +144,7 @@ export class ArtService {
       }
       await this.artRepository.save(art);
     }
-    await this.imageService.delete(artToDelete.image.id);
     await this.artRepository.delete(id);
+    await this.imageService.delete(artToDelete.image.id);
   }
 }

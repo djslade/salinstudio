@@ -1,7 +1,14 @@
 import { Image } from '../../image/entities/image.entity';
 import { Collection } from '../../collection/entities/collection.entity';
 import { BaseEntity } from '../../database/base.entity';
-import { Column, Entity, JoinColumn, ManyToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToOne,
+} from 'typeorm';
 
 export type ArtCategory =
   | 'drawings'
@@ -50,6 +57,7 @@ export class Art extends BaseEntity {
   slug: string;
 
   @ManyToMany(() => Collection, (collection) => collection.art)
+  @JoinTable()
   collections: Collection[];
 
   @OneToOne(() => Image)

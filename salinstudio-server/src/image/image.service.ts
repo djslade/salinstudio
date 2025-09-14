@@ -278,7 +278,7 @@ export class ImageService {
       image.thumbUrl,
     ];
     for (let url of urls) await this.uploadService.delete(url);
-    await this.imageRepository.delete(image);
+    await this.imageRepository.delete({ id: image.id });
   }
 
   async setAspectRatio(id: string) {

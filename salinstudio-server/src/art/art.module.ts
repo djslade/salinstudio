@@ -5,9 +5,10 @@ import { ArtController } from './art.controller';
 import { ArtService } from './art.service';
 import { AuthModule } from '../auth/auth.module';
 import { ImageModule } from '../image/image.module';
+import { CollectionModule } from 'src/collection/collection.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, ImageModule],
+  imports: [DatabaseModule, AuthModule, ImageModule, CollectionModule],
   providers: [...artProviders, ArtService],
   controllers: [ArtController],
   exports: [ArtService],

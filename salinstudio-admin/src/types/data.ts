@@ -18,6 +18,19 @@ export type Art = {
   updatedAt: string;
   onHomeCarousel: boolean;
   image: Image;
+  collections?: Collection[];
+};
+
+export type Collection = {
+  id: string;
+  titleEn: string;
+  titleFi: string;
+  descriptionEn: string;
+  descriptionFi: string;
+  createdAt: string;
+  updatedAt: string;
+  image: Image;
+  art?: Art[];
 };
 
 export type Category = {

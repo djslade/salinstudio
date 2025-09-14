@@ -1,7 +1,6 @@
 import { IsDefined, IsNotEmpty } from 'class-validator';
-import { ArtCategory } from '../entities/art.entity';
 
-export class UpdateArtDto {
+export class UpdateCollectionDto {
   @IsNotEmpty()
   titleEn: string;
 
@@ -13,13 +12,4 @@ export class UpdateArtDto {
 
   @IsDefined()
   descriptionFi: string;
-
-  @IsNotEmpty()
-  category: ArtCategory;
-
-  @IsNotEmpty()
-  onHomeCarousel: boolean;
-
-  @IsDefined()
-  collections: string[];
 }

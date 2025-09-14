@@ -93,6 +93,7 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
 }
 
 .gallery-img-btn {
+  background-color: #261f19;
   border: none;
   margin: 0;
   padding: 0;
