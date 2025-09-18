@@ -2,8 +2,11 @@
 import { ref } from "vue";
 import { useLanguageStore } from "../store/language";
 import type { Art } from "../types/art";
+import OpacityTransition from "./OpacityTransition.vue";
 
 defineProps<{ data: Art }>();
+
+const showCollection = ref<boolean>(false);
 
 const showDescription = ref<boolean>(false);
 
@@ -12,29 +15,82 @@ const language = useLanguageStore();
 
 <template>
   <section class="panel">
-    <div
-      @mouseenter="showDescription = true"
-      @mouseleave="showDescription = false"
-      @click="showDescription = !showDescription"
-      class="data-container"
-    >
-      <img class="image" :src="data.image.desktopUrl" :alt="data.titleEn" />
+    <OpacityTransition mode="out-in">
       <div
-        v-if="language.isEn() && data.descriptionEn"
-        :class="`description-container ${showDescription && 'visible'}`"
+        v-if="!showCollection"
+        @mouseenter="showDescription = true"
+        @mouseleave="showDescription = false"
+        @click="showDescription = !showDescription"
+        class="data-container"
       >
-        <div class="description-inner-container">
-          <p class="description">{{ data.descriptionEn }}</p>
+        <img class="image" :src="data.image.desktopUrl" :alt="data.titleEn" />
+        <div
+          v-if="language.isEn() && data.descriptionEn"
+          :class="`description-container ${showDescription && 'visible'}`"
+        >
+          <div class="description-inner-container">
+            <p class="description">{{ data.descriptionEn }}</p>
+          </div>
+        </div>
+        <div
+          v-if="language.isFi() && data.descriptionFi"
+          :class="`description-container ${showDescription && 'visible'}`"
+        >
+          <div class="description-inner-container">
+            <p class="description">{{ data.descriptionFi }}</p>
+          </div>
         </div>
       </div>
       <div
-        v-if="language.isFi() && data.descriptionFi"
-        :class="`description-container ${showDescription && 'visible'}`"
+        v-else
+        @mouseenter="showDescription = true"
+        @mouseleave="showDescription = false"
+        @click="showDescription = !showDescription"
+        class="data-container"
       >
-        <div class="description-inner-container">
-          <p class="description">{{ data.descriptionFi }}</p>
+        <img
+          class="image"
+          v-if="data.collections"
+          :src="data.collections[0].image.desktopUrl"
+          :alt="data.titleEn"
+        />
+        <div
+          v-if="
+            language.isEn() &&
+            data.collections &&
+            data.collections[0].descriptionEn
+          "
+          :class="`description-container ${showDescription && 'visible'}`"
+        >
+          <div class="description-inner-container">
+            <p class="description">{{ data.collections[0].descriptionEn }}</p>
+          </div>
+        </div>
+        <div
+          v-if="
+            language.isFi() &&
+            data.collections &&
+            data.collections[0].descriptionFi
+          "
+          :class="`description-container ${showDescription && 'visible'}`"
+        >
+          <div class="description-inner-container">
+            <p class="description">{{ data.collections[0].descriptionFi }}</p>
+          </div>
         </div>
       </div>
+    </OpacityTransition>
+    <div v-if="data.collections" class="panel-btn-container">
+      <button
+        class="panel-btn"
+        @click="showCollection = false"
+        :style="{ backgroundColor: showCollection ? '#d0bfad' : '#b4936f' }"
+      ></button>
+      <button
+        class="panel-btn"
+        @click="showCollection = true"
+        :style="{ backgroundColor: !showCollection ? '#d0bfad' : '#b4936f' }"
+      ></button>
     </div>
   </section>
 </template>
@@ -98,6 +154,22 @@ const language = useLanguageStore();
   text-align: center;
   margin: auto;
   font-size: 0.8rem;
+}
+
+.panel-btn-container {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.panel-btn {
+  height: 0.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
 }
 
 @media (min-width: 600px) {

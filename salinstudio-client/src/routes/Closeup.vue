@@ -26,7 +26,7 @@ const { data } = useQuery({
     const res = await axios.get(
       `${import.meta.env.VITE_SERVER_ENDPOINT}/art/slug/${route.params.id}`
     );
-
+    console.log(res.data.art);
     return res.data.art as Art;
   },
   retry: (failureCount, err: AxiosError) => {

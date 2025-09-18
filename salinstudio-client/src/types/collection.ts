@@ -1,14 +1,10 @@
-import type { Collection } from "./collection";
 import type { Image } from "./image";
 
-export type Art = {
+export type Collection = {
   id: string;
-  category: string;
   titleEn: string;
   titleFi: string;
   descriptionEn: string;
   descriptionFi: string;
-  slug: string;
   image: Image;
-  collections?: Collection[];
 };

@@ -49,7 +49,7 @@ export class ArtService {
   async findArtBySlug(slug: string): Promise<Art> {
     const art = await this.artRepository.findOne({
       where: { slug },
-      relations: { image: true },
+      relations: { image: true, collections: { image: true } },
     });
     if (!art) throw new NotFoundException('Art not found');
     return art;

@@ -101,6 +101,7 @@ const handleCarouselChange = async (_: Event, art: Art) => {
             descriptionEn: art.descriptionEn,
             descriptionFi: art.descriptionFi,
             onHomeCarousel: art.onHomeCarousel,
+            collections: art.collections?.map((col) => col.id) || [],
           },
           { accessToken: true }
         )
