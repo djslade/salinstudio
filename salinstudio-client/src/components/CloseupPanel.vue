@@ -1,48 +1,49 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { useLanguageStore } from "../store/language";
-import type { Art } from "../types/art";
 import OpacityTransition from "./OpacityTransition.vue";
+import type { GalleryItem } from "../types/galleryItem";
+import { useSwipe, type UseSwipeDirection } from "@vueuse/core";
 
-defineProps<{ data: Art }>();
+const { data } = defineProps<{ data: GalleryItem[] }>();
 
-const showCollection = ref<boolean>(false);
+const el = useTemplateRef("el");
+
+const galleryIndex = ref<number>(0);
 
 const showDescription = ref<boolean>(false);
 
 const language = useLanguageStore();
+
+const decrementGalleryIndex = () => {
+  if (galleryIndex.value === 0) return;
+  galleryIndex.value--;
+};
+
+const incrementGalleryIndex = () => {
+  if (galleryIndex.value === data.length - 1) return;
+  galleryIndex.value++;
+};
+
+useSwipe(el, {
+  passive: false,
+  onSwipeEnd: (_: TouchEvent, direction: UseSwipeDirection) => {
+    if (direction === "right") {
+      decrementGalleryIndex();
+    }
+    if (direction === "left") {
+      incrementGalleryIndex();
+    }
+  },
+});
 </script>
 
 <template>
   <section class="panel">
     <OpacityTransition mode="out-in">
       <div
-        v-if="!showCollection"
-        @mouseenter="showDescription = true"
-        @mouseleave="showDescription = false"
-        @click="showDescription = !showDescription"
-        class="data-container"
-      >
-        <img class="image" :src="data.image.desktopUrl" :alt="data.titleEn" />
-        <div
-          v-if="language.isEn() && data.descriptionEn"
-          :class="`description-container ${showDescription && 'visible'}`"
-        >
-          <div class="description-inner-container">
-            <p class="description">{{ data.descriptionEn }}</p>
-          </div>
-        </div>
-        <div
-          v-if="language.isFi() && data.descriptionFi"
-          :class="`description-container ${showDescription && 'visible'}`"
-        >
-          <div class="description-inner-container">
-            <p class="description">{{ data.descriptionFi }}</p>
-          </div>
-        </div>
-      </div>
-      <div
-        v-else
+        :key="galleryIndex"
+        ref="el"
         @mouseenter="showDescription = true"
         @mouseleave="showDescription = false"
         @click="showDescription = !showDescription"
@@ -50,46 +51,54 @@ const language = useLanguageStore();
       >
         <img
           class="image"
-          v-if="data.collections"
-          :src="data.collections[0].image.desktopUrl"
-          :alt="data.titleEn"
+          :src="data[galleryIndex].image.desktopUrl"
+          :alt="data[galleryIndex].titleEn"
         />
         <div
-          v-if="
-            language.isEn() &&
-            data.collections &&
-            data.collections[0].descriptionEn
-          "
+          v-if="language.isEn() && data[galleryIndex].descriptionEn"
           :class="`description-container ${showDescription && 'visible'}`"
         >
           <div class="description-inner-container">
-            <p class="description">{{ data.collections[0].descriptionEn }}</p>
+            <p class="description">
+              {{ data[galleryIndex].descriptionEn }}
+            </p>
           </div>
         </div>
         <div
-          v-if="
-            language.isFi() &&
-            data.collections &&
-            data.collections[0].descriptionFi
-          "
+          v-if="language.isFi() && data[galleryIndex].descriptionFi"
           :class="`description-container ${showDescription && 'visible'}`"
         >
           <div class="description-inner-container">
-            <p class="description">{{ data.collections[0].descriptionFi }}</p>
+            <p class="description">
+              {{ data[galleryIndex].descriptionFi }}
+            </p>
           </div>
         </div>
       </div>
     </OpacityTransition>
-    <div v-if="data.collections" class="panel-btn-container">
+    <div v-if="data.length > 1" class="panel-btn-container">
       <button
         class="panel-btn"
-        @click="showCollection = false"
-        :style="{ backgroundColor: showCollection ? '#d0bfad' : '#b4936f' }"
+        @click="decrementGalleryIndex"
+        :style="{ backgroundColor: galleryIndex === 0 ? '#d0bfad' : '#b4936f' }"
+      ></button>
+      <button
+        v-if="data.length > 2"
+        class="panel-btn"
+        :style="{
+          backgroundColor:
+            galleryIndex > 0 && galleryIndex < data.length - 1
+              ? '#d0bfad'
+              : '#b4936f',
+        }"
       ></button>
       <button
         class="panel-btn"
-        @click="showCollection = true"
-        :style="{ backgroundColor: !showCollection ? '#d0bfad' : '#b4936f' }"
+        @click="incrementGalleryIndex"
+        :style="{
+          backgroundColor:
+            galleryIndex === data.length - 1 ? '#d0bfad' : '#b4936f',
+        }"
       ></button>
     </div>
   </section>

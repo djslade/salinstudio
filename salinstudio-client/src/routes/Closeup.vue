@@ -13,6 +13,7 @@ import { useImageStore } from "../store/images";
 import { onMounted, ref, watch } from "vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
 import { useMetadata } from "../hooks/useMetadata";
+import type { GalleryItem } from "../types/galleryItem";
 
 const route = useRoute();
 const router = useRouter();
@@ -26,7 +27,6 @@ const { data } = useQuery({
     const res = await axios.get(
       `${import.meta.env.VITE_SERVER_ENDPOINT}/art/slug/${route.params.id}`
     );
-    console.log(res.data.art);
     return res.data.art as Art;
   },
   retry: (failureCount, err: AxiosError) => {
@@ -42,6 +42,8 @@ const { data } = useQuery({
     return failureCount <= 3;
   },
 });
+
+const galleryItems = ref<GalleryItem[]>([]);
 
 const language = useLanguageStore();
 const images = useImageStore();
@@ -62,6 +64,13 @@ const onPageLoad = async (art?: Art) => {
 
   await images.preloadAndSet(art.image.desktopUrl);
 
+  if (art.collections) {
+    for (let col of art.collections) {
+      await images.preloadAndSet(col.image.desktopUrl);
+    }
+  }
+
+  galleryItems.value = art.collections ? [art, ...art.collections] : [art];
   pageReady.value = true;
   window.prerenderReady = true;
 };
@@ -92,7 +101,7 @@ watch(data, async (art) => await onPageLoad(art));
     </Header>
     <main>
       <OpacityTransition mode="default">
-        <CloseupPanel v-if="pageReady && data" :data="data" />
+        <CloseupPanel v-if="pageReady && data" :data="galleryItems" />
       </OpacityTransition>
       <Loader v-if="!pageReady" />
     </main>
