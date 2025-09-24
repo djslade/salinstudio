@@ -66,7 +66,6 @@ export class ArtController {
   @Get('carousel')
   async getHomeCarouselArt() {
     const art = await this.artService.findHomeCarouselArt();
-    console.log(art);
     return { message: 'OK', art };
   }
 

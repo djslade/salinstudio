@@ -66,7 +66,6 @@ export class CollectionController {
   @Delete(':id')
   @UseGuards(AuthGuard)
   async deleteCollection(@Param('id') id: string) {
-    console.log('hi');
     await this.collectioNService.deleteCollection(id);
     return { message: 'OK' };
   }

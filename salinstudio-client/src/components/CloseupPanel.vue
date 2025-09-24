@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
 import { useLanguageStore } from "../store/language";
-import OpacityTransition from "./OpacityTransition.vue";
+import SlideTransition from "./SlideTransition.vue";
 import type { GalleryItem } from "../types/galleryItem";
 import { useSwipe, type UseSwipeDirection } from "@vueuse/core";
 
@@ -15,32 +15,47 @@ const showDescription = ref<boolean>(false);
 
 const language = useLanguageStore();
 
+const direction = ref<UseSwipeDirection>("none");
+
 const decrementGalleryIndex = () => {
   if (galleryIndex.value === 0) return;
+  direction.value = "left";
   galleryIndex.value--;
 };
 
 const incrementGalleryIndex = () => {
   if (galleryIndex.value === data.length - 1) return;
+  direction.value = "right";
   galleryIndex.value++;
 };
 
 useSwipe(el, {
   passive: false,
-  onSwipeEnd: (_: TouchEvent, direction: UseSwipeDirection) => {
-    if (direction === "right") {
+  onSwipeEnd: (_: TouchEvent, dir: UseSwipeDirection) => {
+    direction.value = dir;
+    if (dir === "right") {
       decrementGalleryIndex();
     }
-    if (direction === "left") {
+    if (dir === "left") {
       incrementGalleryIndex();
     }
   },
 });
+
+const findSmallestRatio = (items: GalleryItem[]) => {
+  return items.reduce((smallest, current) => {
+    if (smallest === 0 || current.image.aspectRatio < smallest) {
+      return current.image.aspectRatio;
+    } else {
+      return smallest;
+    }
+  }, 0);
+};
 </script>
 
 <template>
-  <section class="panel">
-    <OpacityTransition mode="out-in">
+  <section class="panel" :style="{ aspectRatio: findSmallestRatio(data) }">
+    <SlideTransition mode="out-in" :direction="direction">
       <div
         :key="galleryIndex"
         ref="el"
@@ -75,12 +90,15 @@ useSwipe(el, {
           </div>
         </div>
       </div>
-    </OpacityTransition>
+    </SlideTransition>
     <div v-if="data.length > 1" class="panel-btn-container">
       <button
         class="panel-btn"
         @click="decrementGalleryIndex"
-        :style="{ backgroundColor: galleryIndex === 0 ? '#d0bfad' : '#b4936f' }"
+        :style="{
+          backgroundColor: galleryIndex === 0 ? '#d0bfad' : '#b4936f',
+          cursor: galleryIndex === 0 ? 'unset' : 'pointer',
+        }"
       ></button>
       <button
         v-if="data.length > 2"
@@ -90,6 +108,10 @@ useSwipe(el, {
             galleryIndex > 0 && galleryIndex < data.length - 1
               ? '#d0bfad'
               : '#b4936f',
+          cursor:
+            galleryIndex > 0 && galleryIndex < data.length - 1
+              ? 'unset'
+              : 'pointer',
         }"
       ></button>
       <button
@@ -98,6 +120,7 @@ useSwipe(el, {
         :style="{
           backgroundColor:
             galleryIndex === data.length - 1 ? '#d0bfad' : '#b4936f',
+          cursor: galleryIndex === data.length - 1 ? 'unset' : 'pointer',
         }"
       ></button>
     </div>
@@ -113,6 +136,8 @@ useSwipe(el, {
   width: 100%;
   align-items: center;
   justify-content: center;
+  overflow: none;
+  position: relative;
 }
 
 .data-container {
@@ -176,7 +201,6 @@ useSwipe(el, {
   height: 0.5rem;
   aspect-ratio: 1;
   border-radius: 50%;
-  cursor: pointer;
   border: 0;
   outline: 0;
 }
