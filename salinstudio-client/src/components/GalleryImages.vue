@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLanguageStore } from "../store/language";
 import type { Art } from "../types/art";
 
 type Filter =
@@ -14,6 +15,8 @@ defineProps<{
   category: Filter;
   columnCount: number;
 }>();
+
+const language = useLanguageStore();
 
 const getColumnArrays = (array: Art[], columnCount: number) => {
   const columnsArray: Art[][] = [];
@@ -45,7 +48,6 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
           :key="`art-${idx}`"
           :style="{
             aspectRatio: art.image.aspectRatio,
-            backgroundImage: `url(${art.image.thumbUrl})`,
           }"
           @click="
             () =>
@@ -57,7 +59,14 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
                 },
               })
           "
-        ></button>
+        >
+          <img
+            class="gallery-img"
+            :src="art.image.thumbUrl"
+            :alt="language.isEn() ? art.titleEn : art.titleFi"
+            loading="lazy"
+          />
+        </button>
       </div>
     </div>
   </section>
@@ -92,6 +101,12 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
   min-height: 100dvh;
 }
 
+.gallery-img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
 .gallery-img-btn {
   background-color: #261f19;
   border: none;
@@ -99,8 +114,5 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
   padding: 0;
   width: 100%;
   cursor: pointer;
-  object-fit: cover;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 </style>
