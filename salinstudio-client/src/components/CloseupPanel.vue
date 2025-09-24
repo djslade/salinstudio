@@ -19,13 +19,13 @@ const direction = ref<UseSwipeDirection>("none");
 
 const decrementGalleryIndex = () => {
   if (galleryIndex.value === 0) return;
-  direction.value = "left";
+  direction.value = "right";
   galleryIndex.value--;
 };
 
 const incrementGalleryIndex = () => {
   if (galleryIndex.value === data.length - 1) return;
-  direction.value = "right";
+  direction.value = "left";
   galleryIndex.value++;
 };
 
