@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useLanguageStore } from "../store/language";
 import type { Art } from "../types/art";
+import Image from "./Image.vue";
 
 type Filter =
   | "all"
@@ -60,11 +61,10 @@ const getColumnArrays = (array: Art[], columnCount: number) => {
               })
           "
         >
-          <img
+          <Image
             class="gallery-img"
             :src="art.image.thumbUrl"
             :alt="language.isEn() ? art.titleEn : art.titleFi"
-            loading="lazy"
           />
         </button>
       </div>
