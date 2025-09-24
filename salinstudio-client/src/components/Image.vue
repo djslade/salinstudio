@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, useTemplateRef } from "vue";
 
-defineProps<{ class: string; src: string; alt: string }>();
+defineProps<{ src: string; alt: string }>();
 
 const img = useTemplateRef("img");
 
@@ -17,12 +17,5 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <img
-    ref="img"
-    :class="class"
-    :src="src"
-    :alt="src"
-    draggable="false"
-    loading="lazy"
-  />
+  <img ref="img" :src="src" :alt="src" draggable="false" loading="lazy" />
 </template>
