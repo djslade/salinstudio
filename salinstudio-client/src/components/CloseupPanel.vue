@@ -4,8 +4,13 @@ import { useLanguageStore } from "../store/language";
 import SlideTransition from "./SlideTransition.vue";
 import type { GalleryItem } from "../types/galleryItem";
 import { useSwipe, type UseSwipeDirection } from "@vueuse/core";
+import { Icon } from "@iconify/vue";
 
-const { data } = defineProps<{ data: GalleryItem[] }>();
+const { data } = defineProps<{
+  data: GalleryItem[];
+  prevSlug: string;
+  nextSlug: string;
+}>();
 
 const el = useTemplateRef("el");
 
@@ -55,6 +60,31 @@ const findSmallestRatio = (items: GalleryItem[]) => {
 
 <template>
   <section class="panel" :style="{ aspectRatio: findSmallestRatio(data) }">
+    <button
+      class="panel-switch-btn left-switch-btn"
+      @click="
+        $router.push({
+          name: 'Closeup',
+          params: { ...$route.params, id: prevSlug },
+        })
+      "
+    >
+      <Icon icon="material-symbols:arrow-back-ios" class="switch-icon"></Icon>
+    </button>
+    <button
+      class="panel-switch-btn right-switch-btn"
+      @click="
+        $router.push({
+          name: 'Closeup',
+          params: { ...$route.params, id: nextSlug },
+        })
+      "
+    >
+      <Icon
+        icon="material-symbols:arrow-forward-ios"
+        class="switch-icon"
+      ></Icon>
+    </button>
     <SlideTransition mode="out-in" :direction="direction">
       <div
         :key="galleryIndex"
@@ -138,6 +168,31 @@ const findSmallestRatio = (items: GalleryItem[]) => {
   justify-content: center;
   overflow: none;
   position: relative;
+}
+
+.panel-switch-btn {
+  position: absolute;
+  bottom: 50%;
+  z-index: 10;
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem;
+  color: #d0bfad;
+  cursor: pointer;
+  transform: translateY(50%);
+}
+
+.left-switch-btn {
+  left: 1rem;
+}
+
+.right-switch-btn {
+  right: 1rem;
+}
+
+.switch-icon {
+  font-size: 1.5rem;
+  color: #d0bfad;
 }
 
 .data-container {

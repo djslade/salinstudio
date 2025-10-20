@@ -15,7 +15,7 @@ onMounted(() => {
   <div class="app">
     <RouterView v-slot="{ Component }">
       <OpacityTransition mode="out-in">
-        <component :is="Component" />
+        <component :is="Component" :key="$route.fullPath" />
       </OpacityTransition>
     </RouterView>
   </div>

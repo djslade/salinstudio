@@ -78,7 +78,10 @@ export class ArtController {
   @Get('slug/:id')
   async getArtBySlug(@Param('id') id: string) {
     const art = await this.artService.findArtBySlug(id);
-    return { message: 'OK', art };
+    const { prevSlug, nextSlug } = await this.artService.findPrevAndNext(
+      art.totalIndex,
+    );
+    return { message: 'OK', art, prevSlug, nextSlug };
   }
 
   @Patch('order/category')

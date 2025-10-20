@@ -3,7 +3,6 @@ import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import IconButton from "../components/IconButton.vue";
 import { useLanguageStore } from "../store/language";
-import type { Art } from "../types/art";
 import Loader from "../components/Loader.vue";
 import { useQuery } from "@tanstack/vue-query";
 import axios, { AxiosError } from "axios";
@@ -14,6 +13,7 @@ import { onMounted, ref, watch } from "vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
 import { useMetadata } from "../hooks/useMetadata";
 import type { GalleryItem } from "../types/galleryItem";
+import type { ArtWithSlugs } from "../types/artWithSlugs";
 
 const route = useRoute();
 const router = useRouter();
@@ -27,7 +27,12 @@ const { data } = useQuery({
     const res = await axios.get(
       `${import.meta.env.VITE_SERVER_ENDPOINT}/art/slug/${route.params.id}`
     );
-    return res.data.art as Art;
+    // return res.data.art as Art;
+    return {
+      art: res.data.art,
+      prevSlug: res.data.prevSlug,
+      nextSlug: res.data.nextSlug,
+    } as ArtWithSlugs;
   },
   retry: (failureCount, err: AxiosError) => {
     if (err.status === 404) {
@@ -48,8 +53,10 @@ const galleryItems = ref<GalleryItem[]>([]);
 const language = useLanguageStore();
 const images = useImageStore();
 
-const onPageLoad = async (art?: Art) => {
-  if (!art) return;
+const onPageLoad = async (data?: ArtWithSlugs) => {
+  if (!data) return;
+
+  const art = data.art;
 
   const title = `${
     route.params.locale === "fi" ? art.titleFi : art.titleEn
@@ -77,7 +84,7 @@ const onPageLoad = async (art?: Art) => {
 
 onMounted(async () => await onPageLoad(data.value));
 
-watch(data, async (art) => await onPageLoad(art));
+watch(data, async (data) => await onPageLoad(data));
 </script>
 
 <template>
@@ -85,7 +92,13 @@ watch(data, async (art) => await onPageLoad(art));
     <Header
       position="sticky"
       :heading="
-        language.isEn() ? (data ? data.titleEn : '') : data ? data.titleFi : ''
+        language.isEn()
+          ? data
+            ? data.art.titleEn
+            : ''
+          : data
+          ? data.art.titleFi
+          : ''
       "
       :currentRoute="'Closeup'"
     >
@@ -94,14 +107,19 @@ watch(data, async (art) => await onPageLoad(art));
           <IconButton
             responsiveLabel
             icon="mdi-light:arrow-left"
-            :onClick="() => $router.back()"
+            :onClick="() => $router.push({ name: 'Gallery' })"
           />
         </div>
       </template>
     </Header>
     <main>
       <OpacityTransition mode="default">
-        <CloseupPanel v-if="pageReady && data" :data="galleryItems" />
+        <CloseupPanel
+          v-if="pageReady && data"
+          :data="galleryItems"
+          :nextSlug="data.nextSlug"
+          :prevSlug="data.prevSlug"
+        />
       </OpacityTransition>
       <Loader v-if="!pageReady" />
     </main>

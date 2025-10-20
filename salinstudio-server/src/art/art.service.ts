@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
-import { Repository } from 'typeorm';
+import { LessThan, MoreThan, Repository } from 'typeorm';
 import { Art, ArtCategory } from './entities/art.entity';
 import { ImageService } from '../image/image.service';
 import { OrderCategoryDto } from './dto/order-category.dto';
@@ -12,6 +12,7 @@ import slugify from 'slugify';
 import { Image } from 'src/image/entities/image.entity';
 import { CollectionService } from 'src/collection/collection.service';
 import { Collection } from 'src/collection/entities/collection.entity';
+import { Max } from 'class-validator';
 
 type CreateArtParams = {
   titleEn: string;
@@ -146,5 +147,27 @@ export class ArtService {
     }
     await this.artRepository.delete(id);
     await this.imageService.delete(artToDelete.image.id);
+  }
+
+  async findPrevAndNext(index: number) {
+    // Looking for art where index = param+1 might cause issues.
+    // Instead, will look for closest.
+    const allArtOrdered = await this.artRepository.find({
+      order: { totalIndex: 'ASC' },
+    });
+    const allPrevArt = await this.artRepository.find({
+      where: { totalIndex: MoreThan(index) },
+      order: { totalIndex: 'ASC' },
+    });
+    const allNextArt = await this.artRepository.find({
+      where: { totalIndex: LessThan(index) },
+      order: { totalIndex: 'DESC' },
+    });
+    const prev = allPrevArt.length > 0 ? allPrevArt[0] : allArtOrdered[0];
+    const next =
+      allNextArt.length > 0
+        ? allNextArt[0]
+        : allArtOrdered[allArtOrdered.length - 1];
+    return { nextSlug: next.slug, prevSlug: prev.slug };
   }
 }
