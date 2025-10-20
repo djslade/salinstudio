@@ -61,7 +61,7 @@ const links: Link[] = [
   {
     to: "/contact",
     label: "Contact",
-    labelFi: "Yhteys",
+    labelFi: "Yhteydenotto",
   },
 ];
 

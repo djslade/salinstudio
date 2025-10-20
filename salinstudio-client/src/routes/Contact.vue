@@ -142,7 +142,7 @@ onMounted(async () => {
 <template>
   <div class="">
     <Header
-      :heading="language.isEn() ? 'Contact' : 'Yhteys'"
+      :heading="language.isEn() ? 'Contact' : 'Yhteydenotto'"
       position="sticky"
       currentRoute="Contact"
     />
