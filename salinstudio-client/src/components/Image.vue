@@ -17,5 +17,18 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <img ref="img" :src="src" :alt="src" draggable="false" loading="lazy" />
+  <img
+    ref="img"
+    :src="src"
+    :alt="src"
+    draggable="false"
+    loading="lazy"
+    class="img"
+  />
 </template>
+
+<style scoped>
+.img {
+  color: transparent;
+}
+</style>
