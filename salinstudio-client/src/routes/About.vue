@@ -328,7 +328,7 @@ onMounted(async () => {
 }
 
 .cv-panel {
-  gap: 8rem;
+  gap: 6.4rem;
   padding: 8rem 1rem;
 }
 
@@ -436,6 +436,10 @@ onMounted(async () => {
 }
 
 @media (min-width: 600px) {
+  .cv-panel {
+    gap: 7.2rem;
+  }
+
   .cv-text {
     gap: 3.6rem;
   }
@@ -458,6 +462,10 @@ onMounted(async () => {
 }
 
 @media (min-width: 900px) {
+  .cv-panel {
+    gap: 8rem;
+  }
+
   .panel-inner-container,
   .panel-inner-container.cv-container {
     flex-direction: row;
