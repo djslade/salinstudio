@@ -24,7 +24,4 @@ export class Purchasable extends BaseEntity {
 
   @Column()
   currentPrice: number;
-
-  @OneToMany(() => Image, (image) => image.purchasable)
-  images: Image;
 }

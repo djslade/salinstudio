@@ -27,9 +27,6 @@ export class Image extends BaseEntity {
   @OneToOne(() => Art)
   art: Art;
 
-  @ManyToOne(() => Purchasable, (purchasable) => purchasable.images)
-  purchasable: Purchasable;
-
   @OneToOne(() => Collection)
   collection: Collection;
 }

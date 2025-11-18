@@ -383,7 +383,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   max-width: 800px;
-  gap: 4rem;
+  gap: 3.2rem;
 }
 
 .about-p {
@@ -412,13 +412,13 @@ onMounted(async () => {
 .cv-category-container {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.64rem;
 }
 
 .cv-category-entry-container {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.32rem;
 }
 
 .cv-category-entry {
@@ -436,8 +436,24 @@ onMounted(async () => {
 }
 
 @media (min-width: 600px) {
+  .cv-text {
+    gap: 3.6rem;
+  }
+
   .cv-category-entry {
     font-size: 0.9rem;
+  }
+
+  .cv-category-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.72rem;
+  }
+
+  .cv-category-entry-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.36rem;
   }
 }
 
@@ -453,6 +469,22 @@ onMounted(async () => {
 
   .cv-category-entry {
     font-size: 1rem;
+  }
+
+  .cv-text {
+    gap: 4rem;
+  }
+
+  .cv-category-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .cv-category-entry-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
   }
 }
 
