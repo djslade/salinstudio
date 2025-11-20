@@ -2,7 +2,7 @@ import { Art } from '../../art/entities/art.entity';
 import { BaseEntity } from '../../database/base.entity';
 import { Column, Entity, ManyToOne, OneToOne } from 'typeorm';
 import { Collection } from '../../collection/entities/collection.entity';
-import { Purchasable } from 'src/purchasable/entities/purchasable.entity';
+import { Purchasable } from '../../purchasable/entities/purchasable.entity';
 
 @Entity()
 export class Image extends BaseEntity {
@@ -29,4 +29,10 @@ export class Image extends BaseEntity {
 
   @OneToOne(() => Collection)
   collection: Collection;
+
+  @ManyToOne(() => Purchasable, (purchasable) => purchasable.images, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  purchasable?: Purchasable;
 }

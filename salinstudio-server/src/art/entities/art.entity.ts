@@ -9,6 +9,7 @@ import {
   ManyToMany,
   OneToOne,
 } from 'typeorm';
+import { Purchasable } from '../../purchasable/entities/purchasable.entity';
 
 export type ArtCategory =
   | 'drawings'
@@ -63,4 +64,7 @@ export class Art extends BaseEntity {
   @OneToOne(() => Image)
   @JoinColumn()
   image: Image;
+
+  @OneToOne(() => Purchasable, (purchasable) => purchasable.art)
+  purchasable?: Purchasable;
 }

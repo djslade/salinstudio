@@ -1,6 +1,7 @@
-import { BaseEntity } from 'src/database/base.entity';
-import { Image } from 'src/image/entities/image.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Art } from '../../art/entities/art.entity';
+import { BaseEntity } from '../../database/base.entity';
+import { Image } from '../../image/entities/image.entity';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 @Entity()
 export class Purchasable extends BaseEntity {
@@ -14,6 +15,9 @@ export class Purchasable extends BaseEntity {
   quantity: number;
 
   @Column()
+  isPublic: boolean;
+
+  @Column()
   isOriginal: boolean;
 
   @Column()
@@ -24,4 +28,11 @@ export class Purchasable extends BaseEntity {
 
   @Column()
   currentPrice: number;
+
+  @OneToOne(() => Art, (art) => art.purchasable, { nullable: true })
+  @JoinColumn()
+  art: Art;
+
+  @OneToMany(() => Image, (image) => image.purchasable, { cascade: true })
+  images: Image[];
 }
