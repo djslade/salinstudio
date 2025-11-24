@@ -3,9 +3,10 @@ import { ImageService } from './image.service';
 import { UploadModule } from 'src/upload/upload.module';
 import { DatabaseModule } from 'src/database/database.module';
 import { imageProviders } from './image.providers';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [DatabaseModule, UploadModule],
+  imports: [DatabaseModule, UploadModule, CacheModule.register()],
   providers: [...imageProviders, ImageService],
   exports: [ImageService],
 })

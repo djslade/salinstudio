@@ -1,4 +1,124 @@
-import { Controller } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FilesInterceptor as MultiFileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { createPurchasableDto } from './dto/create-purchasable.dto';
+import { ImageService } from 'src/image/image.service';
+import { ArtService } from 'src/art/art.service';
+import { PurchasableService } from './purchasable.service';
+import { Image } from 'src/image/entities/image.entity';
+import { updatePurchasableDto } from './dto/update-purchasable.dto';
 
 @Controller('purchasable')
-export class PurchasableController {}
+export class PurchasableController {
+  constructor(
+    private purchasableService: PurchasableService,
+    private artService: ArtService,
+    private imageService: ImageService,
+  ) {}
+  @Post()
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    MultiFileInterceptor('files', 5, {
+      limits: { fileSize: 50 * 1024 * 1024 },
+    }),
+  )
+  async createPurchasable(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() body: createPurchasableDto,
+  ) {
+    const art = await this.artService.findArtById(body.artId);
+    const images: Image[] = [];
+    if (files.length > 0) {
+      for (let file of files) {
+        images.push(await this.imageService.createImage(file.buffer));
+      }
+    }
+    const purchasable = await this.purchasableService.create(body, art, images);
+    return { message: 'Created', purchasable };
+  }
+
+  @Get()
+  @UseGuards(AuthGuard)
+  async getAllPurchasables() {
+    const purchasables = await this.purchasableService.findAll();
+    return { message: 'OK', purchasables };
+  }
+
+  @Get('public')
+  async getAllPublic() {
+    const purchasables = await this.purchasableService.findAllPublic();
+    return { message: 'OK', purchasables };
+  }
+
+  @Get('nano/:id')
+  async getByNanoId(@Param('id') id: string) {
+    const purchasable = await this.purchasableService.findByNanoId(id);
+    return { message: 'OK', purchasable };
+  }
+
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  async getPurchasable(@Param('id') id: string) {
+    const purchasable = await this.purchasableService.findById(id);
+    return { message: 'OK', purchasable };
+  }
+
+  @Put(':id')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    MultiFileInterceptor('file', 5, {
+      limits: { fileSize: 50 * 1024 * 1024 },
+    }),
+  )
+  async updatePurchasable(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Param('id') id: string,
+    @Body() body: updatePurchasableDto,
+  ) {
+    if (body.imageIds.length + files.length > 5) {
+      throw new BadRequestException('Too many images');
+    }
+    const purchasable = await this.purchasableService.findById(id);
+    const art = await this.artService.findArtById(body.artId);
+    const images: Image[] = [];
+    if (files.length > 0) {
+      for (let file of files) {
+        images.push(await this.imageService.createImage(file.buffer));
+      }
+    }
+    if (body.imageIds.length > 0) {
+      for (let id of body.imageIds) {
+        images.push(await this.imageService.findById(id));
+      }
+    }
+
+    const imagesToDelete = purchasable.images.filter(
+      (image) => !body.imageIds.includes(image.id),
+    );
+    if (imagesToDelete.length > 0) {
+      for (let image of imagesToDelete) {
+        await this.imageService.delete(image.id);
+      }
+    }
+    await this.purchasableService.update(id, body, art, images);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  async deletePurchasable(@Param('id') id: string) {
+    await this.purchasableService.delete(id);
+    return { message: 'OK' };
+  }
+}

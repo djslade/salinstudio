@@ -9,6 +9,7 @@ import { VisitorModule } from './visitor/visitor.module';
 import { ActionModule } from './action/action.module';
 import { SitemapModule } from './sitemap/sitemap.module';
 import { CollectionModule } from './collection/collection.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CollectionModule } from './collection/collection.module';
       },
     }),
     MailerModule,
+    CacheModule.register(),
   ],
 })
 export class AppModule {}

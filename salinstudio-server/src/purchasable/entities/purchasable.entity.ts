@@ -24,10 +24,22 @@ export class Purchasable extends BaseEntity {
   isFramed: boolean;
 
   @Column()
+  year: number;
+
+  @Column()
+  techniqueEn: string;
+
+  @Column()
+  techniqueFi: string;
+
+  @Column()
   maxPrice: number;
 
   @Column()
   currentPrice: number;
+
+  @Column()
+  nanoId: string;
 
   @OneToOne(() => Art, (art) => art.purchasable, { nullable: true })
   @JoinColumn()

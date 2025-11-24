@@ -12,7 +12,6 @@ import slugify from 'slugify';
 import { Image } from 'src/image/entities/image.entity';
 import { CollectionService } from 'src/collection/collection.service';
 import { Collection } from 'src/collection/entities/collection.entity';
-import { Max } from 'class-validator';
 
 type CreateArtParams = {
   titleEn: string;

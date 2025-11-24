@@ -2,6 +2,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { exiftool } from 'exiftool-vendored';
@@ -14,6 +15,8 @@ import { Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
 import { UploadService } from 'src/upload/upload.service';
 import { ConfigService } from '@nestjs/config';
+import { nanoid } from 'nanoid';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 type FingerprintConfig = {
   year: number;
@@ -33,6 +36,7 @@ type FIleNames = {
 export class ImageService {
   constructor(
     @Inject(REPOSITORY_NAMES.IMAGE) private imageRepository: Repository<Image>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private uploadService: UploadService,
     private configService: ConfigService,
   ) {}
@@ -42,6 +46,12 @@ export class ImageService {
       width: width ?? 0,
       height: height ?? 0,
     };
+  }
+
+  async findById(id: string): Promise<Image> {
+    const image = await this.imageRepository.findOne({ where: { id } });
+    if (!image) throw new NotFoundException('could not find image');
+    return image;
   }
 
   async embedCopyright(buffer: Buffer): Promise<Buffer> {
@@ -59,8 +69,13 @@ export class ImageService {
     return embeddedBuffer;
   }
 
-  getFileNames(): FIleNames {
-    const name = Date.now();
+  async getFileNames(): Promise<FIleNames> {
+    let name = `${Date.now()}`;
+    // Cache handles exceptions where two images are assigned the same name
+    while (await this.cacheManager.get(name)) {
+      name = `${Date.now()}${nanoid(6)}`;
+    }
+    await this.cacheManager.set(name, true, 60000);
     return {
       fullUrl: `full/${name}.webp`,
       desktopUrl: `desktop/${name}.webp`,
@@ -228,7 +243,7 @@ export class ImageService {
   async createImage(file: Buffer) {
     try {
       const processedImages = await this.processImage(file);
-      const fileNames = this.getFileNames();
+      const fileNames = await this.getFileNames();
       const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
 
       await this.uploadService.upload(fileNames.fullUrl, processedImages.full);
