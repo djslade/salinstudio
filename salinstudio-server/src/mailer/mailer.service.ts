@@ -3,7 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { REPOSITORY_NAMES } from 'src/config/constants';
+import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Mail } from './entities/mail.entity';
 import { CreateMailDto } from './dtos/create-mail.dto';

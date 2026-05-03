@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Action } from './entities/action.entity';
-import { VisitorService } from 'src/visitor/visitor.service';
+import { VisitorService } from '../visitor/visitor.service';
 import { CreateActionDto } from './dtos/create-action.dto';
 
 @Injectable()

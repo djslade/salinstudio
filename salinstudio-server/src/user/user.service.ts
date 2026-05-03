@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { Role } from '../flag/entities/flag.entity';
 
 @Injectable()
 export class UserService {
@@ -29,6 +30,12 @@ export class UserService {
   async findByIdOrThrow(id: string): Promise<User> {
     const user = await this.findById(id);
     if (!user) throw new Error();
+    return user;
+  }
+
+  async updateRole(user: User, role: Role): Promise<User> {
+    user.role = role;
+    await this.userRepository.save(user);
     return user;
   }
 }

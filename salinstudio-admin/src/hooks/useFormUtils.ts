@@ -11,9 +11,15 @@ export const useFormUtils = <T>(initialValues: T) => {
 
   const step = ref<FormStep>(FormStep.Start);
 
+  const valuesSavedAfterFetch = ref<boolean>(false);
+
   const isStart = () => step.value === FormStep.Start;
   const isSubmitting = () => step.value === FormStep.Submitting;
   const isEnd = () => step.value === FormStep.End;
+
+  const setValuesSavedAfterFetch = (bool: boolean) => {
+    valuesSavedAfterFetch.value = bool;
+  };
 
   const setStepStart = () => {
     step.value = FormStep.Start;
@@ -38,6 +44,8 @@ export const useFormUtils = <T>(initialValues: T) => {
   return {
     formValues,
     step,
+    valuesSavedAfterFetch,
+    setValuesSavedAfterFetch,
     isStart,
     isSubmitting,
     isEnd,

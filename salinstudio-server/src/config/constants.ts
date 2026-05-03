@@ -22,8 +22,10 @@ export const REPOSITORY_NAMES = {
   COLLECTION: 'COLLECTION_REPOSITORY',
   IMAGE: 'IMAGE_REPOSITORY',
   PURCHASABLE: 'PURCHASABLE_REPOSITORY',
+  FLAG: 'FLAG_REPOSITORY',
 };
 
 export const SIGNUP_SECRET = process.env.SIGNUP_SECRET ?? 'signup-secret';
 export const JWT_SECRET = process.env.JWT_SECRET ?? 'jwt-secret';
+export const ROLE_SECRET = process.env.ROLE_SECRET ?? 'role-secret';
 export const REFRESH_EXPIRES_AT_MS = 60 * 24 * 60 * 60 * 1000;

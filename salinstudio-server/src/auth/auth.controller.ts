@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -14,10 +15,15 @@ import { LoginRequestDto } from './dtos/login-request.dto';
 import { RefreshGuard } from './guards/refresh.guard';
 import { ExpandedRequest } from './types/expanded-request';
 import { AuthGuard } from './guards/auth.guard';
+import { UpdateRoleDto } from './dtos/update-role.dto';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
 
   @Get()
   @UseGuards(AuthGuard)
@@ -86,5 +92,16 @@ export class AuthController {
     await this.authService.revokeRefreshToken(refreshToken);
 
     return { message: 'OK' };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @Patch('role')
+  async updateRole(@Req() req: ExpandedRequest, @Body() body: UpdateRoleDto) {
+    const user = this.authService.getUserFromRequest(req);
+    if (body.role === 'dev') {
+      this.authService.validateRoleSecret(body.secret);
+    }
+    await this.userService.updateRole(user, body.role);
   }
 }

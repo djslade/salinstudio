@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ArtService } from 'src/art/art.service';
+import { ArtService } from '../art/art.service';
 import { create } from 'xmlbuilder2';
 import { XMLBuilder } from 'xmlbuilder2/lib/interfaces';
 

@@ -24,6 +24,7 @@ const { currentRoute } = defineProps<{
     | "Gallery"
     | "Closeup"
     | "Commissions"
+    | "Store"
     | "Contact"
     | "NotFound";
 }>();
@@ -59,9 +60,14 @@ const links: Link[] = [
     labelFi: "Tilaustyöt",
   },
   {
+    to: "/store",
+    label: "Store",
+    labelFi: "Store",
+  },
+  {
     to: "/contact",
     label: "Contact",
-    labelFi: "Yhteydenotto",
+    labelFi: "Ota Yhteytä",
   },
 ];
 

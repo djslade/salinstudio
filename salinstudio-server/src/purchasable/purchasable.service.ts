@@ -1,13 +1,18 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { REPOSITORY_NAMES } from 'src/config/constants';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Purchasable } from './entities/purchasable.entity';
 import { createPurchasableDto } from './dto/create-purchasable.dto';
-import { Art } from 'src/art/entities/art.entity';
-import { Image } from 'src/image/entities/image.entity';
+import { Art } from '../art/entities/art.entity';
+import { Image } from '../image/entities/image.entity';
 import { nanoid } from 'nanoid';
 import { updatePurchasableDto } from './dto/update-purchasable.dto';
-import { ImageService } from 'src/image/image.service';
+import { ImageService } from '../image/image.service';
 
 @Injectable()
 export class PurchasableService {
@@ -41,6 +46,17 @@ export class PurchasableService {
     return purchasable;
   }
 
+  async artIdIsAssigned(artId: string): Promise<void> {
+    const purchasable = await this.purchasableRepository.findOne({
+      where: { art: { id: artId } },
+    });
+    if (purchasable) {
+      throw new BadRequestException(
+        'art is already associated with a store item',
+      );
+    }
+  }
+
   async findAll(): Promise<Purchasable[]> {
     return await this.purchasableRepository.find({
       relations: {
@@ -65,12 +81,18 @@ export class PurchasableService {
 
     // Create and save nanoId
     let nanoId = nanoid(8);
-    while (await this.purchasableRepository.find({ where: { nanoId } })) {
+    while (
+      (await this.purchasableRepository.find({ where: { nanoId } })).length > 0
+    ) {
       nanoId = nanoid(8);
     }
     purchasable.nanoId = nanoId;
 
     // Strings
+    purchasable.titleEn = dto.titleEn;
+    purchasable.titleFi = dto.titleFi;
+    purchasable.infoEn = dto.infoEn;
+    purchasable.infoFi = dto.infoFi;
     purchasable.techniqueEn = dto.techniqueEn;
     purchasable.techniqueFi = dto.techniqueFi;
 
@@ -79,13 +101,15 @@ export class PurchasableService {
     purchasable.width = dto.width;
     purchasable.quantity = dto.quantity;
     purchasable.maxPrice = dto.maxPrice;
-    purchasable.currentPrice = dto.currentPrice;
+    purchasable.currentPrice = dto.maxPrice;
     purchasable.year = dto.year;
 
     // Bools
     purchasable.isPublic = dto.isPublic;
     purchasable.isFramed = dto.isFramed;
     purchasable.isOriginal = dto.isOriginal;
+    purchasable.isFeatured = dto.isFeatured;
+    purchasable.isOnSale = false;
 
     // FKs
     purchasable.art = art;
@@ -105,6 +129,10 @@ export class PurchasableService {
     });
     if (!purchasable) throw new NotFoundException();
     // Strings
+    purchasable.titleEn = dto.titleEn;
+    purchasable.titleFi = dto.titleFi;
+    purchasable.infoEn = dto.infoEn;
+    purchasable.infoFi = dto.infoFi;
     purchasable.techniqueEn = dto.techniqueEn;
     purchasable.techniqueFi = dto.techniqueFi;
 
@@ -120,6 +148,8 @@ export class PurchasableService {
     purchasable.isPublic = dto.isPublic;
     purchasable.isFramed = dto.isFramed;
     purchasable.isOriginal = dto.isOriginal;
+    purchasable.isFeatured = dto.isFeatured;
+    purchasable.isOnSale = dto.isOnSale;
 
     // FKs
     purchasable.art = art;
@@ -133,6 +163,7 @@ export class PurchasableService {
     await this.purchasableRepository.delete(id);
     if (toDelete.images.length > 0) {
       for (let image of toDelete.images) {
+        if (image.id === toDelete.art.image.id) continue;
         await this.imageService.delete(image.id);
       }
     }

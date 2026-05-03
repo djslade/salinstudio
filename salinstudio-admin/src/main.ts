@@ -7,6 +7,7 @@ import Aura from "@primeuix/themes/aura";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import ToastService from "primevue/toastservice";
 import DialogService from "primevue/dialogservice";
+import Tooltip from "primevue/tooltip";
 
 const app = createApp(App);
 
@@ -24,4 +25,5 @@ app.use(PrimeVue, {
 app.use(ToastService);
 app.use(DialogService);
 app.use(VueQueryPlugin);
+app.directive("tooltip", Tooltip);
 app.mount("#app");

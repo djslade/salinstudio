@@ -12,13 +12,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor as MultiFileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from '../auth/guards/auth.guard';
 import { createPurchasableDto } from './dto/create-purchasable.dto';
-import { ImageService } from 'src/image/image.service';
-import { ArtService } from 'src/art/art.service';
+import { ImageService } from '../image/image.service';
+import { ArtService } from '../art/art.service';
 import { PurchasableService } from './purchasable.service';
-import { Image } from 'src/image/entities/image.entity';
+import { Image } from '../image/entities/image.entity';
 import { updatePurchasableDto } from './dto/update-purchasable.dto';
+import Multer from 'multer';
 
 @Controller('purchasable')
 export class PurchasableController {
@@ -30,7 +31,7 @@ export class PurchasableController {
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(
-    MultiFileInterceptor('files', 5, {
+    MultiFileInterceptor('files', 4, {
       limits: { fileSize: 50 * 1024 * 1024 },
     }),
   )
@@ -38,6 +39,7 @@ export class PurchasableController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() body: createPurchasableDto,
   ) {
+    await this.purchasableService.artIdIsAssigned(body.artId);
     const art = await this.artService.findArtById(body.artId);
     const images: Image[] = [];
     if (files.length > 0) {
@@ -45,6 +47,7 @@ export class PurchasableController {
         images.push(await this.imageService.createImage(file.buffer));
       }
     }
+    images.push(art.image);
     const purchasable = await this.purchasableService.create(body, art, images);
     return { message: 'Created', purchasable };
   }
@@ -91,6 +94,13 @@ export class PurchasableController {
       throw new BadRequestException('Too many images');
     }
     const purchasable = await this.purchasableService.findById(id);
+    let purchasableImages = purchasable.images;
+    if (body.artId !== purchasable.art.id) {
+      await this.purchasableService.artIdIsAssigned(body.artId);
+      purchasableImages = purchasableImages.filter(
+        (image) => image.id !== purchasable.art.image.id,
+      );
+    }
     const art = await this.artService.findArtById(body.artId);
     const images: Image[] = [];
     if (files.length > 0) {
@@ -100,11 +110,13 @@ export class PurchasableController {
     }
     if (body.imageIds.length > 0) {
       for (let id of body.imageIds) {
+        if (id === art.image.id) continue;
         images.push(await this.imageService.findById(id));
       }
     }
+    images.push(art.image);
 
-    const imagesToDelete = purchasable.images.filter(
+    const imagesToDelete = purchasableImages.filter(
       (image) => !body.imageIds.includes(image.id),
     );
     if (imagesToDelete.length > 0) {

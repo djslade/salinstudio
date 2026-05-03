@@ -19,7 +19,7 @@ import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { OrderCarouselDto } from './dto/order-carousel.dto';
-import { ImageService } from 'src/image/image.service';
+import { ImageService } from '../image/image.service';
 
 @Controller('art')
 export class ArtController {

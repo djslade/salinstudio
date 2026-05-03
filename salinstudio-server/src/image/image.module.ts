@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ImageService } from './image.service';
-import { UploadModule } from 'src/upload/upload.module';
-import { DatabaseModule } from 'src/database/database.module';
+import { UploadModule } from '../upload/upload.module';
+import { DatabaseModule } from '../database/database.module';
 import { imageProviders } from './image.providers';
 import { CacheModule } from '@nestjs/cache-manager';
 

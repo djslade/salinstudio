@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {
   InputText,
+  InputNumber,
   Password,
   FloatLabel,
   Message,
   Select,
   Textarea,
   MultiSelect,
+  ToggleButton,
 } from "primevue";
 import { FormField } from "@primevue/forms";
 import type { Collection } from "../types/data";
@@ -17,14 +19,22 @@ type FormControlType =
   | "secret"
   | "textarea"
   | "select"
-  | "multiselect";
+  | "art select"
+  | "multiselect"
+  | "measurements"
+  | "toggle"
+  | "price"
+  | "number";
 
 defineProps<{
   type: FormControlType;
   name: string;
-  label: string;
+  label?: string;
   fluid?: boolean;
   options?: Collection[];
+  toggleOnLabel?: string;
+  toggleOffLabel?: string;
+  loading?: boolean;
 }>();
 
 const categories = [
@@ -53,7 +63,7 @@ const categories = [
 
 <template>
   <FormField v-slot="$field" :name="name" class="w-full">
-    <FloatLabel variant="on" class="w-full">
+    <FloatLabel v-if="type !== 'toggle'" variant="on" class="w-full">
       <InputText v-if="type === 'text'" type="text" :fluid="fluid" />
       <Password v-if="type === 'password'" :fluid="fluid" />
       <InputText v-if="type === 'secret'" type="password" :fluid="fluid" />
@@ -63,6 +73,25 @@ const categories = [
         :rows="5"
         :fluid="fluid"
       />
+      <Select
+        v-if="type === 'art select'"
+        :options="options"
+        optionLabel="titleEn"
+        optionValue="id"
+        :fluid="fluid"
+        :loading="loading"
+      >
+        <template #option="slotProps">
+          <div class="flex items-center gap-3">
+            <img
+              :alt="slotProps.option.titleEn"
+              :src="slotProps.option.image.thumbUrl"
+              class="w-20 aspect-square object-cover"
+            />
+            <div>{{ slotProps.option.titleEn }}</div>
+          </div>
+        </template>
+      </Select>
       <Select
         v-if="type === 'select'"
         :options="categories"
@@ -78,8 +107,20 @@ const categories = [
         filter
         :fluid="fluid"
       />
+      <InputNumber v-if="type === 'measurements'" suffix="cm" :fluid="fluid" />
+      <InputNumber v-if="type === 'price'" suffix=" €" :fluid="fluid" />
+      <InputNumber
+        v-if="type === 'number'"
+        :useGrouping="false"
+        :fluid="fluid"
+      />
       <label>{{ label }}</label>
     </FloatLabel>
+    <ToggleButton
+      v-if="type === 'toggle'"
+      :onLabel="toggleOnLabel || 'On'"
+      :offLabel="toggleOffLabel || 'Off'"
+    />
     <Message
       v-if="$field?.invalid"
       severity="error"

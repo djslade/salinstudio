@@ -9,11 +9,11 @@ import { exiftool } from 'exiftool-vendored';
 import { promises as fs } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import * as sharp from 'sharp';
-import { REPOSITORY_NAMES } from 'src/config/constants';
+import sharp from 'sharp';
+import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
-import { UploadService } from 'src/upload/upload.service';
+import { UploadService } from '../upload/upload.service';
 import { ConfigService } from '@nestjs/config';
 import { nanoid } from 'nanoid';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
@@ -272,7 +272,7 @@ export class ImageService {
 
       return image;
     } catch (err) {
-      if (err.message.includes('VipsJpeg')) {
+      if (this.hasMessage(err) && err.message.includes('VipsJpeg')) {
         throw new UnprocessableEntityException(
           'This file is corrupt and cannot be processed',
         );
@@ -309,6 +309,15 @@ export class ImageService {
     await this.imageRepository.save(image);
     console.log(
       `${image.id} aspect ratio updated to ${image.aspectRatio} and saved`,
+    );
+  }
+
+  hasMessage(e: unknown): e is { message: string } {
+    return (
+      typeof e === 'object' &&
+      e !== null &&
+      'message' in e &&
+      typeof (e as any).message === 'string'
     );
   }
 }

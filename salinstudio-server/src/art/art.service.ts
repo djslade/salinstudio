@@ -9,9 +9,9 @@ import { OrderAllDto } from './dto/order-all.dto';
 import { OrderCarouselDto } from './dto/order-carousel.dto';
 import { nanoid } from 'nanoid';
 import slugify from 'slugify';
-import { Image } from 'src/image/entities/image.entity';
-import { CollectionService } from 'src/collection/collection.service';
-import { Collection } from 'src/collection/entities/collection.entity';
+import { Image } from '../image/entities/image.entity';
+import { CollectionService } from '../collection/collection.service';
+import { Collection } from '../collection/entities/collection.entity';
 
 type CreateArtParams = {
   titleEn: string;

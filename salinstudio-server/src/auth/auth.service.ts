@@ -13,6 +13,7 @@ import { Repository } from 'typeorm';
 import {
   REFRESH_EXPIRES_AT_MS,
   REPOSITORY_NAMES,
+  ROLE_SECRET,
   SIGNUP_SECRET,
 } from '../config/constants';
 import { RefreshToken } from './entities/refresh-token.entity';
@@ -47,6 +48,7 @@ export class AuthService {
     return {
       id: user.id,
       username: user.username,
+      role: user.role,
     };
   }
 
@@ -119,6 +121,12 @@ export class AuthService {
 
   async revokeRefreshToken(tokenId) {
     await this.refreshTokenRepository.delete({ id: tokenId });
+  }
+
+  validateRoleSecret(roleSecret: string) {
+    if (roleSecret !== ROLE_SECRET) {
+      throw new UnauthorizedException('The secret is incorrect');
+    }
   }
 
   getBearerToken(headers: IncomingHttpHeaders): string {

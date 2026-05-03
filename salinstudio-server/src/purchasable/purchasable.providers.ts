@@ -1,4 +1,4 @@
-import { DATABASE_CONFIG, REPOSITORY_NAMES } from 'src/config/constants';
+import { DATABASE_CONFIG, REPOSITORY_NAMES } from '../config/constants';
 import { DataSource } from 'typeorm';
 import { Purchasable } from './entities/purchasable.entity';
 

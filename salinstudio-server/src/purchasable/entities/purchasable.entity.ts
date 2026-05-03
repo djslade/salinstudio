@@ -24,7 +24,25 @@ export class Purchasable extends BaseEntity {
   isFramed: boolean;
 
   @Column()
+  isFeatured: boolean;
+
+  @Column()
+  isOnSale: boolean;
+
+  @Column()
   year: number;
+
+  @Column()
+  titleEn: string;
+
+  @Column()
+  titleFi: string;
+
+  @Column()
+  infoEn: string;
+
+  @Column()
+  infoFi: string;
 
   @Column()
   techniqueEn: string;

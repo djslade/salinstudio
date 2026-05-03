@@ -11,14 +11,25 @@ import VisitorsView from "./routes/Visitors.vue";
 import VisitorActionsView from "./routes/VisitorActions.vue";
 import CollectionsList from "./routes/CollectionsList.vue";
 import CollectionsNew from "./routes/CollectionsNew.vue";
+import RolesView from "./routes/Roles.vue";
 import { isVisitorMember } from "./utils/visitor";
 import { clearTokens, hasTokens } from "./utils/tokens";
+import StoreNew from "./routes/StoreNew.vue";
+import StoreList from "./routes/StoreList.vue";
+import StoreItem from "./routes/StoreItem.vue";
+import StoreEdit from "./routes/StoreEdit.vue";
 
 const routes = [
   {
     path: "/",
     name: "Home",
     component: HomeView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/roles",
+    name: "Roles",
+    component: RolesView,
     meta: { requiresAuth: true },
   },
   {
@@ -49,6 +60,30 @@ const routes = [
     path: "/gallery",
     name: "Gallery",
     component: GalleryView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/store/new",
+    name: "StoreNew",
+    component: StoreNew,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/store/list",
+    name: "StoreList",
+    component: StoreList,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/store/:id",
+    name: "StoreItem",
+    component: StoreItem,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/store/edit/:id",
+    name: "StoreEdit",
+    component: StoreEdit,
     meta: { requiresAuth: true },
   },
   {

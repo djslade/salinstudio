@@ -10,6 +10,7 @@ import { ActionModule } from './action/action.module';
 import { SitemapModule } from './sitemap/sitemap.module';
 import { CollectionModule } from './collection/collection.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { PurchasableModule } from './purchasable/purchasable.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     }),
     MailerModule,
     CacheModule.register(),
+    PurchasableModule,
   ],
 })
 export class AppModule {}

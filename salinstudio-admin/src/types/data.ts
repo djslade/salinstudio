@@ -1,4 +1,13 @@
-type Image = {
+export type Role = "admin" | "dev";
+
+export type User = {
+  id: string;
+  username: string;
+  role: Role;
+};
+
+export type Image = {
+  id: string;
   fullUrl: string;
   desktopUrl: string;
   mobileUrl: string;
@@ -31,6 +40,31 @@ export type Collection = {
   updatedAt: string;
   image: Image;
   art?: Art[];
+};
+
+export type Purchasable = {
+  id: string;
+  height: number;
+  width: number;
+  quantity: number;
+  maxPrice: number;
+  currentPrice: number;
+  year: number;
+  titleEn: string;
+  titleFi: string;
+  infoEn: string;
+  infoFi: string;
+  techniqueEn: string;
+  techniqueFi: string;
+  isOriginal: boolean;
+  isFramed: boolean;
+  isPublic: boolean;
+  isFeatured: boolean;
+  isOnSale: boolean;
+  createdAt: string;
+  updatedAt: string;
+  art: Art;
+  images: Image[];
 };
 
 export type Category = {

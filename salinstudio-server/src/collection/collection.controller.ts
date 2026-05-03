@@ -11,8 +11,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CollectionService } from './collection.service';
-import { ImageService } from 'src/image/image.service';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { ImageService } from '../image/image.service';
+import { AuthGuard } from '../auth/guards/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateCollectionDto } from './dtos/create-collection.dto';
 import { UpdateCollectionDto } from './dtos/update-collection.dto';

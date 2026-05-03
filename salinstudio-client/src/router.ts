@@ -7,6 +7,11 @@ import NotFound from "./routes/NotFound.vue";
 import Contact from "./routes/Contact.vue";
 import type { Art } from "./types/art";
 import type { RouteRecordRaw } from "vue-router";
+import Store from "./routes/Store.vue";
+import StoreItem from "./routes/StoreItem.vue";
+import Cart from "./routes/Cart.vue";
+import Checkout from "./routes/Checkout.vue";
+import PurchaseSuccess from "./routes/PurchaseSuccess.vue";
 
 type Route = RouteRecordRaw & {
   path: string;
@@ -70,6 +75,47 @@ export const routes: Route[] = [
     meta: {
       title: "Contact - Miia Salin",
       titleFi: "Yhteys - Miia Salin",
+    },
+  },
+  {
+    path: "/:locale(en|fi)?/store",
+    component: Store,
+    name: "Store",
+    meta: {
+      title: "Store - Miia Salin",
+      titleFi: "Store - Miia Salin",
+    },
+  },
+  {
+    path: "/:locale(en|fi)?/store/:id",
+    component: StoreItem,
+    name: "StoreItem",
+  },
+  {
+    path: "/:locale(en|fi)?/cart",
+    component: Cart,
+    name: "Cart",
+    meta: {
+      title: "Cart - Miia Salin",
+      titleFi: "Cart - Miia Salin",
+    },
+  },
+  {
+    path: "/:locale(en|fi)?/checkout/:id",
+    component: Checkout,
+    name: "Checkout",
+    meta: {
+      title: "Checkout - Miia Salin",
+      titleFi: "Checkout - Miia Salin",
+    },
+  },
+  {
+    path: "/:locale(en|fi)?/checkout/complete/:id",
+    component: PurchaseSuccess,
+    name: "PurchaseSuccess",
+    meta: {
+      title: "Thank you - Miia Salin",
+      titleFi: "Thank you - Miia Salin",
     },
   },
   {

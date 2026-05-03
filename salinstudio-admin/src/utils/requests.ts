@@ -25,6 +25,25 @@ type RequestBody =
       onHomeCarousel?: boolean;
       ids?: string[];
       collections?: string[];
+      infoEn?: string;
+      infoFi?: string;
+      imageIds?: string[];
+      artId?: string;
+      techniqueEn?: string;
+      techniqueFi?: string;
+      height?: number;
+      width?: number;
+      quantity?: number;
+      year?: number;
+      maxPrice?: number;
+      currentPrice?: number;
+      isPublic?: boolean;
+      isOriginal?: boolean;
+      isFramed?: boolean;
+      isFeatured?: boolean;
+      isOnSale?: boolean;
+      files?: File[];
+      id?: string;
     }
   | null;
 
@@ -61,7 +80,7 @@ export const getRequest = async <T>(path: string, options?: RequestOptions) => {
 export const postRequest = async <T>(
   path: string,
   body: RequestBody,
-  options?: RequestOptions
+  options?: RequestOptions,
 ) => {
   const config: AxiosRequestConfig = getRequestConfig(options);
   const res = await axios.post(getEndpoint() + path, body, config);
@@ -71,7 +90,7 @@ export const postRequest = async <T>(
 export const putRequest = async <T>(
   path: string,
   body: RequestBody,
-  options?: RequestOptions
+  options?: RequestOptions,
 ) => {
   const config: AxiosRequestConfig = getRequestConfig(options);
   const res = await axios.put(getEndpoint() + path, body, config);
@@ -81,7 +100,7 @@ export const putRequest = async <T>(
 export const patchRequest = async <T>(
   path: string,
   body: RequestBody,
-  options?: RequestOptions
+  options?: RequestOptions,
 ) => {
   const config: AxiosRequestConfig = getRequestConfig(options);
   const res = await axios.patch(getEndpoint() + path, body, config);
@@ -90,7 +109,7 @@ export const patchRequest = async <T>(
 
 export const deleteRequest = async <T>(
   path: string,
-  options?: RequestOptions
+  options?: RequestOptions,
 ) => {
   const config: AxiosRequestConfig = getRequestConfig(options);
   const res = await axios.delete(getEndpoint() + path, config);
@@ -106,7 +125,7 @@ export const getErrorResponseOrThrow = (err: unknown) => {
 
 export const refreshIfUnauthorized = async <T>(
   requestFn: () => Promise<T>,
-  refresh: boolean = true
+  refresh: boolean = true,
 ) => {
   try {
     const res = await requestFn();

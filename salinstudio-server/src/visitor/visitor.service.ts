@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Visitor } from './entities/visitor.entity';
-import { IPService } from 'src/ip/ip.service';
+import { IPService } from '../ip/ip.service';
 
 @Injectable()
 export class VisitorService {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SitemapService } from './sitemap.service';
 import { SitemapController } from './sitemap.controller';
-import { ArtModule } from 'src/art/art.module';
+import { ArtModule } from '../art/art.module';
 
 @Module({
   imports: [ArtModule],

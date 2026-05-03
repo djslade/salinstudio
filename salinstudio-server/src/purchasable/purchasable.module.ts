@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
-import { ArtModule } from 'src/art/art.module';
-import { AuthModule } from 'src/auth/auth.module';
-import { DatabaseModule } from 'src/database/database.module';
-import { ImageModule } from 'src/image/image.module';
+import { ArtModule } from '../art/art.module';
+import { AuthModule } from '../auth/auth.module';
+import { DatabaseModule } from '../database/database.module';
+import { ImageModule } from '../image/image.module';
 import { PurchasableService } from './purchasable.service';
 import { PurchasableController } from './purchasable.controller';
+import { purchasableProviders } from './purchasable.providers';
 
 @Module({
   imports: [DatabaseModule, AuthModule, ArtModule, ImageModule],
-  providers: [PurchasableService],
+  providers: [...purchasableProviders, PurchasableService],
   controllers: [PurchasableController],
 })
 export class PurchasableModule {}

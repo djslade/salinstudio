@@ -5,7 +5,7 @@ import { ArtController } from './art.controller';
 import { ArtService } from './art.service';
 import { AuthModule } from '../auth/auth.module';
 import { ImageModule } from '../image/image.module';
-import { CollectionModule } from 'src/collection/collection.module';
+import { CollectionModule } from '../collection/collection.module';
 
 @Module({
   imports: [DatabaseModule, AuthModule, ImageModule, CollectionModule],

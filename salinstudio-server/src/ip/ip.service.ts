@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { REPOSITORY_NAMES } from 'src/config/constants';
+import { REPOSITORY_NAMES } from '../config/constants';
 import { LookupThrottle } from './entities/lookup-throttle.entity';
 import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { IPData } from './types/ipData';

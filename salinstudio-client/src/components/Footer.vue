@@ -7,7 +7,7 @@ defineProps<{ position: Position }>();
 <template>
   <footer class="footer" :style="{ position }">
     <div class="inner-footer">
-      <span class="attribution">©2025 Miia Salin</span>
+      <span class="attribution">©2026 Miia Salin</span>
     </div>
   </footer>
 </template>
