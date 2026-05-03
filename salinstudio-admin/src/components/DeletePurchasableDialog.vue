@@ -94,7 +94,7 @@ const submit = async () => {
             :src="storeItem.art.image.desktopUrl"
             :alt="storeItem.art.titleEn"
             :style="slotProps.style"
-            class="max-w-screen-lg max-h-[90vh]"
+            class="max-w-5xl max-h-[90vh]"
             @click="slotProps.previewCallback()"
           />
         </template>

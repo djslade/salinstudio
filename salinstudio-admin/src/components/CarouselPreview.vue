@@ -27,12 +27,12 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="max-w-screen-xl w-full aspect-video relative flex items-center justify-between"
+    class="max-w-7xl w-full aspect-video relative flex items-center justify-between"
   >
     <div
       v-for="(a, idx) in art"
       :key="a.id"
-      :class="`p-4 rounded max-w-screen-xl w-full aspect-video shadow-sm absolute bg-neutral-900 flex justify-center items-center ${
+      :class="`p-4 rounded max-w-7xl w-full aspect-video shadow-sm absolute bg-neutral-900 flex justify-center items-center ${
         frontImageIdx === idx && 'transition-opacity duration-1000 opacity-0'
       }`"
       :style="{ zIndex: getZIndex(idx) }"

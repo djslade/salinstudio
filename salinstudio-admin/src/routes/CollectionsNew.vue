@@ -162,7 +162,7 @@ const handleGoToList = () => {
                           :src="src"
                           :alt="src"
                           :style="slotProps.style"
-                          class="max-w-screen-lg max-h-[90vh]"
+                          class="max-w-5xl max-h-[90vh]"
                           @click="slotProps.previewCallback()"
                         />
                       </template>
@@ -175,7 +175,7 @@ const handleGoToList = () => {
                     class="flex items-center justify-center flex-col w-full h-full"
                   >
                     <i
-                      class="pi pi-cloud-upload rounded-full !text-4xl text-muted-color"
+                      class="pi pi-cloud-upload rounded-full text-4xl! text-muted-color"
                     />
                     <p class="mt-6 mb-0">Drag and drop files here.</p>
                   </div>

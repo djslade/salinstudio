@@ -107,7 +107,7 @@ watch(selectedArt, () => {
         @click="() => setActiveCategory(nb.value)"
       />
     </div>
-    <div class="max-w-screen-lg columns-4 flex gap-4 w-full">
+    <div class="max-w-5xl columns-4 flex gap-4 w-full">
       <div
         :key="`column-${idx}`"
         v-for="(array, idx) in getColumnArrays(getActiveImage(), 4)"

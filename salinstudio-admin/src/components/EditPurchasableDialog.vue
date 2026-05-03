@@ -20,11 +20,6 @@ type PreviewImage = {
   url: string;
 };
 
-type FileUploadSelectEvent = {
-  files: File[];
-  originalEvent: Event;
-};
-
 const toast = useToast();
 const { storeItem } = defineProps<{
   storeItem: Purchasable;
@@ -101,7 +96,7 @@ const submit = async (evt: FormSubmitEvent) => {
       async () =>
         await putRequest(`/purchasable/${storeItem.id}`, formData, {
           accessToken: true,
-        })
+        }),
     );
     setStepEnd();
   } catch (err) {

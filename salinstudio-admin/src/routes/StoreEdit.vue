@@ -286,7 +286,7 @@ watch(data, (data) => onPageLoad(data));
                 dataKey="id"
                 scrollHeight="20rem"
               >
-                <template #option="{ option, selected }">
+                <template #option="{ option }">
                   <div class="flex flex-wrap p-1 items-center gap-4 w-full">
                     <img
                       class="max-w-24 rounded"
