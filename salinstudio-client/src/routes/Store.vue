@@ -9,7 +9,7 @@ import { useLanguageStore } from "../store/language";
 import OpacityTransition from "../components/OpacityTransition.vue";
 import { useMetadata } from "../hooks/useMetadata";
 import type { StoreItem } from "../types/storeItem";
-import PanelHeading from "../components/PanelHeading.vue";
+import StoreItemGrid from "../components/StoreItemGrid.vue";
 
 const pageReady = ref<boolean>(false);
 
@@ -78,21 +78,10 @@ watch(data, async (art) => onPageLoad(art));
     >
     </Header>
     <main>
-      <section class="comm-closed-panel">
-        <OpacityTransition mode="default">
-          <PanelHeading
-            v-if="pageReady && language.isEn()"
-            text="Coming soon"
-            textAlign="center"
-          />
-          <PanelHeading
-            v-if="pageReady && language.isFi()"
-            text="Tulossa pian"
-            textAlign="center"
-          />
-        </OpacityTransition>
-        <Loader v-if="!pageReady" />
-      </section>
+      <OpacityTransition mode="default">
+        <StoreItemGrid v-if="data" :data="data" :columnCount="3"/>
+      </OpacityTransition>
+      <Loader v-if="!pageReady" />
     </main>
     <Footer position="static" />
   </div>

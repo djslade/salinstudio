@@ -12,13 +12,6 @@ defineProps<{
 
 const language = useLanguageStore();
 
-const getColumnArrays = (array: StoreItem[], columnCount: number) => {
-  const columnsArray: StoreItem[][] = [];
-  for (let i = 0; i < columnCount; i++) {
-    columnsArray.push(array.filter((_, idx) => idx % columnCount === i));
-  }
-  return columnsArray;
-};
 </script>
 
 <template>
@@ -72,36 +65,38 @@ const getColumnArrays = (array: StoreItem[], columnCount: number) => {
   </div>
   <section v-else class="gallery-container">
     <div class="gallery-panel">
-      <div
-        v-for="(array, idx) in getColumnArrays(data, columnCount)"
-        :key="`array-${idx}`"
-        class="gallery-column"
+      <button
+        class="gallery-img-btn"
+        v-for="(art, idx) in data"
+        :key="`art-${idx}`"
+        :style="{
+          aspectRatio: art.images[0].aspectRatio || 1,
+        }"
+        @click="
+          () =>
+            $router.push({
+              name: 'Closeup',
+              params: {
+                ...$route.params,
+                id: art.nanoId,
+              },
+            })
+        "
       >
-        <button
-          class="gallery-img-btn"
-          v-for="(art, idx) in array"
-          :key="`art-${idx}`"
-          :style="{
-            aspectRatio: art.images[0].aspectRatio || 1,
-          }"
-          @click="
-            () =>
-              $router.push({
-                name: 'Closeup',
-                params: {
-                  ...$route.params,
-                  id: art.nanoId,
-                },
-              })
-          "
-        >
-          <Image
-            class="gallery-img"
-            :src="art.images[0].thumbUrl || ''"
-            :alt="language.isEn() ? art.art.titleEn : art.art.titleFi"
-          />
-        </button>
-      </div>
+        <Image
+          class="gallery-img"
+          :src="art.images[0].thumbUrl || ''"
+          :alt="language.isEn() ? art.art.titleEn : art.art.titleFi"
+        />
+        <div class="store-item-info-container">
+          <div class="store-item-title-container">
+            <h1 class="store-item-title">{{ art.titleEn }}</h1>
+          </div>
+          <div class="store-item-price-container">
+            <h2 class="store-item-current-price">{{Intl.NumberFormat("fi-FI", {style: "currency", currency: "eur"}).format(art.currentPrice)  }}</h2>
+          </div>
+        </div>
+      </button>
     </div>
   </section>
 </template>
@@ -158,12 +153,6 @@ const getColumnArrays = (array: StoreItem[], columnCount: number) => {
   color: #b4936f;
 }
 
-@media (min-width: 600px) {
-  .comm-closed-title {
-    font-size: 2.5rem;
-  }
-}
-
 .gallery-container {
   margin: 0 auto;
   display: flex;
@@ -172,15 +161,18 @@ const getColumnArrays = (array: StoreItem[], columnCount: number) => {
   transition-property: opacity;
   transition-duration: 600ms;
   transition-timing-function: ease;
+  justify-content: center;
 }
 
 .gallery-panel {
   padding: 1rem;
-  display: flex;
-  gap: 0.25rem;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
   min-height: calc(100vh - 10rem);
   min-height: calc(100dvh - 10rem);
   width: 100%;
+  max-width: 1200px;
 }
 
 .gallery-column {
@@ -194,16 +186,80 @@ const getColumnArrays = (array: StoreItem[], columnCount: number) => {
 
 .gallery-img {
   object-fit: cover;
-  height: 100%;
   width: 100%;
+  aspect-ratio: 1;
 }
 
 .gallery-img-btn {
-  background-color: #261f19;
   border: none;
   margin: 0;
   padding: 0;
   width: 100%;
+  aspect-ratio: 2/1;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  background-color: #1e1914;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  border-radius: 1rem;
+}
+
+.store-item-info-container {
+  padding: 1rem 0.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.store-item-title-container {
+  height: 3.5rem;
+  width: 100%;
+}
+
+.store-item-title {
+  font-size: 0.8rem;
+  color:#d0bfad;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  line-height: 1.5;
+}
+
+.store-item-price-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.store-item-current-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color:#d0bfad;
+}
+
+@media (min-width: 600px) {
+  .comm-closed-title {
+    font-size: 2.5rem;
+  }
+
+  .gallery-panel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .gallery-panel {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .gallery-panel {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 </style>

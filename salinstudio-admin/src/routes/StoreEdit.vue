@@ -128,12 +128,13 @@ const handleCreateStoreItem = async (evt: FormSubmitEvent) => {
     images.value.forEach((image) => {
       formData.append("files", image.file);
     });
+    console.log(Object.entries(evt.values))
     for (let [key, value] of Object.entries(evt.values)) {
       formData.append(key, value);
     }
-    for (let imageId of data.value.images.map((image) => image.id)) {
-      formData.append("imageIds", imageId);
-    }
+    const imageIds = currentImages.value?.map((i) => i.id) ?? [];
+    console.log(imageIds)
+    formData.append("imageIds", JSON.stringify(imageIds));
     await refreshIfUnauthorized(
       async () =>
         await putRequest(`/purchasable/${data.value.id}`, formData, {
@@ -323,6 +324,7 @@ watch(data, (data) => onPageLoad(data));
               v-if="pageReady"
               :formValues="formValues"
               :handleSubmit="handleCreateStoreItem"
+              update
             />
           </div>
         </template>

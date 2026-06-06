@@ -9,7 +9,13 @@ export type StoreItem = {
   isPublic: boolean;
   isOriginal: boolean;
   isFramed: boolean;
+  isFeatured: boolean;
+  isOnSale: boolean;
   year: number;
+  titleEn: string;
+  titleFi: string;
+  infoEn: string;
+  infoFi: string;
   techniqueEn: string;
   techniqueFi: string;
   maxPrice: number;

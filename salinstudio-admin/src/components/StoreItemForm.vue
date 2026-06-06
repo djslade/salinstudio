@@ -2,7 +2,7 @@
 import { Button } from "primevue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
 import FormControl from "./FormControl.vue";
-import { createStoreItemResolver } from "../utils/resolvers";
+import { createStoreItemResolver, updateStoreItemResolver } from "../utils/resolvers";
 import type { Art } from "../types/data";
 import { useQuery } from "@tanstack/vue-query";
 import { getRequest } from "../utils/requests";
@@ -27,7 +27,7 @@ const { data, isFetching } = useQuery({
     v-slot="$form"
     class="flex flex-col gap-5 h-full justify-between flex-1"
     :initialValues="formValues"
-    :resolver="createStoreItemResolver"
+    :resolver="update ? updateStoreItemResolver : createStoreItemResolver"
     @submit="handleSubmit"
   >
     <div class="gap-5 flex flex-col">
