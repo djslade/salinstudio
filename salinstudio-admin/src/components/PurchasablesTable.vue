@@ -14,15 +14,9 @@ import { ref } from "vue";
 import type { Purchasable } from "../types/data";
 import type { QueryObserverResult, RefetchOptions } from "@tanstack/vue-query";
 
-const descriptionStatus = [
-  {
-    name: "Filled",
-    value: false,
-  },
-  {
-    name: "Empty",
-    value: true,
-  },
+const techniqueStatus = [
+  { name: "Filled", value: false },
+  { name: "Empty", value: true },
 ];
 
 const { data } = defineProps<{
@@ -37,20 +31,22 @@ const { data } = defineProps<{
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  category: { value: null, matchMode: FilterMatchMode.EQUALS },
   emptyTechnique: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 
 const addCustomFields = () => {
   if (!data) return;
-  return data.map((a) => {
-    return {
-      ...a,
-      emptyTechnique:
-        a.techniqueFi.trim() === "" || a.techniqueEn.trim() === "",
-    };
-  });
+  return data.map((a) => ({
+    ...a,
+    emptyTechnique:
+      a.techniqueFi.trim() === "" || a.techniqueEn.trim() === "",
+  }));
 };
+
+const formatPrice = (amount: number) =>
+  Intl.NumberFormat("fi-FI", { style: "currency", currency: "EUR" }).format(
+    amount,
+  );
 </script>
 
 <template>
@@ -64,43 +60,42 @@ const addCustomFields = () => {
     dataKey="id"
     :loading="isFetching"
     :globalFilterFields="['titleEn', 'titleFi']"
+    stripedRows
+    size="small"
   >
     <template #header>
-      <div class="flex flex-col w-full">
-        <div class="flex pt-6 gap-6 justify-between">
-          <IconField>
-            <InputIcon>
-              <i class="pi pi-search" />
-            </InputIcon>
-            <InputText
-              v-model="filters['global'].value"
-              placeholder="Search by title"
-            />
-          </IconField>
-          <Select
-            v-model="filters['emptyTechnique'].value"
-            :options="descriptionStatus"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="Description status"
-            class="max-w-xs w-full"
-            showClear
-          >
-          </Select>
-        </div>
+      <div class="flex flex-wrap gap-3 py-3">
+        <IconField class="flex-1 min-w-48">
+          <InputIcon>
+            <i class="pi pi-search" />
+          </InputIcon>
+          <InputText
+            v-model="filters['global'].value"
+            placeholder="Search by title"
+            class="w-full"
+          />
+        </IconField>
+        <Select
+          v-model="filters['emptyTechnique'].value"
+          :options="techniqueStatus"
+          optionLabel="name"
+          optionValue="value"
+          placeholder="Technique"
+          class="min-w-40"
+          showClear
+        />
       </div>
     </template>
+
     <template #empty>
-      <div class="w-full flex justify-center p-6">No results found.</div>
+      <div class="flex justify-center py-10 text-surface-400 text-sm">
+        No results found.
+      </div>
     </template>
-    <Column
-      field="thumbUrl"
-      header="Art image"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
+
+    <Column header="Image" style="width: 6rem">
       <template #body="{ data }">
-        <Image alt="Image" preview>
+        <Image v-if="data.images?.length" alt="Image" preview>
           <template #previewicon>
             <i class="pi pi-search"></i>
           </template>
@@ -108,7 +103,8 @@ const addCustomFields = () => {
             <img
               :src="data.images[0].thumbUrl"
               :alt="data.titleEn"
-              class="w-30 aspect-video object-cover"
+              class="h-14 w-20 object-cover rounded"
+              loading="lazy"
             />
           </template>
           <template #original="slotProps">
@@ -121,128 +117,109 @@ const addCustomFields = () => {
             />
           </template>
         </Image>
-      </template>
-    </Column>
-    <Column
-      field="titleEn"
-      header="Title"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }">
-        <div class="flex gap-4 items-center">
-          <span class="uppercase tracking-wide text-xs">en</span>
-          {{ data.titleEn }}
-        </div>
-        <div class="flex gap-4 items-center">
-          <span class="uppercase tracking-wide text-xs">fi</span>
-          {{ data.titleFi }}
+        <div
+          v-else
+          class="h-14 w-20 rounded bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
+        >
+          <i class="pi pi-image text-surface-400 text-sm"></i>
         </div>
       </template>
     </Column>
-    <Column
-      field="height"
-      header="Height"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }"> {{ data.height }}cm </template>
-    </Column>
-    <Column
-      field="width"
-      header="Width"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }"> {{ data.width }}cm </template>
-    </Column>
-    <Column
-      field="quantity"
-      header="Stock"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }"> {{ data.quantity }}</template>
-    </Column>
-    <Column
-      field="maxPrice"
-      header="Price"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
+
+    <Column header="Title">
       <template #body="{ data }">
-        {{
-          Intl.NumberFormat("fi-FI", {
-            style: "currency",
-            currency: "EUR",
-          }).format(data.maxPrice)
-        }}</template
-      >
+        <div class="flex flex-col gap-0.5">
+          <div class="flex items-baseline gap-2">
+            <span class="text-[10px] uppercase tracking-widest text-surface-400 shrink-0">en</span>
+            <span class="text-sm">{{ data.titleEn }}</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-[10px] uppercase tracking-widest text-surface-400 shrink-0">fi</span>
+            <span class="text-sm text-surface-500">{{ data.titleFi }}</span>
+          </div>
+        </div>
+      </template>
     </Column>
-    <Column
-      field="currentPrice"
-      header="Discounted price"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
+
+    <Column header="Dimensions" style="width: 8rem">
       <template #body="{ data }">
-        {{
-          data.maxPrice === data.currentPrice
-            ? "Not discounted"
-            : Intl.NumberFormat("fi-FI", {
-                style: "currency",
-                currency: "EUR",
-              }).format(data.maxPrice / 100)
-        }}</template
-      >
+        <span class="text-sm tabular-nums">
+          {{ data.width }} × {{ data.height }} cm
+        </span>
+      </template>
     </Column>
-    <Column
-      field="year"
-      header="Year"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }"> {{ data.year }}</template>
-    </Column>
-    <Column
-      field="isPublic"
-      header="Public"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }"> {{ data.isPublic }}</template>
-    </Column>
-    <Column
-      field="isFramed"
-      header="Framed"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }"> {{ data.isFramed }}</template>
-    </Column>
-    <Column
-      field="isOriginal"
-      header="Original"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }"> {{ data.isOriginal }}</template>
-    </Column>
-    <Column field="actions" header="Actions">
+
+    <Column header="Stock" style="width: 5rem">
       <template #body="{ data }">
-        <div class="flex gap-6">
+        <span
+          class="text-sm tabular-nums"
+          :class="data.quantity <= 1 ? 'text-primary-600 dark:text-primary-400 font-medium' : ''"
+        >
+          {{ data.quantity }}
+        </span>
+      </template>
+    </Column>
+
+    <Column header="Price" style="width: 9rem">
+      <template #body="{ data }">
+        <div v-if="data.isOnSale && data.currentPrice !== data.maxPrice" class="flex flex-col">
+          <span class="text-xs line-through text-surface-400 tabular-nums">
+            {{ formatPrice(data.maxPrice) }}
+          </span>
+          <span class="text-sm font-medium text-primary tabular-nums">
+            {{ formatPrice(data.currentPrice) }}
+          </span>
+        </div>
+        <span v-else class="text-sm tabular-nums">
+          {{ formatPrice(data.maxPrice) }}
+        </span>
+      </template>
+    </Column>
+
+    <Column header="Status" style="width: 10rem">
+      <template #body="{ data }">
+        <div class="flex flex-wrap gap-1">
+          <span :class="data.isPublic
+            ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/25 dark:text-primary-300'
+            : 'bg-surface-200 text-surface-500 dark:bg-surface-700 dark:text-surface-400'"
+            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+          >
+            {{ data.isPublic ? 'Public' : 'Draft' }}
+          </span>
+          <span v-if="data.isOnSale"
+            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-200 text-primary-800 dark:bg-primary-800/30 dark:text-primary-200"
+          >
+            Sale
+          </span>
+          <span v-if="data.isOriginal"
+            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-300"
+          >
+            Original
+          </span>
+          <span v-if="data.isFramed"
+            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-300"
+          >
+            Framed
+          </span>
+        </div>
+      </template>
+    </Column>
+
+    <Column header="Actions" style="width: 6rem">
+      <template #body="{ data }">
+        <div class="flex gap-1">
           <Button
             icon="pi pi-pencil"
+            text
             rounded
             severity="secondary"
-            raised
             @click="() => handleEdit(data.id)"
           />
           <Button
             icon="pi pi-trash"
+            text
             rounded
             severity="danger"
-            raised
             @click="() => handleDelete(data.id)"
           />
         </div>

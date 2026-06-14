@@ -134,7 +134,7 @@ export const refreshIfUnauthorized = async <T>(
     const res = getErrorResponseOrThrow(err);
     if (res.statusCode === 401 && refresh) {
       await refreshTokens();
-      await refreshIfUnauthorized(requestFn, false);
+      return await refreshIfUnauthorized(requestFn, false);
     } else {
       throw err;
     }
