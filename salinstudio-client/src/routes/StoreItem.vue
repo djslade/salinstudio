@@ -6,7 +6,7 @@ import OpacityTransition from "../components/OpacityTransition.vue";
 import PanelHeading from "../components/PanelHeading.vue";
 import { useLanguageStore } from "../store/language";
 import { useImageStore } from "../store/images";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 import { useQuery } from "@tanstack/vue-query";
 import axios, { AxiosError } from "axios";
 import { useRoute, useRouter } from "vue-router";
@@ -17,7 +17,6 @@ const route = useRoute();
 const router = useRouter();
 const language = useLanguageStore();
 const images = useImageStore();
-const { setMetadata } = useMetadata();
 
 const pageReady = ref(false);
 const buying = ref(false);
@@ -65,18 +64,30 @@ const { data } = useQuery({
   },
 });
 
+useSeo({
+  title: () =>
+    data.value
+      ? `${language.isEn() ? data.value.titleEn : data.value.titleFi} - Miia Salin`
+      : undefined,
+  description: () =>
+    data.value
+      ? language.isEn()
+        ? data.value.infoEn
+        : data.value.infoFi
+      : undefined,
+  imageUrl: () =>
+    data.value
+      ? data.value.images[0]?.desktopUrl || data.value.art.image.desktopUrl
+      : undefined,
+});
+
 const onPageLoad = async (item?: StoreItem) => {
   if (!item) return;
 
-  const title = `${language.isEn() ? item.titleEn : item.titleFi} - Miia Salin`;
-  const description = language.isEn() ? item.infoEn : item.infoFi;
   const imageUrl = item.images[0]?.desktopUrl || item.art.image.desktopUrl;
-
-  setMetadata({ title, description, imageUrl });
   await images.preloadAndSet(imageUrl);
 
   pageReady.value = true;
-  window.prerenderReady = true;
 };
 
 onMounted(async () => await onPageLoad(data.value));

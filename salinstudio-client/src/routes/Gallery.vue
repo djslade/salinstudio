@@ -10,7 +10,7 @@ import { useLanguageStore } from "../store/language";
 import GalleryImages from "../components/GalleryImages.vue";
 import type { Art } from "../types/art";
 import OpacityTransition from "../components/OpacityTransition.vue";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 
 type Filter =
   | "all"
@@ -58,8 +58,6 @@ const pageReady = ref<boolean>(false);
 
 const language = useLanguageStore();
 
-const { setMetadata } = useMetadata();
-
 const { data } = useQuery({
   queryKey: ["art"],
   queryFn: async () => {
@@ -67,6 +65,8 @@ const { data } = useQuery({
     return res.data.art as Art[];
   },
 });
+
+useSeo({ imageUrl: () => data.value?.[0]?.image.desktopUrl });
 
 const handleChange = (evt: { target: { value: Filter } }) => {
   artCategory.value = evt.target.value;
@@ -81,11 +81,6 @@ const updateColumns = () => {
 
 const onPageLoad = async (art?: Art[]) => {
   if (!art) return;
-
-  setMetadata({
-    imageUrl: art[0].image.desktopUrl,
-  });
-
   pageReady.value = true;
 };
 

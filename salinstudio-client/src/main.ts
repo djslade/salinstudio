@@ -5,7 +5,6 @@ import { routes } from "./router";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import { createPinia } from "pinia";
 import { useAnalyticsStore } from "./store/analytics";
-import { setHtmlLang, setStaticMetadata } from "./utils/meta";
 import { useLanguageStore } from "./store/language";
 
 export const createApp = ViteSSG(
@@ -41,8 +40,6 @@ export const createApp = ViteSSG(
       });
 
       router.afterEach(async (to) => {
-        setStaticMetadata();
-        setHtmlLang(language.language);
         await analytics.trackAction("traffic", "", to.path);
       });
     }

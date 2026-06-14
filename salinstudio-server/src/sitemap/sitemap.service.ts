@@ -66,15 +66,35 @@ export class SitemapService {
     const latestStoreDate =
       allPublicPurchasables.length > 0
         ? new Date(
-            Math.max(...allPublicPurchasables.map((p) => p.updatedAt.getTime())),
+            Math.max(
+              ...allPublicPurchasables.map((p) => p.updatedAt.getTime()),
+            ),
           ).toISOString()
         : latestArtDate;
 
     this.newUrlElement(root, 'monthly', '1.0', latestArtDate);
-    this.newUrlElement(root, 'yearly', '0.5', '2025-08-26T09:34:08.259Z', 'about');
+    this.newUrlElement(
+      root,
+      'yearly',
+      '0.5',
+      '2025-08-26T09:34:08.259Z',
+      'about',
+    );
     this.newUrlElement(root, 'weekly', '0.8', latestArtDate, 'gallery');
-    this.newUrlElement(root, 'monthly', '0.8', '2025-08-26T09:34:08.259Z', 'commissions');
-    this.newUrlElement(root, 'yearly', '0.5', '2025-08-26T09:34:08.259Z', 'contact');
+    this.newUrlElement(
+      root,
+      'monthly',
+      '0.8',
+      '2025-08-26T09:34:08.259Z',
+      'commissions',
+    );
+    this.newUrlElement(
+      root,
+      'yearly',
+      '0.5',
+      '2025-08-26T09:34:08.259Z',
+      'contact',
+    );
     this.newUrlElement(root, 'weekly', '0.8', latestStoreDate, 'store');
 
     for (const art of allArt) {
