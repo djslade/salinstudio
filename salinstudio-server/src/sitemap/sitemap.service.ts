@@ -1,51 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ArtService } from '../art/art.service';
+import { PurchasableService } from '../purchasable/purchasable.service';
 import { create } from 'xmlbuilder2';
 import { XMLBuilder } from 'xmlbuilder2/lib/interfaces';
 
 const baseUrl = 'https://miiasalin.com';
 
-const staticRoutes = [
-  {
-    name: 'Home',
-    changeFreq: 'monthly',
-    priority: '1.0',
-    lastMod: '2025-08-26T09:34:08.259Z',
-    params: [],
-  },
-  {
-    name: 'About',
-    changeFreq: 'yearly',
-    priority: '0.5',
-    lastMod: '2025-08-26T09:34:08.259Z',
-    params: ['about'],
-  },
-  {
-    name: 'Gallery',
-    changeFreq: 'weekly',
-    priority: '0.8',
-    lastMod: '2025-08-26T09:34:08.259Z',
-    params: ['gallery'],
-  },
-  {
-    name: 'Commissions',
-    changeFreq: 'monthly',
-    priority: '0.8',
-    lastMod: '2025-08-26T09:34:08.259Z',
-    params: ['commissions'],
-  },
-  {
-    name: 'Contact',
-    changeFreq: 'yearly',
-    priority: '0.5',
-    lastMod: '2025-08-26T09:34:08.259Z',
-    params: ['contact'],
-  },
-];
-
 @Injectable()
 export class SitemapService {
-  constructor(private artService: ArtService) {}
+  constructor(
+    private artService: ArtService,
+    private purchasableService: PurchasableService,
+  ) {}
 
   setUrl(...params: string[]) {
     let url = `${baseUrl}`;
@@ -85,17 +51,52 @@ export class SitemapService {
       'xmlns:xhtml': 'http://www.w3.org/1999/xhtml',
     });
 
-    for (const route of staticRoutes) {
-      this.newUrlElement(
-        root,
-        route.changeFreq,
-        route.priority,
-        route.lastMod,
-        ...route.params,
-      );
-    }
+    const [allArt, allPublicPurchasables] = await Promise.all([
+      this.artService.findAll(),
+      this.purchasableService.findAllPublic(),
+    ]);
 
-    const allArt = await this.artService.findAll();
+    const latestArtDate =
+      allArt.length > 0
+        ? new Date(
+            Math.max(...allArt.map((a) => a.updatedAt.getTime())),
+          ).toISOString()
+        : new Date().toISOString();
+
+    const latestStoreDate =
+      allPublicPurchasables.length > 0
+        ? new Date(
+            Math.max(
+              ...allPublicPurchasables.map((p) => p.updatedAt.getTime()),
+            ),
+          ).toISOString()
+        : latestArtDate;
+
+    this.newUrlElement(root, 'monthly', '1.0', latestArtDate);
+    this.newUrlElement(
+      root,
+      'yearly',
+      '0.5',
+      '2025-08-26T09:34:08.259Z',
+      'about',
+    );
+    this.newUrlElement(root, 'weekly', '0.8', latestArtDate, 'gallery');
+    this.newUrlElement(
+      root,
+      'monthly',
+      '0.8',
+      '2025-08-26T09:34:08.259Z',
+      'commissions',
+    );
+    this.newUrlElement(
+      root,
+      'yearly',
+      '0.5',
+      '2025-08-26T09:34:08.259Z',
+      'contact',
+    );
+    this.newUrlElement(root, 'weekly', '0.8', latestStoreDate, 'store');
+
     for (const art of allArt) {
       this.newUrlElement(
         root,
@@ -104,6 +105,17 @@ export class SitemapService {
         art.updatedAt.toISOString(),
         'gallery',
         art.slug,
+      );
+    }
+
+    for (const purchasable of allPublicPurchasables) {
+      this.newUrlElement(
+        root,
+        'monthly',
+        '0.6',
+        purchasable.updatedAt.toISOString(),
+        'store',
+        purchasable.nanoId,
       );
     }
 

@@ -8,30 +8,26 @@ import OpacityTransition from "../components/OpacityTransition.vue";
 import PanelParagraph from "../components/PanelParagraph.vue";
 import { useImageStore } from "../store/images";
 import { useRoute } from "vue-router";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 import PanelHeading from "../components/PanelHeading.vue";
 
 const route = useRoute();
 const language = useLanguageStore();
 const images = useImageStore();
 
-const { setMetadata } = useMetadata();
-
 const pageReady = ref<boolean>(false);
 
+useSeo({
+  description: () =>
+    route.params.locale === "fi"
+      ? "Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo, mutta jokainen vastoinkäyminen on vain vahvistanut päättäväisyyttäni ja intohimoani taiteeseen."
+      : "I’m a hardworking artist from Finland with limitless imagination and drive. I’ve come a long way for this path, but my hardships have just made my determination stronger.",
+  imageUrl: () => "/desktop/1755546690870.jpg",
+});
+
 onMounted(async () => {
-  setMetadata({
-    description:
-      route.params.locale === "fi"
-        ? "Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo, mutta jokainen vastoinkäyminen on vain vahvistanut päättäväisyyttäni ja intohimoani taiteeseen."
-        : "I’m a hardworking artist from Finland with limitless imagination and drive. I’ve come a long way for this path, but my hardships have just made my determination stronger.",
-    imageUrl: "/desktop/1755546690870.jpg",
-  });
-
   await images.preloadAndSet("/desktop/1755546690870.jpg");
-
   pageReady.value = true;
-  window.prerenderReady = true;
 });
 </script>
 

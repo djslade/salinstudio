@@ -7,15 +7,13 @@ import { onMounted, onUnmounted, ref, watch } from "vue";
 import Loader from "../components/Loader.vue";
 import { useLanguageStore } from "../store/language";
 import OpacityTransition from "../components/OpacityTransition.vue";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 import type { StoreItem } from "../types/storeItem";
 import StoreItemGrid from "../components/StoreItemGrid.vue";
 
 const pageReady = ref<boolean>(false);
 
 const language = useLanguageStore();
-
-const { setMetadata } = useMetadata();
 
 const { data } = useQuery({
   queryKey: ["storeItems"],
@@ -24,6 +22,14 @@ const { data } = useQuery({
       `${import.meta.env.VITE_SERVER_ENDPOINT}/purchasable/public`,
     );
     return res.data.purchasables as StoreItem[];
+  },
+});
+
+useSeo({
+  imageUrl: () => {
+    const items = data.value;
+    if (!items || items.length === 0) return undefined;
+    return items[0].images[0]?.desktopUrl || items[0].art.image.desktopUrl;
   },
 });
 
@@ -36,23 +42,7 @@ const updateColumns = () => {
 
 const onPageLoad = async (storeItems?: StoreItem[]) => {
   if (!storeItems) return;
-
-  let metadataImageUrl: string = "";
-
-  if (storeItems.length === 0) {
-    metadataImageUrl = "";
-  } else if (storeItems[0].images[0]) {
-    metadataImageUrl = storeItems[0].images[0].desktopUrl;
-  } else {
-    metadataImageUrl = storeItems[0].art.image.desktopUrl;
-  }
-
-  setMetadata({
-    imageUrl: metadataImageUrl,
-  });
-
   pageReady.value = true;
-  window.prerenderReady = true;
 };
 
 onMounted(async () => {

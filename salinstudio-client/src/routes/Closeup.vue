@@ -11,15 +11,13 @@ import CloseupPanel from "../components/CloseupPanel.vue";
 import { useImageStore } from "../store/images";
 import { onMounted, ref, watch } from "vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 import type { GalleryItem } from "../types/galleryItem";
 import type { ArtWithSlugs } from "../types/artWithSlugs";
 
 const route = useRoute();
 const router = useRouter();
 const pageReady = ref<boolean>(false);
-
-const { setMetadata } = useMetadata();
 
 const { data } = useQuery({
   queryKey: [`art.${route.params.id}`],
@@ -53,21 +51,24 @@ const galleryItems = ref<GalleryItem[]>([]);
 const language = useLanguageStore();
 const images = useImageStore();
 
+useSeo({
+  title: () =>
+    data.value
+      ? `${route.params.locale === "fi" ? data.value.art.titleFi : data.value.art.titleEn} - Miia Salin`
+      : undefined,
+  description: () =>
+    data.value
+      ? route.params.locale === "fi"
+        ? data.value.art.descriptionFi
+        : data.value.art.descriptionEn
+      : undefined,
+  imageUrl: () => data.value?.art.image.desktopUrl,
+});
+
 const onPageLoad = async (data?: ArtWithSlugs) => {
   if (!data) return;
 
   const art = data.art;
-
-  const title = `${
-    route.params.locale === "fi" ? art.titleFi : art.titleEn
-  } - Miia Salin`;
-
-  setMetadata({
-    title,
-    description:
-      route.params.locale === "fi" ? art.descriptionFi : art.descriptionEn,
-    imageUrl: art.image.desktopUrl,
-  });
 
   await images.preloadAndSet(art.image.desktopUrl);
 
@@ -79,7 +80,6 @@ const onPageLoad = async (data?: ArtWithSlugs) => {
 
   galleryItems.value = art.collections ? [art, ...art.collections] : [art];
   pageReady.value = true;
-  window.prerenderReady = true;
 };
 
 onMounted(async () => await onPageLoad(data.value));

@@ -5,7 +5,7 @@ import { useLanguageStore } from "../store/language";
 import PanelHeading from "../components/PanelHeading.vue";
 import PanelParagraph from "../components/PanelParagraph.vue";
 import { onMounted, ref } from "vue";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 import { useRoute } from "vue-router";
 
 const pageReady = ref<boolean>(false);
@@ -20,15 +20,13 @@ const route = useRoute();
 
 const language = useLanguageStore();
 
-const { setMetadata } = useMetadata();
+useSeo({
+  description: () =>
+    route.params.locale === "fi" ? closedTextFi : closedTextEn,
+});
 
-onMounted(async () => {
-  setMetadata({
-    description: route.params.locale === "fi" ? closedTextFi : closedTextEn,
-  });
-
+onMounted(() => {
   pageReady.value = true;
-  window.prerenderReady = true;
 });
 </script>
 

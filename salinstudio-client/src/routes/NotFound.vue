@@ -3,21 +3,11 @@ import { useLanguageStore } from "../store/language";
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import IconButton from "../components/IconButton.vue";
-import { onMounted, onUnmounted } from "vue";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 
 const language = useLanguageStore();
 
-const { setMetadata, clearNoIndex, setNoIndex } = useMetadata();
-
-onMounted(async () => {
-  setMetadata({});
-  setNoIndex();
-});
-
-onUnmounted(async () => {
-  clearNoIndex();
-});
+useSeo({ noindex: true });
 </script>
 
 <template>

@@ -6,7 +6,7 @@ import OpacityTransition from "../components/OpacityTransition.vue";
 import PanelHeading from "../components/PanelHeading.vue";
 import PanelParagraph from "../components/PanelParagraph.vue";
 import { useLanguageStore } from "../store/language";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 import { useQuery } from "@tanstack/vue-query";
 import axios, { AxiosError } from "axios";
 import { useRoute, useRouter } from "vue-router";
@@ -16,7 +16,6 @@ import type { StoreItem } from "../types/storeItem";
 const route = useRoute();
 const router = useRouter();
 const language = useLanguageStore();
-const { setMetadata } = useMetadata();
 
 const pageReady = ref(false);
 
@@ -37,13 +36,15 @@ const { data } = useQuery({
   },
 });
 
+useSeo({
+  title: () =>
+    language.isEn() ? "Thank you - Miia Salin" : "Kiitos - Miia Salin",
+  noindex: true,
+});
+
 const onPageLoad = (item?: StoreItem) => {
   if (!item) return;
-  setMetadata({
-    title: language.isEn() ? "Thank you - Miia Salin" : "Kiitos - Miia Salin",
-  });
   pageReady.value = true;
-  window.prerenderReady = true;
 };
 
 onMounted(() => onPageLoad(data.value));

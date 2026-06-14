@@ -9,7 +9,7 @@ import Loader from "../components/Loader.vue";
 import { onMounted, ref, watch } from "vue";
 import { useImageStore } from "../store/images";
 import OpacityTransition from "../components/OpacityTransition.vue";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 
 const { data } = useQuery({
   queryKey: ["carousel"],
@@ -29,14 +29,10 @@ const images = useImageStore();
 
 const pageReady = ref<boolean>(false);
 
-const { setMetadata } = useMetadata();
+useSeo({ imageUrl: () => data.value?.[0]?.image.desktopUrl });
 
 const onPageLoad = async (art?: Art[]) => {
   if (!art) return;
-
-  setMetadata({
-    imageUrl: art[0].image.desktopUrl,
-  });
 
   let counter = 0;
 
@@ -45,7 +41,6 @@ const onPageLoad = async (art?: Art[]) => {
     counter++;
     if (!pageReady.value && counter > 1) {
       pageReady.value = true;
-      window.prerenderReady = true;
     }
   }
 };

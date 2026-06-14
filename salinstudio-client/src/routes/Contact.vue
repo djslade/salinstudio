@@ -9,7 +9,7 @@ import Loader from "../components/Loader.vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
 import PanelHeading from "../components/PanelHeading.vue";
 import PanelParagraph from "../components/PanelParagraph.vue";
-import { useMetadata } from "../hooks/useMetadata";
+import { useSeo } from "../hooks/useSeo";
 
 type FormSubmissioNStage = "not sent" | "sending" | "sent";
 
@@ -34,7 +34,7 @@ const invalidEmailError = ref<boolean>(false);
 const internalError = ref<boolean>(false);
 const buttonDisabled = ref<boolean>(false);
 
-const { setMetadata } = useMetadata();
+useSeo({ description: () => route.params.locale === "fi" ? textFi : textEn });
 
 const checkIfValid = () => {
   if (fieldEmptyError.value) {
@@ -129,13 +129,8 @@ const handleSubmit = async () => {
 
 const pageReady = ref<boolean>(false);
 
-onMounted(async () => {
-  setMetadata({
-    description: route.params.locale === "fi" ? textFi : textEn,
-  });
-
+onMounted(() => {
   pageReady.value = true;
-  window.prerenderReady = true;
 });
 </script>
 

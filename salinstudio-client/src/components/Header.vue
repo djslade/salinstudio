@@ -29,7 +29,7 @@ const { currentRoute } = defineProps<{
     | "NotFound";
 }>();
 
-const prevYOffset = ref<number>(window.pageYOffset);
+const prevYOffset = ref<number>(import.meta.env.SSR ? 0 : window.pageYOffset);
 
 const isHidden = ref<boolean>(false);
 
