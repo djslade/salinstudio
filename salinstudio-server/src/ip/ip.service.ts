@@ -46,22 +46,14 @@ export class IPService {
     }
     const endpoint = `http://ip-api.com/json/${ip}?fields=1294611`;
     const res = await fetch(endpoint);
-    const remainingRequests: number = parseInt(res.headers['X-Rl']);
+    const remainingRequests: number = parseInt(res.headers.get('X-Rl') ?? '0');
     if (remainingRequests === 0) {
-      const expiresInSeconds: number = parseInt(res.headers['X-Ttl']);
+      const expiresInSeconds: number = parseInt(
+        res.headers.get('X-Ttl') ?? '0',
+      );
       await this.createThrottle(expiresInSeconds);
     }
-    const { continent, country, countryCode, city, timezone, mobile, proxy } =
-      await res.json();
-    return {
-      continent,
-      country,
-      countryCode,
-      city,
-      timezone,
-      mobile,
-      proxy,
-      isTester: false,
-    };
+    const json = (await res.json()) as IPData;
+    return { ...json, isTester: false };
   }
 }

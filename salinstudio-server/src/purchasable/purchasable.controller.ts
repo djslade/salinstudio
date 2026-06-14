@@ -19,7 +19,7 @@ import { ArtService } from '../art/art.service';
 import { PurchasableService } from './purchasable.service';
 import { Image } from '../image/entities/image.entity';
 import { updatePurchasableDto } from './dto/update-purchasable.dto';
-import Multer from 'multer';
+import type {} from 'multer';
 import { SETTING_KEYS, SettingsService } from '../settings/settings.service';
 
 @Controller('purchasable')
@@ -45,7 +45,7 @@ export class PurchasableController {
     const art = await this.artService.findArtById(body.artId);
     const images: Image[] = [];
     if (files.length > 0) {
-      for (let file of files) {
+      for (const file of files) {
         images.push(await this.imageService.createImage(file.buffer));
       }
     }
@@ -63,7 +63,9 @@ export class PurchasableController {
 
   @Get('public')
   async getAllPublic() {
-    const storeOpen = await this.settingsService.get<boolean>(SETTING_KEYS.STORE_OPEN);
+    const storeOpen = await this.settingsService.get<boolean>(
+      SETTING_KEYS.STORE_OPEN,
+    );
     if (!storeOpen) return { message: 'OK', purchasables: [] };
     const purchasables = await this.purchasableService.findAllPublic();
     return { message: 'OK', purchasables };
@@ -108,12 +110,12 @@ export class PurchasableController {
     const art = await this.artService.findArtById(body.artId);
     const images: Image[] = [];
     if (files.length > 0) {
-      for (let file of files) {
+      for (const file of files) {
         images.push(await this.imageService.createImage(file.buffer));
       }
     }
     if (body.imageIds.length > 0) {
-      for (let id of body.imageIds) {
+      for (const id of body.imageIds) {
         if (id === art.image.id) continue;
         images.push(await this.imageService.findById(id));
       }
@@ -124,7 +126,7 @@ export class PurchasableController {
       (image) => !body.imageIds.includes(image.id),
     );
     if (imagesToDelete.length > 0) {
-      for (let image of imagesToDelete) {
+      for (const image of imagesToDelete) {
         await this.imageService.delete(image.id);
       }
     }

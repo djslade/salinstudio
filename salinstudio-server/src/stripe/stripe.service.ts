@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import * as geoip from 'geoip-lite';
@@ -19,14 +24,20 @@ export class StripePaymentService {
 
   private get stripe(): InstanceType<typeof Stripe> {
     if (!this._stripe) {
-      const key = this.configService.getOrThrow('STRIPE_SECRET_KEY');
+      const key = this.configService.getOrThrow<string>('STRIPE_SECRET_KEY');
       this._stripe = new Stripe(key);
     }
     return this._stripe;
   }
 
-  async createCheckoutSession(nanoId: string, locale?: string, clientIp?: string): Promise<string> {
-    const allowedCountries = await this.settingsService.get<string[]>(SETTING_KEYS.ALLOWED_COUNTRIES) ?? ['FI'];
+  async createCheckoutSession(
+    nanoId: string,
+    locale?: string,
+    clientIp?: string,
+  ): Promise<string> {
+    const allowedCountries = (await this.settingsService.get<string[]>(
+      SETTING_KEYS.ALLOWED_COUNTRIES,
+    )) ?? ['FI'];
 
     if (clientIp) {
       const geo = geoip.lookup(clientIp);
@@ -36,16 +47,24 @@ export class StripePaymentService {
     }
 
     const purchasable = await this.purchasableService.findByNanoId(nanoId);
-    const frontendUrl = this.configService.get('FRONTEND_URL', 'http://localhost:5173');
+    const frontendUrl = this.configService.get<string>(
+      'FRONTEND_URL',
+      'http://localhost:5173',
+    );
 
-    if (purchasable.quantity < 1) throw new UnprocessableEntityException('This item is out of stock');
+    if (purchasable.quantity < 1)
+      throw new UnprocessableEntityException('This item is out of stock');
 
     const isFi = locale === 'fi';
     const localePrefix = locale ? `/${locale}` : '';
     const title = isFi ? purchasable.titleFi : purchasable.titleEn;
     const rawDescription = isFi ? purchasable.infoFi : purchasable.infoEn;
-    const description = rawDescription?.length > 150 ? rawDescription.slice(0, 150) + '…' : rawDescription;
-    const images = purchasable.images.length > 0 ? [purchasable.images[0].desktopUrl] : [];
+    const description =
+      rawDescription?.length > 150
+        ? rawDescription.slice(0, 150) + '…'
+        : rawDescription;
+    const images =
+      purchasable.images.length > 0 ? [purchasable.images[0].desktopUrl] : [];
 
     const session = await this.stripe.checkout.sessions.create({
       mode: 'payment',
@@ -61,6 +80,7 @@ export class StripePaymentService {
         },
       ],
       shipping_address_collection: {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         allowed_countries: allowedCountries as any,
       },
       metadata: { nanoId },
@@ -68,18 +88,25 @@ export class StripePaymentService {
       cancel_url: `${frontendUrl}${localePrefix}/store/${nanoId}`,
     });
 
-    return session.url!;
+    return session.url;
   }
 
   async handleWebhook(rawBody: Buffer, signature: string): Promise<void> {
-    const webhookSecret = this.configService.getOrThrow('STRIPE_WEBHOOK_SECRET');
+    const webhookSecret = this.configService.getOrThrow<string>(
+      'STRIPE_WEBHOOK_SECRET',
+    );
 
-    let event: any;
-    try {
-      event = this.stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
-    } catch {
-      throw new BadRequestException('Invalid webhook signature');
-    }
+    const event = (() => {
+      try {
+        return this.stripe.webhooks.constructEvent(
+          rawBody,
+          signature,
+          webhookSecret,
+        );
+      } catch {
+        throw new BadRequestException('Invalid webhook signature');
+      }
+    })();
 
     if (event.type !== 'checkout.session.completed') return;
 
@@ -89,11 +116,16 @@ export class StripePaymentService {
 
     const purchasable = await this.purchasableService.findByNanoId(nanoId);
     await this.purchasableService.decrementQuantity(nanoId);
-    const sendToAddress = this.configService.getOrThrow('MAIL_SEND_TO_ADDRESS');
+    const sendToAddress = this.configService.getOrThrow<string>(
+      'MAIL_SEND_TO_ADDRESS',
+    );
 
     const customer = session.customer_details;
-    const shipping = session.shipping_details;
-    const amount = Intl.NumberFormat('fi-FI', { style: 'currency', currency: 'EUR' }).format((session.amount_total ?? 0) / 100);
+    const shipping = session.collected_information?.shipping_details;
+    const amount = Intl.NumberFormat('fi-FI', {
+      style: 'currency',
+      currency: 'EUR',
+    }).format((session.amount_total ?? 0) / 100);
 
     const addressLines = [
       shipping?.address?.line1,
@@ -102,7 +134,9 @@ export class StripePaymentService {
         ? `${shipping.address.postal_code} ${shipping.address.city}`
         : shipping?.address?.city,
       shipping?.address?.country,
-    ].filter(Boolean).join('<br>');
+    ]
+      .filter(Boolean)
+      .join('<br>');
 
     await this.mailerService.sendRawEmail({
       to: sendToAddress,

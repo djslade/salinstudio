@@ -8,6 +8,7 @@ export class Migrations1755551720869 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`ALTER TABLE "art" ADD "slug" character varying`);
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const artworks: { id: string; titleEn: string }[] = await queryRunner.query(
       `SELECT "id", "titleEn" FROM "art"`,
     );

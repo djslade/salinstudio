@@ -85,7 +85,7 @@ export class SitemapService {
       'xmlns:xhtml': 'http://www.w3.org/1999/xhtml',
     });
 
-    for (let route of staticRoutes) {
+    for (const route of staticRoutes) {
       this.newUrlElement(
         root,
         route.changeFreq,
@@ -96,7 +96,7 @@ export class SitemapService {
     }
 
     const allArt = await this.artService.findAll();
-    for (let art of allArt) {
+    for (const art of allArt) {
       this.newUrlElement(
         root,
         'monthly',

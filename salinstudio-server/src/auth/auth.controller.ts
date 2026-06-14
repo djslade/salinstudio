@@ -27,7 +27,7 @@ export class AuthController {
 
   @Get()
   @UseGuards(AuthGuard)
-  async getUser(@Req() req: ExpandedRequest) {
+  getUser(@Req() req: ExpandedRequest) {
     const user = this.authService.getUserFromRequest(req);
 
     return {

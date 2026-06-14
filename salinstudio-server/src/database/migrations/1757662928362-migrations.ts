@@ -21,6 +21,7 @@ export class Migrations1757662928362 implements MigrationInterface {
       `ALTER TABLE "art" ADD CONSTRAINT "FK_33aec14e8e19b670699bd89cc26" FOREIGN KEY ("imageId") REFERENCES "image"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const artworks: {
       id: string;
       fullUrl: string;
@@ -32,7 +33,8 @@ export class Migrations1757662928362 implements MigrationInterface {
       `SELECT "id", "fullUrl", "desktopUrl", "mobileUrl", "thumbUrl", "fingerprintChecksum" FROM "art"`,
     );
 
-    for (let art of artworks) {
+    for (const art of artworks) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const [image]: { id: string }[] = await queryRunner.query(
         `INSERT INTO "image" ("fullUrl", "desktopUrl", "mobileUrl", "thumbUrl", "fingerprintChecksum") VALUES ($1, $2, $3, $4, $5) RETURNING "id"`,
         [
