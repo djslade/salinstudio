@@ -5,10 +5,12 @@ import {
   Post,
   Request,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { VisitorService } from './visitor.service';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { Request as ExpRequest } from 'express';
+import { isbot } from 'isbot';
 
 @Controller('visitor')
 export class VisitorController {
@@ -29,7 +31,12 @@ export class VisitorController {
   }
 
   @Post()
+  @HttpCode(200)
   async createVisitor(@Request() req: ExpRequest) {
+    const ua = req.headers['user-agent'] ?? '';
+    if (isbot(ua)) {
+      return { message: 'OK', visitor: null };
+    }
     const forwarded = req.headers['x-forwarded-for'] as string | undefined;
     const ip = forwarded ? forwarded.split(',')[0].trim() : req.ip;
     const visitor = await this.visitorService.createVisitor(ip);

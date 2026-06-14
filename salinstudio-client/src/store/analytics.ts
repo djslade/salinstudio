@@ -35,9 +35,10 @@ export const useAnalyticsStore = defineStore("analytics", {
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_ENDPOINT}/visitor`
       );
-      const id = res.data.visitor.id;
-      localStorage.setItem("salinstudio-analytics", id);
-      this.visitorId = id;
+      const visitor = res.data.visitor;
+      if (!visitor) return;
+      localStorage.setItem("salinstudio-analytics", visitor.id);
+      this.visitorId = visitor.id;
     },
     async init() {
       if (this.isDisabled || this.visitorId !== "") return;
