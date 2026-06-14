@@ -79,7 +79,6 @@ const onPageLoad = async (data?: ArtWithSlugs) => {
 
   galleryItems.value = art.collections ? [art, ...art.collections] : [art];
   pageReady.value = true;
-  window.prerenderReady = true;
 };
 
 onMounted(async () => await onPageLoad(data.value));

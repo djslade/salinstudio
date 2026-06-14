@@ -87,7 +87,6 @@ const onPageLoad = async (art?: Art[]) => {
   });
 
   pageReady.value = true;
-  window.prerenderReady = true;
 };
 
 onMounted(async () => {

@@ -52,7 +52,6 @@ const onPageLoad = async (storeItems?: StoreItem[]) => {
   });
 
   pageReady.value = true;
-  window.prerenderReady = true;
 };
 
 onMounted(async () => {
