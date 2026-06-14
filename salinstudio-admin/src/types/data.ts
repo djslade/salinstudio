@@ -17,6 +17,7 @@ export type Image = {
 
 export type Art = {
   id: string;
+  slug: string;
   titleEn: string;
   titleFi: string;
   descriptionEn: string;
