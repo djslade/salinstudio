@@ -1,38 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { REPOSITORY_NAMES } from '../config/constants';
-import { LookupThrottle } from './entities/lookup-throttle.entity';
-import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import * as geoip from 'geoip-lite';
 import { IPData } from './types/ipData';
 
 @Injectable()
 export class IPService {
-  constructor(
-    @Inject(REPOSITORY_NAMES.LOOKUP_THROTTLE)
-    private lookupThrottleRepository: Repository<LookupThrottle>,
-  ) {}
-
-  async checkForThrottle() {
-    return await this.lookupThrottleRepository.findOne({
-      where: { expiresAt: MoreThan(new Date()) },
-    });
-  }
-
-  async createThrottle(expiresInSeconds: number) {
-    const expiresAt = new Date(new Date().getTime() + expiresInSeconds * 1000);
-    const throttle = this.lookupThrottleRepository.create();
-    throttle.expiresAt = expiresAt;
-    return await this.lookupThrottleRepository.save(throttle);
-  }
-
-  async deleteExpiredThrottles() {
-    await this.lookupThrottleRepository.delete({
-      expiresAt: LessThanOrEqual(new Date()),
-    });
-  }
-
-  async lookupIp(ip: string): Promise<IPData | null> {
-    if ((await this.checkForThrottle()) !== null) return null;
-    if (ip === '::1') {
+  lookupIp(ip: string): IPData | null {
+    if (ip === '::1' || ip === '127.0.0.1') {
       return {
         continent: '',
         country: '',
@@ -44,16 +17,17 @@ export class IPService {
         isTester: true,
       };
     }
-    const endpoint = `http://ip-api.com/json/${ip}?fields=1294611`;
-    const res = await fetch(endpoint);
-    const remainingRequests: number = parseInt(res.headers.get('X-Rl') ?? '0');
-    if (remainingRequests === 0) {
-      const expiresInSeconds: number = parseInt(
-        res.headers.get('X-Ttl') ?? '0',
-      );
-      await this.createThrottle(expiresInSeconds);
-    }
-    const json = (await res.json()) as IPData;
-    return { ...json, isTester: false };
+    const geo = geoip.lookup(ip);
+    if (!geo) return null;
+    return {
+      continent: '',
+      country: geo.country,
+      countryCode: geo.country,
+      city: geo.city,
+      timezone: geo.timezone,
+      mobile: false,
+      proxy: false,
+      isTester: false,
+    };
   }
 }

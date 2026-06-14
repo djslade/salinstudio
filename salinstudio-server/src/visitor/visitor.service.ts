@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { REPOSITORY_NAMES } from '../config/constants';
 import { Repository } from 'typeorm';
 import { Visitor } from './entities/visitor.entity';
@@ -13,18 +13,16 @@ export class VisitorService {
   ) {}
 
   async createVisitor(ip: string): Promise<Visitor> {
-    const ipData = await this.ipService.lookupIp(ip);
-    if (!ipData)
-      throw new BadRequestException('could not get location data for visitor');
+    const ipData = this.ipService.lookupIp(ip);
     const visitor = this.visitorRepository.create();
-    visitor.country = ipData.country;
-    visitor.countryCode = ipData.countryCode;
-    visitor.continent = ipData.continent;
-    visitor.city = ipData.city;
-    visitor.timezone = ipData.timezone;
-    visitor.isUsingProxy = ipData.proxy;
-    visitor.isMobileUser = ipData.mobile;
-    visitor.isTester = ipData.isTester;
+    visitor.country = ipData?.country ?? '';
+    visitor.countryCode = ipData?.countryCode ?? '';
+    visitor.continent = ipData?.continent ?? '';
+    visitor.city = ipData?.city ?? '';
+    visitor.timezone = ipData?.timezone ?? '';
+    visitor.isUsingProxy = ipData?.proxy ?? false;
+    visitor.isMobileUser = ipData?.mobile ?? false;
+    visitor.isTester = ipData?.isTester ?? false;
     return await this.visitorRepository.save(visitor);
   }
 
