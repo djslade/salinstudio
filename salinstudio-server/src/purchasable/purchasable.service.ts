@@ -159,7 +159,9 @@ export class PurchasableService {
   }
 
   async decrementQuantity(nanoId: string): Promise<void> {
-    const purchasable = await this.purchasableRepository.findOne({ where: { nanoId } });
+    const purchasable = await this.purchasableRepository.findOne({
+      where: { nanoId },
+    });
     if (!purchasable || purchasable.quantity <= 0) return;
     purchasable.quantity = purchasable.quantity - 1;
     await this.purchasableRepository.save(purchasable);
@@ -169,7 +171,7 @@ export class PurchasableService {
     const toDelete = await this.findById(id);
     await this.purchasableRepository.delete(id);
     if (toDelete.images.length > 0) {
-      for (let image of toDelete.images) {
+      for (const image of toDelete.images) {
         if (image.id === toDelete.art.image.id) continue;
         await this.imageService.delete(image.id);
       }

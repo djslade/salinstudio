@@ -91,11 +91,11 @@ export class AuthService {
 
   async validateAccessToken(token: string): Promise<User> {
     try {
-      const payload = await this.jwtService.verifyAsync(token);
+      const payload = await this.jwtService.verifyAsync<{ sub: string }>(token);
       const user = await this.userService.findById(payload.sub);
       if (!user) throw new Error();
       return user;
-    } catch (err) {
+    } catch {
       throw new UnauthorizedException('Access token is invalid');
     }
   }
@@ -119,7 +119,7 @@ export class AuthService {
     return refreshToken.user;
   }
 
-  async revokeRefreshToken(tokenId) {
+  async revokeRefreshToken(tokenId: string) {
     await this.refreshTokenRepository.delete({ id: tokenId });
   }
 

@@ -13,7 +13,11 @@ export class StripeController {
     @Body() body: CreateCheckoutSessionDto,
     @Req() req: RawBodyRequest<Request>,
   ) {
-    const url = await this.stripePaymentService.createCheckoutSession(body.nanoId, body.locale, req.ip);
+    const url = await this.stripePaymentService.createCheckoutSession(
+      body.nanoId,
+      body.locale,
+      req.ip,
+    );
     return { url };
   }
 

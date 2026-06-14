@@ -31,7 +31,10 @@ export class SettingsService implements OnApplicationBootstrap {
     for (const [key, value] of Object.entries(DEFAULTS)) {
       const existing = await this.settingRepository.findOne({ where: { key } });
       if (!existing) {
-        await this.settingRepository.save({ key, value: JSON.stringify(value) });
+        await this.settingRepository.save({
+          key,
+          value: JSON.stringify(value),
+        });
       }
     }
   }
@@ -48,7 +51,8 @@ export class SettingsService implements OnApplicationBootstrap {
 
   async setStoreOpen(value: boolean): Promise<void> {
     if (value) {
-      const [{ count }] = await this.dataSource.query(
+      // TODO: Add a method from purchasableService that checks this.
+      const [{ count }]: [{ count: string }] = await this.dataSource.query(
         `SELECT COUNT(*) as count FROM purchasable WHERE "isPublic" = true`,
       );
       if (parseInt(count) === 0) {

@@ -121,7 +121,7 @@ export class ArtService {
     art.descriptionEn = body.descriptionEn;
     art.descriptionFi = body.descriptionFi;
     const collections: Collection[] = [];
-    for (let id of body.collections) {
+    for (const id of body.collections) {
       const collection = await this.collectionService.getCollectionById(id);
       collections.push(collection);
     }
@@ -132,7 +132,7 @@ export class ArtService {
   async delete(id: string): Promise<void> {
     const artToDelete = await this.findArtById(id);
     const allArt = await this.findAll();
-    for (let art of allArt) {
+    for (const art of allArt) {
       if (art.totalIndex > artToDelete.totalIndex) {
         art.totalIndex--;
       }

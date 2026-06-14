@@ -244,7 +244,7 @@ export class ImageService {
     try {
       const processedImages = await this.processImage(file);
       const fileNames = await this.getFileNames();
-      const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
+      const domain = this.configService.getOrThrow<string>('AWS_CF_DOMAIN');
 
       await this.uploadService.upload(fileNames.fullUrl, processedImages.full);
       await this.uploadService.upload(
@@ -292,14 +292,14 @@ export class ImageService {
       image.mobileUrl,
       image.thumbUrl,
     ];
-    for (let url of urls) await this.uploadService.delete(url);
+    for (const url of urls) await this.uploadService.delete(url);
     await this.imageRepository.delete({ id: image.id });
   }
 
   async setAspectRatio(id: string) {
     const image = await this.imageRepository.findOne({ where: { id } });
     if (!image) return;
-    const domain = this.configService.getOrThrow('AWS_CF_DOMAIN');
+    const domain = this.configService.getOrThrow<string>('AWS_CF_DOMAIN');
     const key = image.fullUrl.replace(`${domain}/`, '');
     const file = await this.uploadService.get(key);
     if (!file) return;
@@ -317,6 +317,7 @@ export class ImageService {
       typeof e === 'object' &&
       e !== null &&
       'message' in e &&
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       typeof (e as any).message === 'string'
     );
   }

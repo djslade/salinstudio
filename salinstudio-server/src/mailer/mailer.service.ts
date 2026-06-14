@@ -28,7 +28,7 @@ export class MailerService {
   }
 
   async sendRawEmail(params: { to: string; subject: string; html: string }) {
-    const mailKey = this.configService.getOrThrow('MAIL_KEY');
+    const mailKey = this.configService.getOrThrow<string>('MAIL_KEY');
     const resend = new Resend(mailKey);
     const { error } = await resend.emails.send({
       from: 'Leonard <noreply@contact.miiasalin.com>',
@@ -43,8 +43,10 @@ export class MailerService {
   }
 
   async sendEmail(mail: Mail) {
-    const mailKey = this.configService.getOrThrow('MAIL_KEY');
-    const sendToAddress = this.configService.getOrThrow('MAIL_SEND_TO_ADDRESS');
+    const mailKey = this.configService.getOrThrow<string>('MAIL_KEY');
+    const sendToAddress = this.configService.getOrThrow<string>(
+      'MAIL_SEND_TO_ADDRESS',
+    );
     const resend = new Resend(mailKey);
     const subject =
       mail.topic === 'contact'

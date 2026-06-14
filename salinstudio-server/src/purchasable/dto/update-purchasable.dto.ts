@@ -82,12 +82,12 @@ export class updatePurchasableDto {
   @Transform(({ value }) => {
     if (typeof value === 'string') {
       try {
-        return JSON.parse(value);
+        return JSON.parse(value) as unknown;
       } catch {
         return [];
       }
     }
-    return value;
+    return value as unknown;
   })
   @IsDefined()
   @IsArray()

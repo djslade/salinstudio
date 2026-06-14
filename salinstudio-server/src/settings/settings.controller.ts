@@ -18,8 +18,12 @@ export class SettingsController {
 
   @Get('public')
   async getPublic(@Req() req: Request) {
-    const storeOpen = await this.settingsService.get<boolean>(SETTING_KEYS.STORE_OPEN);
-    const allowedCountries = await this.settingsService.get<string[]>(SETTING_KEYS.ALLOWED_COUNTRIES);
+    const storeOpen = await this.settingsService.get<boolean>(
+      SETTING_KEYS.STORE_OPEN,
+    );
+    const allowedCountries = await this.settingsService.get<string[]>(
+      SETTING_KEYS.ALLOWED_COUNTRIES,
+    );
     const ip = req.ip;
     const geo = geoip.lookup(ip);
     const userCountry = geo?.country ?? null;
