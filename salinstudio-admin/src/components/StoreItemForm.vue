@@ -2,6 +2,7 @@
 import { Button } from "primevue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
 import FormControl from "./FormControl.vue";
+import SectionLabel from "./SectionLabel.vue";
 import { createStoreItemResolver, updateStoreItemResolver } from "../utils/resolvers";
 import type { Art } from "../types/data";
 import { useQuery } from "@tanstack/vue-query";
@@ -25,12 +26,13 @@ const { data, isFetching } = useQuery({
 <template>
   <Form
     v-slot="$form"
-    class="flex flex-col gap-5 h-full justify-between flex-1"
+    class="flex flex-col gap-8"
     :initialValues="formValues"
     :resolver="update ? updateStoreItemResolver : createStoreItemResolver"
     @submit="handleSubmit"
   >
-    <div class="gap-5 flex flex-col">
+    <section class="flex flex-col gap-4">
+      <SectionLabel label="Artwork" />
       <FormControl
         name="artId"
         type="art select"
@@ -39,12 +41,16 @@ const { data, isFetching } = useQuery({
         :loading="isFetching"
         fluid
       />
-      <div class="flex w-full gap-3">
-        <FormControl name="height" type="measurements" label="Height" fluid />
-        <FormControl name="width" type="measurements" label="Width" fluid />
-      </div>
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <SectionLabel label="Titles" />
       <FormControl name="titleEn" type="text" label="Title (English)" fluid />
       <FormControl name="titleFi" type="text" label="Title (Finnish)" fluid />
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <SectionLabel label="Descriptions" />
       <FormControl
         name="infoEn"
         type="textarea"
@@ -57,52 +63,34 @@ const { data, isFetching } = useQuery({
         label="Product info (Finnish)"
         fluid
       />
-      <FormControl
-        name="techniqueEn"
-        type="text"
-        label="Technique (English)"
-        fluid
-      />
-      <FormControl
-        name="techniqueFi"
-        type="text"
-        label="Technique (Finnish)"
-        fluid
-      />
-      <div class="flex w-full justify-center gap-3">
-        <FormControl
-          name="isPublic"
-          type="toggle"
-          toggleOnLabel="Public"
-          toggleOffLabel="Private"
-        />
-        <FormControl
-          name="isFramed"
-          type="toggle"
-          toggleOnLabel="Framed"
-          toggleOffLabel="Not framed"
-        />
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <SectionLabel label="Technique" />
+      <FormControl name="techniqueEn" type="text" label="Technique (English)" fluid />
+      <FormControl name="techniqueFi" type="text" label="Technique (Finnish)" fluid />
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <SectionLabel label="Dimensions" />
+      <div class="flex gap-3">
+        <FormControl name="height" type="measurements" label="Height" fluid />
+        <FormControl name="width" type="measurements" label="Width" fluid />
       </div>
-      <div class="flex w-full justify-center gap-3">
-        <FormControl
-          name="isOriginal"
-          type="toggle"
-          toggleOnLabel="Original"
-          toggleOffLabel="Not original"
-        />
-        <FormControl
-          name="isFeatured"
-          type="toggle"
-          toggleOnLabel="Featured"
-          toggleOffLabel="Not featured"
-        />
-      </div>
-      <FormControl name="quantity" type="number" label="Quantity" fluid />
-      <div class="flex w-full gap-3">
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <SectionLabel label="Inventory" />
+      <div class="flex gap-3">
+        <FormControl name="quantity" type="number" label="Quantity" fluid />
         <FormControl name="year" type="number" label="Year" fluid />
-        <FormControl name="maxPrice" type="price" label="Price" fluid />
       </div>
-      <div v-if="update" class="flex w-full gap-3">
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <SectionLabel label="Pricing" />
+      <FormControl name="maxPrice" type="price" label="Price" fluid />
+      <div v-if="update" class="flex flex-col gap-4">
         <FormControl
           name="isOnSale"
           type="toggle"
@@ -117,9 +105,38 @@ const { data, isFetching } = useQuery({
           fluid
         />
       </div>
-    </div>
-    <div class="flex w-full gap-3">
-      <Button fluid label="Submit" type="submit" :disabled="!$form.valid" />
-    </div>
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <SectionLabel label="Flags" />
+      <div class="grid grid-cols-2 gap-3">
+        <FormControl
+          name="isPublic"
+          type="toggle"
+          toggleOnLabel="Public"
+          toggleOffLabel="Private"
+        />
+        <FormControl
+          name="isOriginal"
+          type="toggle"
+          toggleOnLabel="Original"
+          toggleOffLabel="Not original"
+        />
+        <FormControl
+          name="isFramed"
+          type="toggle"
+          toggleOnLabel="Framed"
+          toggleOffLabel="Not framed"
+        />
+        <FormControl
+          name="isFeatured"
+          type="toggle"
+          toggleOnLabel="Featured"
+          toggleOffLabel="Not featured"
+        />
+      </div>
+    </section>
+
+    <Button fluid label="Submit" type="submit" :disabled="!$form.valid" />
   </Form>
 </template>
