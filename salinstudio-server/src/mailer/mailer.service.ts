@@ -27,6 +27,21 @@ export class MailerService {
     return await this.mailRepository.save(mail);
   }
 
+  async sendRawEmail(params: { to: string; subject: string; html: string }) {
+    const mailKey = this.configService.getOrThrow('MAIL_KEY');
+    const resend = new Resend(mailKey);
+    const { error } = await resend.emails.send({
+      from: 'Leonard <noreply@contact.miiasalin.com>',
+      to: [params.to],
+      subject: params.subject,
+      html: params.html,
+    });
+    if (error) {
+      console.log(error);
+      throw new InternalServerErrorException('could not send email');
+    }
+  }
+
   async sendEmail(mail: Mail) {
     const mailKey = this.configService.getOrThrow('MAIL_KEY');
     const sendToAddress = this.configService.getOrThrow('MAIL_SEND_TO_ADDRESS');

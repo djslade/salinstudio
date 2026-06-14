@@ -11,6 +11,8 @@ import { SitemapModule } from './sitemap/sitemap.module';
 import { CollectionModule } from './collection/collection.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { PurchasableModule } from './purchasable/purchasable.module';
+import { StripePaymentModule } from './stripe/stripe.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { PurchasableModule } from './purchasable/purchasable.module';
     MailerModule,
     CacheModule.register(),
     PurchasableModule,
+    StripePaymentModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

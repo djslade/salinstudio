@@ -8,5 +8,6 @@ import { mailProviders } from './mailer.providers';
   imports: [DatabaseModule],
   providers: [...mailProviders, MailerService],
   controllers: [MailerController],
+  exports: [MailerService],
 })
 export class MailerModule {}

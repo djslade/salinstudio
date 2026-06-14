@@ -10,6 +10,10 @@ const items = ref([
         label: "Dashboard",
         route: "/",
       },
+      {
+        label: "Settings",
+        route: "/settings",
+      },
     ],
   },
   {
@@ -87,7 +91,7 @@ const items = ref([
 <template>
   <Menu
     :model="items"
-    class="flex flex-col h-screen max-w-40 gap-6 shrink-0 py-6"
+    class="flex flex-col h-screen max-w-40 gap-6 shrink-0 py-6 overflow-y-auto sticky top-0"
   >
     <template #start>
       <div class="w-full flex p-3 h-20">

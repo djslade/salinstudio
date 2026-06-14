@@ -110,6 +110,7 @@ const { data, isFetching } = useQuery({
           toggleOffLabel="Not on sale"
         />
         <FormControl
+          v-if="$form.isOnSale?.value"
           name="currentPrice"
           type="price"
           label="Sale price"

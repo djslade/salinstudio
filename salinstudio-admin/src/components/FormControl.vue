@@ -8,7 +8,7 @@ import {
   Select,
   Textarea,
   MultiSelect,
-  ToggleButton,
+  ToggleSwitch,
 } from "primevue";
 import { FormField } from "@primevue/forms";
 import type { Collection } from "../types/data";
@@ -116,11 +116,10 @@ const categories = [
       />
       <label>{{ label }}</label>
     </FloatLabel>
-    <ToggleButton
-      v-if="type === 'toggle'"
-      :onLabel="toggleOnLabel || 'On'"
-      :offLabel="toggleOffLabel || 'Off'"
-    />
+    <div v-if="type === 'toggle'" class="flex items-center gap-2">
+      <ToggleSwitch />
+      <span class="text-sm">{{ toggleOnLabel }}</span>
+    </div>
     <Message
       v-if="$field?.invalid"
       severity="error"

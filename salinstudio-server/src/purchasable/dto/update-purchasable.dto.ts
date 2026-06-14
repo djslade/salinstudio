@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -59,31 +59,36 @@ export class updatePurchasableDto {
   @IsNumber()
   currentPrice: number;
 
-  @Type(() => Boolean)
-  @IsNotEmpty()
+  @Transform(({ value }) => value === true || value === 'true')
   @IsBoolean()
   isPublic: boolean;
 
-  @Type(() => Boolean)
-  @IsNotEmpty()
+  @Transform(({ value }) => value === true || value === 'true')
   @IsBoolean()
   isOriginal: boolean;
 
-  @Type(() => Boolean)
-  @IsNotEmpty()
+  @Transform(({ value }) => value === true || value === 'true')
   @IsBoolean()
   isFramed: boolean;
 
-  @Type(() => Boolean)
-  @IsNotEmpty()
+  @Transform(({ value }) => value === true || value === 'true')
   @IsBoolean()
   isFeatured: boolean;
 
-  @Type(() => Boolean)
-  @IsNotEmpty()
+  @Transform(({ value }) => value === true || value === 'true')
   @IsBoolean()
   isOnSale: boolean;
 
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return [];
+      }
+    }
+    return value;
+  })
   @IsDefined()
   @IsArray()
   imageIds: string[];

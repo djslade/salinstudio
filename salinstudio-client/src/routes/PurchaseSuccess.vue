@@ -1,260 +1,110 @@
 <script setup lang="ts">
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
-import { useLanguageStore } from "../store/language";
-import { onMounted, ref } from "vue";
 import Loader from "../components/Loader.vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
-import PanelParagraph from "../components/PanelParagraph.vue";
-import { useImageStore } from "../store/images";
-import { useRoute } from "vue-router";
-import { useMetadata } from "../hooks/useMetadata";
 import PanelHeading from "../components/PanelHeading.vue";
+import PanelParagraph from "../components/PanelParagraph.vue";
+import { useLanguageStore } from "../store/language";
+import { useMetadata } from "../hooks/useMetadata";
+import { useQuery } from "@tanstack/vue-query";
+import axios, { AxiosError } from "axios";
+import { useRoute, useRouter } from "vue-router";
+import { onMounted, ref, watch } from "vue";
+import type { StoreItem } from "../types/storeItem";
 
 const route = useRoute();
+const router = useRouter();
 const language = useLanguageStore();
-const images = useImageStore();
-
 const { setMetadata } = useMetadata();
 
-const pageReady = ref<boolean>(false);
+const pageReady = ref(false);
 
-onMounted(async () => {
+const { data } = useQuery({
+  queryKey: [`storeItem.success.${route.params.id}`],
+  queryFn: async () => {
+    const res = await axios.get(
+      `${import.meta.env.VITE_SERVER_ENDPOINT}/purchasable/nano/${route.params.id}`,
+    );
+    return res.data.purchasable as StoreItem;
+  },
+  retry: (failureCount, err: AxiosError) => {
+    if (err.status === 404) {
+      router.replace({ name: "Store" });
+      return false;
+    }
+    return failureCount <= 3;
+  },
+});
+
+const onPageLoad = (item?: StoreItem) => {
+  if (!item) return;
   setMetadata({
-    description:
-      route.params.locale === "fi"
-        ? "Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo, mutta jokainen vastoinkäyminen on vain vahvistanut päättäväisyyttäni ja intohimoani taiteeseen."
-        : "I’m a hardworking artist from Finland with limitless imagination and drive. I’ve come a long way for this path, but my hardships have just made my determination stronger.",
-    imageUrl: "/desktop/1755546690870.jpg",
+    title: language.isEn() ? "Thank you - Miia Salin" : "Kiitos - Miia Salin",
   });
-
-  await images.preloadAndSet("/desktop/1755546690870.jpg");
-
   pageReady.value = true;
   window.prerenderReady = true;
-});
+};
+
+onMounted(() => onPageLoad(data.value));
+watch(data, (item) => onPageLoad(item));
 </script>
 
 <template>
-  <div class="">
+  <div class="page">
     <Header
       position="sticky"
-      :heading="language.isEn() ? 'About' : 'Tietoa'"
-      current-route="About"
+      :heading="language.isEn() ? 'Thank you' : 'Kiitos'"
+      current-route="Store"
     />
     <main>
       <OpacityTransition mode="default">
-        <div class="about-outer-container">
-          <section
-            v-if="pageReady"
-            :class="{ 'about-panel': true, 'is-visible': pageReady }"
-          >
+        <section v-if="pageReady" class="success-panel">
+          <div class="success-inner">
             <PanelHeading
-              :text="language.isEn() ? 'Who I am' : 'Kuka olen'"
+              :text="language.isEn() ? 'Order Confirmed' : 'Tilaus Vahvistettu'"
               textAlign="center"
             />
-            <div class="panel-inner-container">
-              <div class="about-img-container">
-                <img
-                  src="/desktop/1755546690870.jpg"
-                  alt="Miia Salin"
-                  class="about-img"
-                />
-              </div>
-              <div class="about-text-container">
-                <div v-if="language.isFi()" class="about-text">
-                  <PanelParagraph>
-                    Olen suomalainen taiteilija, jonka mielikuvitus ja
-                    luomisvimma tuntuvat ehtymättömiltä. Matkani tähän asti ei
-                    ole ollut helppo, mutta jokainen vastoinkäyminen on vain
-                    vahvistanut päättäväisyyttäni ja intohimoani taiteeseen.
-                  </PanelParagraph>
-                  <PanelParagraph>
-                    Työskentelen mielelläni lyijykynällä, hiilellä ja
-                    öljyväreillä. Teen toisinaan myös digitaalista taidetta, ja
-                    minua kiehtovat erityisesti animaatio sekä 3D-taide. Opin
-                    nopeasti, kuuntelen tarkasti ja ammennan inspiraatiota
-                    surrealismista, symbolismista, tosielämän kokemuksista ja
-                    tarinoista. Pyrin aina tavoittamaan tunteen ja aidon
-                    elämyksen riippumatta siitä, mitä tai ketä kuvitan.
-                  </PanelParagraph>
-                  <PanelParagraph>
-                    Kansainvälisyys on minulle tärkeää, ja haluan löytää uusia
-                    kokemuksia ja mahdollisuuksia myös Suomen rajojen
-                    ulkopuolelta. Olen herkkä huomaamaan erilaisia
-                    elämäntilanteita, ja haluan, että minuun on helppo ottaa
-                    yhteyttä ja tilata taidetta. Seuraa minua
-                    <a
-                      href="https://www.instagram.com/salinmiia/"
-                      target="_blank"
-                      class="about-link"
-                      >Instagramissa</a
-                    >, jos haluat pysyä ajan tasalla uusista töistäni.
-                  </PanelParagraph>
-                </div>
-                <div v-else class="about-text">
-                  <PanelParagraph>
-                    I’m a hardworking artist from Finland with limitless
-                    imagination and drive. I’ve come a long way for this path,
-                    but my hardships have just made my determination stronger.
-                  </PanelParagraph>
-                  <PanelParagraph>
-                    I enjoy drawing with pencil, coal and using oil paints. I
-                    also make some digital art at times, and have great interest
-                    in animation and 3D art. I’m a great listener and learn
-                    fast. I enjoy surrealism, symbolism, real life experiences
-                    and stories. I want to capture the feeling and raw emotion
-                    in whatever or whoever I make art of.
-                  </PanelParagraph>
-                  <PanelParagraph>
-                    Being international is very important to me, and I’m hoping
-                    to gain new experiences and opportunities outside of Finland
-                    too. I’m very sensitive to different situations that people
-                    might be in, and I will make it as easy as possible to
-                    contact me and request artworks. Follow me on
-                    <a
-                      href="https://www.instagram.com/salinmiia/"
-                      target="_blank"
-                      class="about-link"
-                      >Instagram</a
-                    >
-                    to stay up to date with my work.
-                  </PanelParagraph>
-                </div>
+
+            <div v-if="data" class="success-item">
+              <img
+                :src="data.images[0]?.thumbUrl || data.art.image.thumbUrl"
+                :alt="language.isEn() ? data.titleEn : data.titleFi"
+                class="success-item-img"
+              />
+              <div class="success-item-info">
+                <p class="success-item-title">
+                  {{ language.isEn() ? data.titleEn : data.titleFi }}
+                </p>
+                <p class="success-item-price">
+                  {{ Intl.NumberFormat("fi-FI", { style: "currency", currency: "eur" }).format(data.currentPrice) }}
+                </p>
               </div>
             </div>
-          </section>
-          <section
-            v-if="pageReady"
-            :class="{
-              'about-panel': true,
-              'cv-panel': true,
-              'is-visible': pageReady,
-            }"
-          >
-            <PanelHeading
-              :text="language.isEn() ? 'CV' : 'CV'"
-              textAlign="center"
-            />
-            <div class="panel-inner-container cv-container">
-              <div class="about-text-container">
-                <div v-if="language.isFi()" class="cv-text">
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Ryhmänäyttelyt</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2023</span>
-                        Kouvolan Kohoa Synergiakeskus
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Kahvila
-                        Papulaari
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Yksityisnäyttelyt</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Bar Café
-                        Columbia
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Tilaustyöt</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span>
-                        Muotokuvapiirros pariskunnasta
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span>
-                        Muotokuvapiirros lemmikistä
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Muotokuva
-                        öljyvärimaalaus äidistä
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Muut osallistumiset</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span> Akryylimaalaus
-                        KooKoon logosta yrittäjän tilaan.
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Olen ottanut
-                        osaa MHAW mielipolun 2025 yhteishyvän projektiin
-                        kahdella digitaalisella teoksella. Teoksia käytettiin
-                        Kouvolan Ratamon lääkärikeskuksen metsäpolulla
-                        potilaiden, sekä muiden hyväksi.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div v-else class="cv-text">
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Group Exhibitions</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2023</span>
-                        Kouvola Kohoa Synergy Center
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Café Papulaari
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Solo Exhibitions</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Bar Café
-                        Columbia
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Commissioned Works</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span>
-                        Portrait drawing of a couple
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span>
-                        Pet portrait drawing
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Oil portrait
-                        painting of a mother
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Other Participations</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span> Acrylic
-                        painting of the KooKoo logo for a business space.
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Participated
-                        in the MHAW Mielipolku 2025 community project with two
-                        digital artworks. The works were displayed along the
-                        forest path at Kouvola Ratamo Medical Center, created
-                        for the benefit of patients and visitors alike
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+            <div class="success-text">
+              <PanelParagraph v-if="language.isEn()" textAlign="center">
+                Your payment was successful. A confirmation has been sent to your email.
+              </PanelParagraph>
+              <PanelParagraph v-if="language.isEn()" textAlign="center">
+                Miia will be in touch soon regarding your order and shipping details.
+              </PanelParagraph>
+              <PanelParagraph v-if="language.isFi()" textAlign="center">
+                Maksusi on vastaanotettu. Vahvistus on lähetetty sähköpostiisi.
+              </PanelParagraph>
+              <PanelParagraph v-if="language.isFi()" textAlign="center">
+                Miia ottaa sinuun pian yhteyttä tilauksen ja toimituksen yksityiskohdista.
+              </PanelParagraph>
             </div>
-          </section>
-        </div>
+
+            <button
+              class="store-btn"
+              @click="$router.push({ name: 'Store', params: { locale: $route.params.locale } })"
+            >
+              {{ language.isEn() ? "Back to store" : "Takaisin kauppaan" }}
+            </button>
+          </div>
+        </section>
       </OpacityTransition>
       <Loader v-if="!pageReady" />
     </main>
@@ -263,242 +113,93 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.about-outer-container {
-  display: flex;
-  flex-direction: column;
-}
-.content-inner {
-  width: 1200px;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: center;
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
-.content-heading {
-  color: #d0bfad;
-  text-transform: uppercase;
-  font-size: 4rem;
-  text-align: center;
-  font-weight: 400;
-}
-
-.content-keyword {
-  color: #b4936f;
-}
-
-.cta-btn {
-  background-color: transparent;
-  border: transparent;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.cta-btn-icon-container {
-  border: 1px solid #b4936f;
-  border-radius: 50%;
-  padding: 0.8rem;
-}
-
-.cta-btn-icon {
-  color: #d0bfad;
-  font-size: 1.5rem;
-}
-
-.cta-btn-text {
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: #d0bfad;
-}
-
-.about-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4rem;
-  padding: 2rem 1rem;
+.success-panel {
+  width: 100%;
   min-height: calc(100vh - 10rem);
   min-height: calc(100dvh - 10rem);
-  opacity: 0;
-  transition-property: opacity;
-  transition-duration: 600ms;
-  transition-timing-function: ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1rem;
 }
 
-.cv-panel {
-  gap: 6.4rem;
-  padding: 8rem 1rem;
+.success-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  max-width: 640px;
+  width: 100%;
 }
 
-.about-panel.is-visible {
-  opacity: 1;
-}
-
-.panel-inner-container {
+.success-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 4rem;
-}
-
-.panel-inner-container.cv-container {
-  max-width: 1112px;
-  width: 100%;
-  align-items: start;
-}
-
-.about-img-container {
-  display: flex;
-  justify-content: center;
-}
-
-.about-img {
-  max-width: 24rem;
-  width: 100%;
-  aspect-ratio: 2/3;
-  object-fit: cover;
+  gap: 1.5rem;
+  border: 1px solid rgba(208, 191, 173, 0.15);
   border-radius: 8px;
-  filter: sepia(20%);
-}
-
-.cv-img {
-  max-width: 24rem;
+  padding: 1rem;
   width: 100%;
+}
+
+.success-item-img {
+  width: 5rem;
+  height: 5rem;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 4px;
   filter: sepia(20%);
+  flex-shrink: 0;
 }
 
-.about-text {
+.success-item-info {
   display: flex;
   flex-direction: column;
-  max-width: 600px;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
-.cv-text {
-  display: flex;
-  flex-direction: column;
-  max-width: 800px;
-  gap: 3.2rem;
-}
-
-.about-p {
+.success-item-title {
   color: #d0bfad;
-  line-height: 1.7;
-  letter-spacing: 2px;
   font-family: sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
-.about-link {
-  font-weight: bold;
-  color: #d0bfad;
-  transition-duration: 0.3s;
-  transition-property: all;
-}
-
-.about-link:hover {
+.success-item-price {
   color: #b4936f;
-}
-
-.cv-category-heading {
-  color: #b4936f;
+  font-family: sans-serif;
+  font-size: 1rem;
   font-weight: 700;
+  letter-spacing: 1px;
 }
 
-.cv-category-container {
+.success-text {
   display: flex;
   flex-direction: column;
-  gap: 0.64rem;
+  gap: 0.75rem;
+  width: 100%;
 }
 
-.cv-category-entry-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.32rem;
-}
-
-.cv-category-entry {
+.store-btn {
+  background-color: transparent;
+  border: 1px solid #b4936f;
   color: #d0bfad;
-  line-height: 1.7;
-  letter-spacing: 2px;
-  font-family: sans-serif;
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: 700;
   font-size: 0.8rem;
 }
 
-.entry-year-span {
-  all: inherit;
-  display: inline;
-  font-weight: 700;
-}
-
-@media (min-width: 600px) {
-  .cv-panel {
-    gap: 7.2rem;
-  }
-
-  .cv-text {
-    gap: 3.6rem;
-  }
-
-  .cv-category-entry {
-    font-size: 0.9rem;
-  }
-
-  .cv-category-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.72rem;
-  }
-
-  .cv-category-entry-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.36rem;
-  }
-}
-
-@media (min-width: 900px) {
-  .cv-panel {
-    gap: 8rem;
-  }
-
-  .panel-inner-container,
-  .panel-inner-container.cv-container {
-    flex-direction: row;
-  }
-
-  .panel-inner-container.cv-container {
-    flex-direction: column;
-  }
-
-  .cv-category-entry {
-    font-size: 1rem;
-  }
-
-  .cv-text {
-    gap: 4rem;
-  }
-
-  .cv-category-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .cv-category-entry-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-}
-
-@media (min-width: 1200px) {
-  .panel-inner-container {
-    gap: 8rem;
-  }
+.store-btn:hover {
+  background-color: #b4936f;
 }
 </style>

@@ -69,13 +69,11 @@ const language = useLanguageStore();
         class="gallery-img-btn"
         v-for="(art, idx) in data"
         :key="`art-${idx}`"
-        :style="{
-          aspectRatio: art.images[0].aspectRatio || 1,
-        }"
+        :class="{ 'is-sold-out': art.quantity < 1 }"
         @click="
           () =>
             $router.push({
-              name: 'Closeup',
+              name: 'StoreItem',
               params: {
                 ...$route.params,
                 id: art.nanoId,
@@ -83,17 +81,24 @@ const language = useLanguageStore();
             })
         "
       >
-        <Image
-          class="gallery-img"
-          :src="art.images[0].thumbUrl || ''"
-          :alt="language.isEn() ? art.art.titleEn : art.art.titleFi"
-        />
-        <div class="store-item-info-container">
-          <div class="store-item-title-container">
-            <h1 class="store-item-title">{{ art.titleEn }}</h1>
-          </div>
-          <div class="store-item-price-container">
-            <h2 class="store-item-current-price">{{Intl.NumberFormat("fi-FI", {style: "currency", currency: "eur"}).format(art.currentPrice)  }}</h2>
+        <div class="store-item-img-container">
+          <Image
+            class="gallery-img"
+            :src="art.images[0]?.thumbUrl || art.art.image.thumbUrl || ''"
+            :alt="language.isEn() ? art.titleEn : art.titleFi"
+          />
+          <span v-if="art.quantity < 1" class="store-item-badge badge-sold-out">
+            {{ language.isEn() ? 'Sold Out' : 'Loppunut' }}
+          </span>
+          <span v-else-if="art.isOnSale" class="store-item-badge badge-on-sale">
+            {{ language.isEn() ? 'Sale' : 'Ale' }}
+          </span>
+        </div>
+        <div class="store-item-info">
+          <p class="store-item-title">{{ language.isEn() ? art.titleEn : art.titleFi }}</p>
+          <div class="store-item-price-row">
+            <span class="store-item-price">{{ Intl.NumberFormat("fi-FI", { style: "currency", currency: "eur" }).format(art.currentPrice) }}</span>
+            <span v-if="art.isOnSale && art.maxPrice > art.currentPrice" class="store-item-price-original">{{ Intl.NumberFormat("fi-FI", { style: "currency", currency: "eur" }).format(art.maxPrice) }}</span>
           </div>
         </div>
       </button>
@@ -168,6 +173,7 @@ const language = useLanguageStore();
   padding: 1rem;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
+  align-items: start;
   gap: 1rem;
   min-height: calc(100vh - 10rem);
   min-height: calc(100dvh - 10rem);
@@ -175,70 +181,106 @@ const language = useLanguageStore();
   max-width: 1200px;
 }
 
-.gallery-column {
-  display: flex;
-  gap: 0.25rem;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-}
-
-.gallery-img {
-  object-fit: cover;
-  width: 100%;
-  aspect-ratio: 1;
-}
-
 .gallery-img-btn {
-  border: none;
+  border: 1px solid transparent;
   margin: 0;
   padding: 0;
   width: 100%;
-  aspect-ratio: 2/1;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: start;
   background-color: #1e1914;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-  border-radius: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  text-align: left;
 }
 
-.store-item-info-container {
-  padding: 1rem 0.5rem;
+.gallery-img-btn:hover {
+  border-color: #b4936f;
+}
+
+.gallery-img-btn.is-sold-out {
+  opacity: 0.6;
+}
+
+.store-item-img-container {
+  position: relative;
   width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(20%);
+  transition: filter 0.3s;
+  display: block;
+}
+
+.gallery-img-btn:hover .gallery-img {
+  filter: sepia(10%);
+}
+
+.store-item-badge {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-family: sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.badge-on-sale {
+  background-color: #b4936f;
+  color: #261f19;
+}
+
+.badge-sold-out {
+  background-color: rgba(38, 31, 25, 0.85);
+  color: #6b5a4a;
+  border: 1px solid #6b5a4a;
+}
+
+.store-item-info {
+  padding: 0.75rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-.store-item-title-container {
-  height: 3.5rem;
-  width: 100%;
+  gap: 0.4rem;
 }
 
 .store-item-title {
-  font-size: 0.8rem;
-  color:#d0bfad;
-  text-align: center;
+  font-size: 0.75rem;
+  color: #d0bfad;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 5px;
+  letter-spacing: 3px;
   line-height: 1.5;
 }
 
-.store-item-price-container {
-  width: 100%;
+.store-item-price-row {
   display: flex;
-  flex-direction: column;
-  align-items: end;
+  align-items: baseline;
+  gap: 0.6rem;
 }
 
-.store-item-current-price {
-  font-size: 1rem;
+.store-item-price {
+  font-size: 0.95rem;
   font-weight: 700;
-  color:#d0bfad;
+  color: #d0bfad;
+  letter-spacing: 1px;
+}
+
+.store-item-price-original {
+  font-size: 0.8rem;
+  color: #6b5a4a;
+  text-decoration: line-through;
+  font-family: sans-serif;
 }
 
 @media (min-width: 600px) {

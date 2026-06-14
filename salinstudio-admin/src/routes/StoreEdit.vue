@@ -25,7 +25,6 @@ const {
   setStepSubmitting,
   setStepEnd,
   saveFormValues,
-  resetFormValues,
 } = useFormUtils({
   artId: "",
   titleEn: "",
@@ -104,6 +103,9 @@ const handleCreateStoreItem = async (evt: FormSubmitEvent) => {
   if (!data.value) return;
   try {
     setStepSubmitting();
+    const effectiveCurrentPrice = evt.values.isOnSale
+      ? (evt.values.currentPrice ?? evt.values.maxPrice)
+      : evt.values.maxPrice;
     saveFormValues({
       artId: evt.values.artId,
       titleEn: evt.values.titleEn,
@@ -117,7 +119,7 @@ const handleCreateStoreItem = async (evt: FormSubmitEvent) => {
       quantity: evt.values.quantity,
       year: evt.values.year,
       maxPrice: evt.values.maxPrice,
-      currentPrice: evt.values.currentPrice,
+      currentPrice: effectiveCurrentPrice,
       isPublic: evt.values.isPublic,
       isOriginal: evt.values.isOriginal,
       isFramed: evt.values.isFramed,
@@ -128,10 +130,11 @@ const handleCreateStoreItem = async (evt: FormSubmitEvent) => {
     images.value.forEach((image) => {
       formData.append("files", image.file);
     });
-    console.log(Object.entries(evt.values))
     for (let [key, value] of Object.entries(evt.values)) {
+      if (key === "currentPrice") continue;
       formData.append(key, value);
     }
+    formData.append("currentPrice", effectiveCurrentPrice);
     const imageIds = currentImages.value?.map((i) => i.id) ?? [];
     console.log(imageIds)
     formData.append("imageIds", JSON.stringify(imageIds));
@@ -148,14 +151,8 @@ const handleCreateStoreItem = async (evt: FormSubmitEvent) => {
   }
 };
 
-const handlePublishMore = () => {
-  images.value = [];
-  resetFormValues();
-  setStepStart();
-};
-
 const handleGoToList = () => {
-  router.push({ name: "List" });
+  router.push({ name: "StoreList" });
 };
 
 const handleImageDelete = (id: string) => {
@@ -198,7 +195,7 @@ watch(data, (data) => onPageLoad(data));
 <template>
   <div class="flex flex-col w-full gap-6" v-if="isStart()">
     <div class="px-3">
-      <h1 class="text-2xl font-bold">Create New Store Item</h1>
+      <h1 class="text-2xl font-bold">Update Store Item</h1>
     </div>
     <div class="w-full flex flex-col gap-6">
       <Card class="w-full flex h-fit">
@@ -347,15 +344,9 @@ watch(data, (data) => onPageLoad(data));
                 padding: 1rem;
               "
             />
-            <span class="text-lg">You've published a new piece!</span>
+            <span class="text-lg">Store item updated!</span>
           </div>
           <div class="flex w-full justify-center gap-3">
-            <Button
-              label="Publish more"
-              fluid
-              severity="secondary"
-              @click="handlePublishMore"
-            />
             <Button
               label="Go to list"
               fluid

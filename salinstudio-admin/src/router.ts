@@ -18,6 +18,7 @@ import StoreNew from "./routes/StoreNew.vue";
 import StoreList from "./routes/StoreList.vue";
 import StoreItem from "./routes/StoreItem.vue";
 import StoreEdit from "./routes/StoreEdit.vue";
+import Settings from "./routes/Settings.vue";
 
 const routes = [
   {
@@ -102,6 +103,12 @@ const routes = [
     path: "/collections/list",
     name: "CollectionsList",
     component: CollectionsList,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
     meta: { requiresAuth: true },
   },
   {

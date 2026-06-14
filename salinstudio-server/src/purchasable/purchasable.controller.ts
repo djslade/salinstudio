@@ -20,6 +20,7 @@ import { PurchasableService } from './purchasable.service';
 import { Image } from '../image/entities/image.entity';
 import { updatePurchasableDto } from './dto/update-purchasable.dto';
 import Multer from 'multer';
+import { SETTING_KEYS, SettingsService } from '../settings/settings.service';
 
 @Controller('purchasable')
 export class PurchasableController {
@@ -27,6 +28,7 @@ export class PurchasableController {
     private purchasableService: PurchasableService,
     private artService: ArtService,
     private imageService: ImageService,
+    private settingsService: SettingsService,
   ) {}
   @Post()
   @UseGuards(AuthGuard)
@@ -61,6 +63,8 @@ export class PurchasableController {
 
   @Get('public')
   async getAllPublic() {
+    const storeOpen = await this.settingsService.get<boolean>(SETTING_KEYS.STORE_OPEN);
+    if (!storeOpen) return { message: 'OK', purchasables: [] };
     const purchasables = await this.purchasableService.findAllPublic();
     return { message: 'OK', purchasables };
   }
@@ -81,7 +85,7 @@ export class PurchasableController {
   @Put(':id')
   @UseGuards(AuthGuard)
   @UseInterceptors(
-    MultiFileInterceptor('file', 5, {
+    MultiFileInterceptor('files', 5, {
       limits: { fileSize: 50 * 1024 * 1024 },
     }),
   )
