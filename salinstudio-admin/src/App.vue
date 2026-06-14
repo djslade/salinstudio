@@ -15,10 +15,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="!loaded" class="w-full h-screen flex">
+  <div v-if="!loaded" class="w-full h-screen flex bg-surface-50 dark:bg-surface-950">
     <LoadingPanel />
   </div>
-  <div v-else class="w-full flex h-screen">
+  <div v-else class="w-full flex h-screen bg-surface-50 dark:bg-surface-950">
     <Sidebar v-if="$route.meta.requiresAuth" />
     <main class="w-full flex overflow-x-scroll p-10">
       <RouterView />
