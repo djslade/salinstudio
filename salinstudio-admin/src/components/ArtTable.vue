@@ -22,37 +22,16 @@ import {
 import type { QueryObserverResult, RefetchOptions } from "@tanstack/vue-query";
 
 const categories = [
-  {
-    name: "Drawings",
-    value: "drawings",
-  },
-  {
-    name: "Paintings",
-    value: "paintings",
-  },
-  {
-    name: "Pastels",
-    value: "pastels",
-  },
-  {
-    name: "Digital",
-    value: "digital",
-  },
-  {
-    name: "Mixed Media",
-    value: "mixed media",
-  },
+  { name: "Drawings", value: "drawings" },
+  { name: "Paintings", value: "paintings" },
+  { name: "Pastels", value: "pastels" },
+  { name: "Digital", value: "digital" },
+  { name: "Mixed Media", value: "mixed media" },
 ];
 
 const descriptionStatus = [
-  {
-    name: "Filled",
-    value: false,
-  },
-  {
-    name: "Empty",
-    value: true,
-  },
+  { name: "Filled", value: false },
+  { name: "Empty", value: true },
 ];
 
 const { data, refetch } = defineProps<{
@@ -77,13 +56,11 @@ const toast = useToast();
 
 const addCustomFields = () => {
   if (!data) return;
-  return data.map((a) => {
-    return {
-      ...a,
-      emptyDescription:
-        a.descriptionFi.trim() === "" || a.descriptionEn.trim() === "",
-    };
-  });
+  return data.map((a) => ({
+    ...a,
+    emptyDescription:
+      a.descriptionFi.trim() === "" || a.descriptionEn.trim() === "",
+  }));
 };
 
 const handleCarouselChange = async (_: Event, art: Art) => {
@@ -133,51 +110,49 @@ const handleCarouselChange = async (_: Event, art: Art) => {
     dataKey="id"
     :loading="isFetching"
     :globalFilterFields="['titleEn', 'titleFi']"
+    stripedRows
+    size="small"
   >
     <template #header>
-      <div class="flex flex-col w-full">
-        <div class="flex pt-6 gap-6 justify-between">
-          <IconField>
-            <InputIcon>
-              <i class="pi pi-search" />
-            </InputIcon>
-            <InputText
-              v-model="filters['global'].value"
-              placeholder="Search by title"
-            />
-          </IconField>
-          <Select
-            v-model="filters['category'].value"
-            :options="categories"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="Filter category"
-            class="max-w-xs w-full"
-            showClear
-          >
-          </Select>
-          <Select
-            v-model="filters['emptyDescription'].value"
-            :options="descriptionStatus"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="Description status"
-            class="max-w-xs w-full"
-            showClear
-          >
-          </Select>
-        </div>
+      <div class="flex flex-wrap gap-3 py-3">
+        <IconField class="flex-1 min-w-48">
+          <InputIcon>
+            <i class="pi pi-search" />
+          </InputIcon>
+          <InputText
+            v-model="filters['global'].value"
+            placeholder="Search by title"
+            class="w-full"
+          />
+        </IconField>
+        <Select
+          v-model="filters['category'].value"
+          :options="categories"
+          optionLabel="name"
+          optionValue="value"
+          placeholder="All categories"
+          class="min-w-44"
+          showClear
+        />
+        <Select
+          v-model="filters['emptyDescription'].value"
+          :options="descriptionStatus"
+          optionLabel="name"
+          optionValue="value"
+          placeholder="Description"
+          class="min-w-40"
+          showClear
+        />
       </div>
     </template>
+
     <template #empty>
-      <div class="w-full flex justify-center p-6">No results found.</div>
+      <div class="flex justify-center py-10 text-surface-400 text-sm">
+        No results found.
+      </div>
     </template>
-    <Column
-      field="thumbUrl"
-      header="Image"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
+
+    <Column header="Image" style="width: 6rem">
       <template #body="{ data }">
         <Image alt="Image" preview>
           <template #previewicon>
@@ -187,7 +162,8 @@ const handleCarouselChange = async (_: Event, art: Art) => {
             <img
               :src="data.image.thumbUrl"
               :alt="data.titleEn"
-              class="w-30 aspect-video object-cover"
+              class="h-14 w-20 object-cover rounded"
+              loading="lazy"
             />
           </template>
           <template #original="slotProps">
@@ -202,36 +178,29 @@ const handleCarouselChange = async (_: Event, art: Art) => {
         </Image>
       </template>
     </Column>
-    <Column
-      field="category"
-      header="Category"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
+
+    <Column header="Category" style="width: 8rem">
       <template #body="{ data }">
-        <div class="capitalize">
-          {{ data.category }}
+        <span class="capitalize text-sm">{{ data.category }}</span>
+      </template>
+    </Column>
+
+    <Column header="Titles">
+      <template #body="{ data }">
+        <div class="flex flex-col gap-0.5">
+          <div class="flex items-baseline gap-2">
+            <span class="text-[10px] uppercase tracking-widest text-surface-400 shrink-0">en</span>
+            <span class="text-sm">{{ data.titleEn }}</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-[10px] uppercase tracking-widest text-surface-400 shrink-0">fi</span>
+            <span class="text-sm text-surface-500">{{ data.titleFi }}</span>
+          </div>
         </div>
       </template>
     </Column>
-    <Column
-      field="titleEn"
-      header="Titles"
-      :showFilterMatchModes="false"
-      :showFilterMenu="false"
-    >
-      <template #body="{ data }">
-        <div class="flex gap-4 items-center">
-          <span class="uppercase tracking-wide text-xs">en</span>
-          {{ data.titleEn }}
-        </div>
-        <div class="flex gap-4 items-center">
-          <span class="uppercase tracking-wide text-xs">fi</span>
-          {{ data.titleFi }}
-        </div>
-      </template>
-    </Column>
-    <Column field="onHomeCarousel" header="Carousel">
+
+    <Column header="Carousel" style="width: 6rem">
       <template #body="{ data }">
         <ToggleSwitch
           v-model="data.onHomeCarousel"
@@ -239,21 +208,22 @@ const handleCarouselChange = async (_: Event, art: Art) => {
         />
       </template>
     </Column>
-    <Column field="actions" header="Actions">
+
+    <Column header="Actions" style="width: 6rem">
       <template #body="{ data }">
-        <div class="flex gap-6">
+        <div class="flex gap-1">
           <Button
             icon="pi pi-pencil"
+            text
             rounded
             severity="secondary"
-            raised
             @click="() => handleEdit(data.id)"
           />
           <Button
             icon="pi pi-trash"
+            text
             rounded
             severity="danger"
-            raised
             @click="() => handleDelete(data.id)"
           />
         </div>

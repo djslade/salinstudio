@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/vue-query";
 import Dialog from "primevue/dialog";
 import { ref } from "vue";
 import { type Purchasable } from "../types/data";
-import { getRequest } from "../utils/requests";
+import { getRequest, refreshIfUnauthorized } from "../utils/requests";
 import PurchasablesTable from "../components/PurchasablesTable.vue";
 import EditPurchasableDialog from "../components/EditPurchasableDialog.vue";
 import DeletePurchasableDialog from "../components/DeletePurchasableDialog.vue";
@@ -18,10 +18,10 @@ const focusedArt = ref<Purchasable | null>(null);
 const { data, isFetching, refetch } = useQuery({
   queryKey: ["allPurchasables"],
   queryFn: async () => {
-    const res = await getRequest<{ purchasables: Purchasable[] }>(
-      "/purchasable",
-      { accessToken: true },
+    const res = await refreshIfUnauthorized<{ purchasables: Purchasable[] }>(
+      () => getRequest("/purchasable", { accessToken: true }),
     );
+    if (!res) throw new Error("Failed to load store items");
     return res.purchasables;
   },
 });
