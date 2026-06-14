@@ -126,7 +126,7 @@ export const getErrorResponseOrThrow = (err: unknown) => {
 export const refreshIfUnauthorized = async <T>(
   requestFn: () => Promise<T>,
   refresh: boolean = true,
-) => {
+): Promise<T> => {
   try {
     const res = await requestFn();
     return res;
