@@ -116,9 +116,11 @@ const categories = [
       />
       <label>{{ label }}</label>
     </FloatLabel>
-    <div v-if="type === 'toggle'" class="flex items-center gap-2">
+    <div v-if="type === 'toggle'" class="flex items-center gap-3">
       <ToggleSwitch />
-      <span class="text-sm">{{ toggleOnLabel }}</span>
+      <span class="text-sm text-surface-700 dark:text-surface-200">
+        {{ $field?.value ? toggleOnLabel : toggleOffLabel }}
+      </span>
     </div>
     <Message
       v-if="$field?.invalid"

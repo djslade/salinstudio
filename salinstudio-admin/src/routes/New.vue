@@ -10,6 +10,7 @@ import {
 import { ref } from "vue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
 import FormControl from "../components/FormControl.vue";
+import SectionLabel from "../components/SectionLabel.vue";
 import { useRouter } from "vue-router";
 import LoadingPanel from "../components/LoadingPanel.vue";
 import { useFormUtils } from "../hooks/useFormUtils";
@@ -108,8 +109,9 @@ const handleGoToList = () => {
     <div class="w-full flex flex-col gap-6">
       <Card class="w-full flex h-fit">
         <template #content>
-          <div class="flex gap-12 w-full justify-center">
-            <div class="w-full flex-1">
+          <div class="flex gap-8 w-full">
+            <div class="w-80 shrink-0 flex flex-col gap-3">
+              <SectionLabel label="Image" />
               <FileUpload
                 :multiple="false"
                 accept="image/*"
@@ -185,18 +187,22 @@ const handleGoToList = () => {
             </div>
             <Form
               v-slot="$form"
-              class="flex flex-col gap-5 h-full justify-between flex-1"
+              class="flex flex-col gap-8 flex-1"
               :initialValues="formValues"
               :resolver="createUpdateArtResolver"
               @submit="handleCreateArt"
             >
-              <div class="gap-5 flex flex-col">
+              <section class="flex flex-col gap-4">
+                <SectionLabel label="Metadata" />
                 <FormControl
                   name="category"
                   type="select"
                   label="Category"
                   fluid
                 />
+              </section>
+              <section class="flex flex-col gap-4">
+                <SectionLabel label="Titles" />
                 <div class="flex w-full gap-3">
                   <FormControl
                     name="titleEn"
@@ -211,6 +217,9 @@ const handleGoToList = () => {
                     fluid
                   />
                 </div>
+              </section>
+              <section class="flex flex-col gap-4">
+                <SectionLabel label="Descriptions" />
                 <FormControl
                   name="descriptionEn"
                   type="textarea"
@@ -223,15 +232,13 @@ const handleGoToList = () => {
                   label="Description (Finnish)"
                   fluid
                 />
-              </div>
-              <div class="flex w-full gap-3">
-                <Button
-                  fluid
-                  label="Submit"
-                  type="submit"
-                  :disabled="!$form.valid || !src"
-                />
-              </div>
+              </section>
+              <Button
+                fluid
+                label="Submit"
+                type="submit"
+                :disabled="!$form.valid || !src"
+              />
             </Form>
           </div>
         </template>
@@ -244,16 +251,9 @@ const handleGoToList = () => {
       <template #content>
         <div class="flex justify-center items-center flex-col gap-6">
           <div class="flex flex-col gap-3 items-center">
-            <i
-              class="pi pi-check text-emerald-500 w-fit"
-              style="
-                font-size: 2rem;
-                font-weight: 700;
-                border: 2px solid;
-                border-radius: 50%;
-                padding: 1rem;
-              "
-            />
+            <div class="flex items-center justify-center w-16 h-16 rounded-full border-2 border-primary text-primary">
+              <i class="pi pi-check text-2xl" />
+            </div>
             <span class="text-lg">You've published a new piece!</span>
           </div>
           <div class="flex w-full justify-center gap-3">

@@ -12,6 +12,7 @@ import {
   showRequestError,
 } from "../utils/requests";
 import StoreItemForm from "../components/StoreItemForm.vue";
+import SectionLabel from "../components/SectionLabel.vue";
 import { useQuery } from "@tanstack/vue-query";
 import type { Purchasable, Image as ImageType } from "../types/data";
 import type { AxiosError } from "axios";
@@ -200,8 +201,9 @@ watch(data, (data) => onPageLoad(data));
     <div class="w-full flex flex-col gap-6">
       <Card class="w-full flex h-fit">
         <template #content>
-          <div class="flex gap-12 w-full justify-center">
-            <div class="w-full flex-1 flex flex-col gap-6">
+          <div class="flex gap-8 w-full">
+            <div class="w-80 shrink-0 flex flex-col gap-6">
+              <SectionLabel label="Images" />
               <FileUpload
                 :multiple="true"
                 accept="image/*"
@@ -319,6 +321,7 @@ watch(data, (data) => onPageLoad(data));
             </div>
             <StoreItemForm
               v-if="pageReady"
+              class="flex-1"
               :formValues="formValues"
               :handleSubmit="handleCreateStoreItem"
               update
@@ -334,16 +337,9 @@ watch(data, (data) => onPageLoad(data));
       <template #content>
         <div class="flex justify-center items-center flex-col gap-6">
           <div class="flex flex-col gap-3 items-center">
-            <i
-              class="pi pi-check text-emerald-500 w-fit"
-              style="
-                font-size: 2rem;
-                font-weight: 700;
-                border: 2px solid;
-                border-radius: 50%;
-                padding: 1rem;
-              "
-            />
+            <div class="flex items-center justify-center w-16 h-16 rounded-full border-2 border-primary text-primary">
+              <i class="pi pi-check text-2xl" />
+            </div>
             <span class="text-lg">Store item updated!</span>
           </div>
           <div class="flex w-full justify-center gap-3">

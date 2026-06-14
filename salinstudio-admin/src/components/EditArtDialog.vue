@@ -3,6 +3,7 @@ import Card from "primevue/card";
 import Button from "primevue/button";
 import LoadingPanel from "./LoadingPanel.vue";
 import FormControl from "./FormControl.vue";
+import SectionLabel from "./SectionLabel.vue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
 import { useFormUtils } from "../hooks/useFormUtils";
 import type { Art, Collection } from "../types/data";
@@ -94,16 +95,9 @@ const submit = async (evt: FormSubmitEvent) => {
       <template #content>
         <div class="flex justify-center items-center flex-col gap-6">
           <div class="flex flex-col gap-3 items-center">
-            <i
-              class="pi pi-check text-emerald-500 w-fit"
-              style="
-                font-size: 2rem;
-                font-weight: 700;
-                border: 2px solid;
-                border-radius: 50%;
-                padding: 1rem;
-              "
-            />
+            <div class="flex items-center justify-center w-16 h-16 rounded-full border-2 border-primary text-primary">
+              <i class="pi pi-check text-2xl" />
+            </div>
             <span class="text-lg">Update successful</span>
           </div>
           <div class="flex w-full justify-center gap-3">
@@ -125,31 +119,40 @@ const submit = async (evt: FormSubmitEvent) => {
     :resolver="updateArtResolver"
     @submit="submit"
   >
-    <div class="gap-5 flex flex-col py-5">
-      <FormControl name="category" type="select" label="Category" fluid />
-      <FormControl
-        name="collections"
-        type="multiselect"
-        label="Collections"
-        :options="data"
-        fluid
-      />
-      <div class="flex w-full gap-3">
-        <FormControl name="titleEn" type="text" label="Title (English)" fluid />
-        <FormControl name="titleFi" type="text" label="Title (Finnish)" fluid />
-      </div>
-      <FormControl
-        name="descriptionEn"
-        type="textarea"
-        label="Description (English)"
-        fluid
-      />
-      <FormControl
-        name="descriptionFi"
-        type="textarea"
-        label="Description (Finnish)"
-        fluid
-      />
+    <div class="flex flex-col gap-6 py-4">
+      <section class="flex flex-col gap-4">
+        <SectionLabel label="Metadata" />
+        <FormControl name="category" type="select" label="Category" fluid />
+        <FormControl
+          name="collections"
+          type="multiselect"
+          label="Collections"
+          :options="data"
+          fluid
+        />
+      </section>
+      <section class="flex flex-col gap-4">
+        <SectionLabel label="Titles" />
+        <div class="flex w-full gap-3">
+          <FormControl name="titleEn" type="text" label="Title (English)" fluid />
+          <FormControl name="titleFi" type="text" label="Title (Finnish)" fluid />
+        </div>
+      </section>
+      <section class="flex flex-col gap-4">
+        <SectionLabel label="Descriptions" />
+        <FormControl
+          name="descriptionEn"
+          type="textarea"
+          label="Description (English)"
+          fluid
+        />
+        <FormControl
+          name="descriptionFi"
+          type="textarea"
+          label="Description (Finnish)"
+          fluid
+        />
+      </section>
     </div>
     <Button label="Save" type="submit" />
   </Form>
