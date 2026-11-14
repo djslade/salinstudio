@@ -5,6 +5,7 @@ import axios, {
 } from "axios";
 import { getTokens } from "./tokens";
 import { refreshTokens } from "./auth";
+import type { AboutParagraph, CvCategory } from "../types/data";
 
 type RequestOptions = {
   accessToken?: boolean;
@@ -44,6 +45,8 @@ type RequestBody =
       isOnSale?: boolean;
       files?: File[];
       id?: string;
+      paragraphs?: AboutParagraph[];
+      categories?: CvCategory[];
     }
   | null;
 

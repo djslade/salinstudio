@@ -19,6 +19,8 @@ import StoreList from "./routes/StoreList.vue";
 import StoreItem from "./routes/StoreItem.vue";
 import StoreEdit from "./routes/StoreEdit.vue";
 import Settings from "./routes/Settings.vue";
+import ContentAbout from "./routes/ContentAbout.vue";
+import ContentCv from "./routes/ContentCv.vue";
 
 const routes = [
   {
@@ -109,6 +111,18 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: Settings,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/content/about",
+    name: "ContentAbout",
+    component: ContentAbout,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/content/cv",
+    name: "ContentCv",
+    component: ContentCv,
     meta: { requiresAuth: true },
   },
   {

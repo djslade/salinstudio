@@ -2,7 +2,7 @@
 import Header from "../components/Header.vue";
 import Footer from "../components/Footer.vue";
 import { useLanguageStore } from "../store/language";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, onServerPrefetch, ref } from "vue";
 import Loader from "../components/Loader.vue";
 import OpacityTransition from "../components/OpacityTransition.vue";
 import PanelParagraph from "../components/PanelParagraph.vue";
@@ -10,24 +10,89 @@ import { useImageStore } from "../store/images";
 import { useRoute } from "vue-router";
 import { useSeo } from "../hooks/useSeo";
 import PanelHeading from "../components/PanelHeading.vue";
+import { useQuery } from "@tanstack/vue-query";
+import axios from "axios";
+import type { AboutContent, CvContent } from "../types/content";
+import { parseLinks } from "../utils/parseLinks";
+
+const ABOUT_IMAGE = "/desktop/1755546690870.jpg";
 
 const route = useRoute();
 const language = useLanguageStore();
 const images = useImageStore();
 
-const pageReady = ref<boolean>(false);
+const imageReady = ref<boolean>(false);
+
+// During the SSG build the language store is never initialised, so the
+// prerendered /en and /fi pages take their language from the URL.
+const isEn = computed(() =>
+  import.meta.env.SSR ? route.params.locale === "en" : language.isEn(),
+);
+
+const aboutQuery = useQuery({
+  queryKey: ["content", "about"],
+  queryFn: async () => {
+    const res = await axios.get(
+      `${import.meta.env.VITE_SERVER_ENDPOINT}/content/about`,
+    );
+    return res.data.about as AboutContent;
+  },
+});
+
+const cvQuery = useQuery({
+  queryKey: ["content", "cv"],
+  queryFn: async () => {
+    const res = await axios.get(
+      `${import.meta.env.VITE_SERVER_ENDPOINT}/content/cv`,
+    );
+    return res.data.cv as CvContent;
+  },
+});
+
+// Fetch the content at build time so it lands in the static HTML. If the API
+// is unreachable the build still succeeds and the page loads it client-side.
+onServerPrefetch(async () => {
+  await Promise.all([aboutQuery.suspense(), cvQuery.suspense()]);
+});
+
+const about = computed(() => aboutQuery.data.value);
+const cv = computed(() => cvQuery.data.value);
+const contentReady = computed(() => !!about.value && !!cv.value);
+const pageReady = computed(() => imageReady.value && contentReady.value);
+
+const paragraphs = computed(() =>
+  (about.value?.paragraphs ?? [])
+    .map((p) => (isEn.value ? p.en : p.fi))
+    .filter((text) => text.length > 0)
+    .map(parseLinks),
+);
+
+const categories = computed(() =>
+  (cv.value?.categories ?? []).map((c) => ({
+    title: isEn.value ? c.titleEn : c.titleFi,
+    entries: c.entries.map((e) => ({
+      year: e.year,
+      text: isEn.value ? e.textEn : e.textFi,
+    })),
+  })),
+);
+
+const firstParagraphText = computed(() =>
+  paragraphs.value[0]?.map((segment) => segment.text).join(""),
+);
 
 useSeo({
   description: () =>
-    route.params.locale === "fi"
+    firstParagraphText.value ??
+    (route.params.locale === "fi"
       ? "Olen suomalainen taiteilija, jonka mielikuvitus ja luomisvimma tuntuvat ehtymättömiltä. Matkani tähän asti ei ole ollut helppo, mutta jokainen vastoinkäyminen on vain vahvistanut päättäväisyyttäni ja intohimoani taiteeseen."
-      : "I’m a hardworking artist from Finland with limitless imagination and drive. I’ve come a long way for this path, but my hardships have just made my determination stronger.",
-  imageUrl: () => "/desktop/1755546690870.jpg",
+      : "I’m a hardworking artist from Finland with limitless imagination and drive. I’ve come a long way for this path, but my hardships have just made my determination stronger."),
+  imageUrl: () => ABOUT_IMAGE,
 });
 
 onMounted(async () => {
-  await images.preloadAndSet("/desktop/1755546690870.jpg");
-  pageReady.value = true;
+  await images.preloadAndSet(ABOUT_IMAGE);
+  imageReady.value = true;
 });
 </script>
 
@@ -35,214 +100,74 @@ onMounted(async () => {
   <div class="">
     <Header
       position="sticky"
-      :heading="language.isEn() ? 'About' : 'Tietoa'"
+      :heading="isEn ? 'About' : 'Tietoa'"
       current-route="About"
     />
     <main>
       <OpacityTransition mode="default">
-        <div class="about-outer-container">
-          <section
-            v-if="pageReady"
-            :class="{ 'about-panel': true, 'is-visible': pageReady }"
-          >
+        <!-- Rendered as soon as the content exists (including in the
+             prerendered HTML); it fades in once the image has loaded. -->
+        <div v-if="contentReady" class="about-outer-container">
+          <section :class="{ 'about-panel': true, 'is-visible': pageReady }">
             <PanelHeading
-              :text="language.isEn() ? 'Who I am' : 'Kuka olen'"
+              :text="isEn ? 'Who I am' : 'Kuka olen'"
               textAlign="center"
             />
             <div class="panel-inner-container">
               <div class="about-img-container">
-                <img
-                  src="/desktop/1755546690870.jpg"
-                  alt="Miia Salin"
-                  class="about-img"
-                />
+                <img :src="ABOUT_IMAGE" alt="Miia Salin" class="about-img" />
               </div>
               <div class="about-text-container">
-                <div v-if="language.isFi()" class="about-text">
-                  <PanelParagraph>
-                    Olen suomalainen taiteilija, jonka mielikuvitus ja
-                    luomisvimma tuntuvat ehtymättömiltä. Matkani tähän asti ei
-                    ole ollut helppo, mutta jokainen vastoinkäyminen on vain
-                    vahvistanut päättäväisyyttäni ja intohimoani taiteeseen.
-                  </PanelParagraph>
-                  <PanelParagraph>
-                    Työskentelen mielelläni lyijykynällä, hiilellä ja
-                    öljyväreillä. Teen toisinaan myös digitaalista taidetta, ja
-                    minua kiehtovat erityisesti animaatio sekä 3D-taide. Opin
-                    nopeasti, kuuntelen tarkasti ja ammennan inspiraatiota
-                    surrealismista, symbolismista, tosielämän kokemuksista ja
-                    tarinoista. Pyrin aina tavoittamaan tunteen ja aidon
-                    elämyksen riippumatta siitä, mitä tai ketä kuvitan.
-                  </PanelParagraph>
-                  <PanelParagraph>
-                    Kansainvälisyys on minulle tärkeää, ja haluan löytää uusia
-                    kokemuksia ja mahdollisuuksia myös Suomen rajojen
-                    ulkopuolelta. Olen herkkä huomaamaan erilaisia
-                    elämäntilanteita, ja haluan, että minuun on helppo ottaa
-                    yhteyttä ja tilata taidetta. Seuraa minua
-                    <a
-                      href="https://www.instagram.com/salinmiia/"
-                      target="_blank"
-                      class="about-link"
-                      >Instagramissa</a
-                    >, jos haluat pysyä ajan tasalla uusista töistäni.
-                  </PanelParagraph>
-                </div>
-                <div v-else class="about-text">
-                  <PanelParagraph>
-                    I’m a hardworking artist from Finland with limitless
-                    imagination and drive. I’ve come a long way for this path,
-                    but my hardships have just made my determination stronger.
-                  </PanelParagraph>
-                  <PanelParagraph>
-                    I enjoy drawing with pencil, coal and using oil paints. I
-                    also make some digital art at times, and have great interest
-                    in animation and 3D art. I’m a great listener and learn
-                    fast. I enjoy surrealism, symbolism, real life experiences
-                    and stories. I want to capture the feeling and raw emotion
-                    in whatever or whoever I make art of.
-                  </PanelParagraph>
-                  <PanelParagraph>
-                    Being international is very important to me, and I’m hoping
-                    to gain new experiences and opportunities outside of Finland
-                    too. I’m very sensitive to different situations that people
-                    might be in, and I will make it as easy as possible to
-                    contact me and request artworks. Follow me on
-                    <a
-                      href="https://www.instagram.com/salinmiia/"
-                      target="_blank"
-                      class="about-link"
-                      >Instagram</a
+                <div class="about-text">
+                  <PanelParagraph
+                    v-for="(segments, pIndex) in paragraphs"
+                    :key="pIndex"
+                  >
+                    <template
+                      v-for="(segment, sIndex) in segments"
+                      :key="sIndex"
                     >
-                    to stay up to date with my work.
+                      <a
+                        v-if="segment.type === 'link'"
+                        :href="segment.href"
+                        target="_blank"
+                        rel="noopener"
+                        class="about-link"
+                        >{{ segment.text }}</a
+                      >
+                      <template v-else>{{ segment.text }}</template>
+                    </template>
                   </PanelParagraph>
                 </div>
               </div>
             </div>
           </section>
           <section
-            v-if="pageReady"
+            v-if="categories.length > 0"
             :class="{
               'about-panel': true,
               'cv-panel': true,
               'is-visible': pageReady,
             }"
           >
-            <PanelHeading
-              :text="language.isEn() ? 'CV' : 'CV'"
-              textAlign="center"
-            />
+            <PanelHeading text="CV" textAlign="center" />
             <div class="panel-inner-container cv-container">
               <div class="about-text-container">
-                <div v-if="language.isFi()" class="cv-text">
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Ryhmänäyttelyt</h3>
+                <div class="cv-text">
+                  <div
+                    v-for="(category, cIndex) in categories"
+                    :key="cIndex"
+                    class="cv-category-container"
+                  >
+                    <h3 class="cv-category-heading">{{ category.title }}</h3>
                     <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Kahvila
-                        Papulaari
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2023</span>
-                        Kouvolan Kohoa Synergiakeskus
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Yksityisnäyttelyt</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Bar Café
-                        Columbia
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Tilaustyöt</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Muotokuva
-                        öljyvärimaalaus äidistä
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span>
-                        Muotokuvapiirros pariskunnasta
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span>
-                        Muotokuvapiirros lemmikistä
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Muut osallistumiset</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Olen ottanut
-                        osaa MHAW mielipolun 2025 yhteishyvän projektiin
-                        kahdella digitaalisella teoksella. Teoksia käytettiin
-                        Kouvolan Ratamon lääkärikeskuksen metsäpolulla
-                        potilaiden, sekä muiden hyväksi.
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span> Akryylimaalaus
-                        KooKoon logosta yrittäjän tilaan.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div v-else class="cv-text">
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Group Exhibitions</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Café Papulaari
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2023</span>
-                        Kouvola Kohoa Synergy Center
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Solo Exhibitions</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Bar Café
-                        Columbia
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Commissioned Works</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Oil portrait
-                        painting of a mother
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span>
-                        Portrait drawing of a couple
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span>
-                        Pet portrait drawing
-                      </p>
-                    </div>
-                  </div>
-                  <div class="cv-category-container">
-                    <h3 class="cv-category-heading">Other Participations</h3>
-                    <div class="cv-category-entry-container">
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Participated
-                        in the MHAW Mielipolku 2025 community project with two
-                        digital artworks. The works were displayed along the
-                        forest path at Kouvola Ratamo Medical Center, created
-                        for the benefit of patients and visitors alike
-                      </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span> Acrylic
-                        painting of the KooKoo logo for a business space.
+                      <p
+                        v-for="(entry, eIndex) in category.entries"
+                        :key="eIndex"
+                        class="cv-category-entry"
+                      >
+                        <span class="entry-year-span">{{ entry.year }}</span>
+                        {{ entry.text }}
                       </p>
                     </div>
                   </div>
@@ -252,7 +177,7 @@ onMounted(async () => {
           </section>
         </div>
       </OpacityTransition>
-      <Loader v-if="!pageReady" />
+      <Loader v-if="!contentReady" />
     </main>
     <Footer position="static" />
   </div>

@@ -13,6 +13,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { PurchasableModule } from './purchasable/purchasable.module';
 import { StripePaymentModule } from './stripe/stripe.module';
 import { SettingsModule } from './settings/settings.module';
+import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SettingsModule } from './settings/settings.module';
     PurchasableModule,
     StripePaymentModule,
     SettingsModule,
+    ContentModule,
   ],
 })
 export class AppModule {}

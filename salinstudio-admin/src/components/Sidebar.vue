@@ -35,6 +35,13 @@ const sections = [
     ],
   },
   {
+    label: "Content",
+    items: [
+      { label: "About", route: "/content/about", icon: "pi-user" },
+      { label: "CV", route: "/content/cv", icon: "pi-book" },
+    ],
+  },
+  {
     label: "Collections",
     items: [
       { label: "New", route: "/collections/new", icon: "pi-plus-circle" },
