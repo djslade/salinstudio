@@ -29,3 +29,8 @@ export const SIGNUP_SECRET = process.env.SIGNUP_SECRET ?? 'signup-secret';
 export const JWT_SECRET = process.env.JWT_SECRET ?? 'jwt-secret';
 export const ROLE_SECRET = process.env.ROLE_SECRET ?? 'role-secret';
 export const REFRESH_EXPIRES_AT_MS = 60 * 24 * 60 * 60 * 1000;
+
+// Maximum number of images that represent a single artwork.
+export const ART_MAX_IMAGES = 5;
+// Maximum number of store-only images on a store item, on top of the art's images.
+export const PURCHASABLE_MAX_EXTRA_IMAGES = 4;

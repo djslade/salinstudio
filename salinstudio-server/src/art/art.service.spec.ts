@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ArtService } from './art.service';
 import { ImageService } from '../image/image.service';
 import { CollectionService } from '../collection/collection.service';
@@ -9,7 +9,7 @@ import { ArtCategory } from './entities/art.entity';
 describe('ArtService', () => {
   let service: ArtService;
   let artRepository: Record<string, jest.Mock>;
-  let imageService: jest.Mocked<Pick<ImageService, 'delete'>>;
+  let imageService: jest.Mocked<Pick<ImageService, 'delete' | 'assignToArt'>>;
 
   const makeArt = (overrides: Record<string, unknown> = {}) => ({
     id: 'art-1',
@@ -39,7 +39,7 @@ describe('ArtService', () => {
         { provide: REPOSITORY_NAMES.ART, useValue: artRepository },
         {
           provide: ImageService,
-          useValue: { delete: jest.fn() },
+          useValue: { delete: jest.fn(), assignToArt: jest.fn() },
         },
         {
           provide: CollectionService,
@@ -199,6 +199,166 @@ describe('ArtService', () => {
 
       expect(otherCategory.categoryIndex).toBe(2); // unchanged
       expect(otherCategory.totalIndex).toBe(1); // decremented
+    });
+  });
+
+  describe('multiple images', () => {
+    const img = (id: string, galleryIndex: number) => ({ id, galleryIndex });
+
+    it('createArt uses the first image as lead and assigns all images in order', async () => {
+      const images = [img('a', 0), img('b', 0), img('c', 0)];
+      artRepository.create.mockReturnValue({});
+      artRepository.count.mockResolvedValue(0);
+      artRepository.save.mockResolvedValue({ id: 'art-1' });
+      artRepository.findOne.mockResolvedValue(makeArt());
+
+      await service.createArt({
+        titleEn: 'T',
+        titleFi: 'T',
+        descriptionEn: '',
+        descriptionFi: '',
+        category: 'drawings',
+        images: images as never,
+      });
+
+      expect(artRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ image: images[0] }),
+      );
+      expect(imageService.assignToArt).toHaveBeenCalledWith('art-1', [
+        'a',
+        'b',
+        'c',
+      ]);
+    });
+
+    it('createArt rejects more than 5 images', async () => {
+      const images = ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => img(id, 0));
+      await expect(
+        service.createArt({
+          titleEn: 'T',
+          titleFi: 'T',
+          descriptionEn: '',
+          descriptionFi: '',
+          category: 'drawings',
+          images: images as never,
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('addImages rejects going over 5 images', async () => {
+      const existing = ['a', 'b', 'c', 'd'].map((id, i) => img(id, i));
+      artRepository.findOne.mockResolvedValue(
+        makeArt({ image: existing[0], images: existing }),
+      );
+      await expect(
+        service.addImages('art-1', [img('e', 0), img('f', 0)] as never),
+      ).rejects.toThrow(BadRequestException);
+      expect(imageService.assignToArt).not.toHaveBeenCalled();
+    });
+
+    it('addImages appends new images after the existing ones', async () => {
+      const existing = [img('a', 0), img('b', 1)];
+      artRepository.findOne.mockResolvedValue(
+        makeArt({ image: existing[0], images: existing }),
+      );
+      await service.addImages('art-1', [img('c', 0)] as never);
+      expect(imageService.assignToArt).toHaveBeenCalledWith('art-1', [
+        'a',
+        'b',
+        'c',
+      ]);
+    });
+
+    it('reorderImages saves the new order and makes the first image the lead', async () => {
+      const existing = [img('a', 0), img('b', 1), img('c', 2)];
+      artRepository.findOne.mockResolvedValue(
+        makeArt({ image: existing[0], images: existing }),
+      );
+
+      await service.reorderImages('art-1', ['c', 'a', 'b']);
+
+      expect(imageService.assignToArt).toHaveBeenCalledWith('art-1', [
+        'c',
+        'a',
+        'b',
+      ]);
+      expect(artRepository.update).toHaveBeenCalledWith(
+        { id: 'art-1' },
+        { image: existing[2] },
+      );
+    });
+
+    it('reorderImages rejects an order that is not a permutation of the current images', async () => {
+      const existing = [img('a', 0), img('b', 1)];
+      artRepository.findOne.mockResolvedValue(
+        makeArt({ image: existing[0], images: existing }),
+      );
+      for (const ids of [['a'], ['a', 'a'], ['a', 'x'], ['a', 'b', 'x']]) {
+        await expect(service.reorderImages('art-1', ids)).rejects.toThrow(
+          BadRequestException,
+        );
+      }
+      expect(imageService.assignToArt).not.toHaveBeenCalled();
+    });
+
+    it('removeImage promotes the next image before deleting the lead', async () => {
+      const existing = [img('a', 0), img('b', 1), img('c', 2)];
+      artRepository.findOne.mockResolvedValue(
+        makeArt({ image: existing[0], images: existing }),
+      );
+      const calls: string[] = [];
+      artRepository.update.mockImplementation(() => calls.push('update'));
+      (imageService.delete as jest.Mock).mockImplementation(() =>
+        calls.push('delete'),
+      );
+
+      await service.removeImage('art-1', 'a');
+
+      expect(artRepository.update).toHaveBeenCalledWith(
+        { id: 'art-1' },
+        { image: existing[1] },
+      );
+      expect(imageService.assignToArt).toHaveBeenCalledWith('art-1', [
+        'b',
+        'c',
+      ]);
+      expect(imageService.delete).toHaveBeenCalledWith('a');
+      expect(calls).toEqual(['update', 'delete']);
+    });
+
+    it('removeImage refuses to remove the last image', async () => {
+      const existing = [img('a', 0)];
+      artRepository.findOne.mockResolvedValue(
+        makeArt({ image: existing[0], images: existing }),
+      );
+      await expect(service.removeImage('art-1', 'a')).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(imageService.delete).not.toHaveBeenCalled();
+    });
+
+    it('removeImage rejects images from another artwork', async () => {
+      const existing = [img('a', 0), img('b', 1)];
+      artRepository.findOne.mockResolvedValue(
+        makeArt({ image: existing[0], images: existing }),
+      );
+      await expect(service.removeImage('art-1', 'zzz')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('delete removes every image of the artwork', async () => {
+      const existing = [img('a', 0), img('b', 1), img('c', 2)];
+      const toDelete = makeArt({ image: existing[0], images: existing });
+      artRepository.findOne.mockResolvedValue(toDelete);
+      artRepository.find.mockResolvedValue([toDelete]);
+
+      await service.delete('art-1');
+
+      expect(imageService.delete).toHaveBeenCalledTimes(3);
+      for (const id of ['a', 'b', 'c']) {
+        expect(imageService.delete).toHaveBeenCalledWith(id);
+      }
     });
   });
 });

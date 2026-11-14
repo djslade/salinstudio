@@ -13,6 +13,7 @@ export type Image = {
   mobileUrl: string;
   thumbUrl: string;
   aspectRatio: number;
+  galleryIndex?: number;
 };
 
 export type Art = {
@@ -27,7 +28,10 @@ export type Art = {
   createdAt: string;
   updatedAt: string;
   onHomeCarousel: boolean;
+  // Lead image (same as images[0]).
   image: Image;
+  // All images in order; only included when fetching a single artwork.
+  images?: Image[];
   collections?: Collection[];
 };
 

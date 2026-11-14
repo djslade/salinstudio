@@ -283,6 +283,28 @@ export class ImageService {
     }
   }
 
+  // Attaches the given images to an artwork, in order (index 0 = lead image).
+  async assignToArt(artId: string, imageIds: string[]): Promise<void> {
+    for (let i = 0; i < imageIds.length; i++) {
+      await this.imageRepository.update(
+        { id: imageIds[i] },
+        { galleryArtId: artId, galleryIndex: i },
+      );
+    }
+  }
+
+  // Deletes several images, ignoring individual failures so one bad S3 call
+  // does not leave the rest behind. Used to clean up after failed requests.
+  async deleteMany(ids: string[]): Promise<void> {
+    for (const id of ids) {
+      try {
+        await this.delete(id);
+      } catch (err) {
+        console.error(`Could not delete image ${id}`, err);
+      }
+    }
+  }
+
   async delete(id: string) {
     const image = await this.imageRepository.findOne({ where: { id } });
     if (!image) return;

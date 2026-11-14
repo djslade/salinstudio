@@ -21,6 +21,7 @@ import { Image } from '../image/entities/image.entity';
 import { updatePurchasableDto } from './dto/update-purchasable.dto';
 import type {} from 'multer';
 import { SETTING_KEYS, SettingsService } from '../settings/settings.service';
+import { PURCHASABLE_MAX_EXTRA_IMAGES } from '../config/constants';
 
 @Controller('purchasable')
 export class PurchasableController {
@@ -33,7 +34,7 @@ export class PurchasableController {
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(
-    MultiFileInterceptor('files', 4, {
+    MultiFileInterceptor('files', PURCHASABLE_MAX_EXTRA_IMAGES, {
       limits: { fileSize: 50 * 1024 * 1024 },
     }),
   )
@@ -43,13 +44,14 @@ export class PurchasableController {
   ) {
     await this.purchasableService.artIdIsAssigned(body.artId);
     const art = await this.artService.findArtById(body.artId);
-    const images: Image[] = [];
+    // A new store item automatically includes all of the artwork's images,
+    // followed by any store-only images uploaded with it.
+    const images: Image[] = [...this.artService.getOrderedImages(art)];
     if (files.length > 0) {
       for (const file of files) {
         images.push(await this.imageService.createImage(file.buffer));
       }
     }
-    images.push(art.image);
     const purchasable = await this.purchasableService.create(body, art, images);
     return { message: 'Created', purchasable };
   }
@@ -87,7 +89,7 @@ export class PurchasableController {
   @Put(':id')
   @UseGuards(AuthGuard)
   @UseInterceptors(
-    MultiFileInterceptor('files', 5, {
+    MultiFileInterceptor('files', PURCHASABLE_MAX_EXTRA_IMAGES, {
       limits: { fileSize: 50 * 1024 * 1024 },
     }),
   )
@@ -96,39 +98,43 @@ export class PurchasableController {
     @Param('id') id: string,
     @Body() body: updatePurchasableDto,
   ) {
-    if (body.imageIds.length + files.length > 5) {
-      throw new BadRequestException('Too many images');
-    }
     const purchasable = await this.purchasableService.findById(id);
-    let purchasableImages = purchasable.images;
     if (body.artId !== purchasable.art.id) {
       await this.purchasableService.artIdIsAssigned(body.artId);
-      purchasableImages = purchasableImages.filter(
-        (image) => image.id !== purchasable.art.image.id,
-      );
     }
     const art = await this.artService.findArtById(body.artId);
-    const images: Image[] = [];
+    const artImages = this.artService.getOrderedImages(art);
+    const artImageIds = new Set(artImages.map((image) => image.id));
+
+    // Store-only images: images on this store item that don't belong to any
+    // artwork. Art images are managed from the artwork and are never deleted
+    // here; if the item moves to another artwork, the old art's images are
+    // simply unlinked.
+    const storeImages = purchasable.images.filter(
+      (image) => !this.purchasableService.isArtImage(image, purchasable),
+    );
+    const keptStoreImages = storeImages.filter((image) =>
+      body.imageIds.includes(image.id),
+    );
+    if (keptStoreImages.length + files.length > PURCHASABLE_MAX_EXTRA_IMAGES) {
+      throw new BadRequestException('Too many images');
+    }
+
+    const images: Image[] = [...artImages];
+    for (const image of keptStoreImages) {
+      if (!artImageIds.has(image.id)) images.push(image);
+    }
     if (files.length > 0) {
       for (const file of files) {
         images.push(await this.imageService.createImage(file.buffer));
       }
     }
-    if (body.imageIds.length > 0) {
-      for (const id of body.imageIds) {
-        if (id === art.image.id) continue;
-        images.push(await this.imageService.findById(id));
-      }
-    }
-    images.push(art.image);
 
-    const imagesToDelete = purchasableImages.filter(
-      (image) => !body.imageIds.includes(image.id),
+    const imagesToDelete = storeImages.filter(
+      (image) => !keptStoreImages.includes(image),
     );
-    if (imagesToDelete.length > 0) {
-      for (const image of imagesToDelete) {
-        await this.imageService.delete(image.id);
-      }
+    for (const image of imagesToDelete) {
+      await this.imageService.delete(image.id);
     }
     await this.purchasableService.update(id, body, art, images);
   }

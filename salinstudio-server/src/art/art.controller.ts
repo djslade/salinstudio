@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,11 +8,15 @@ import {
   Patch,
   Post,
   Put,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
+import type {} from 'multer';
 import { CreateArtDto } from './dto/create-art.dto';
 import { ArtService } from './art.service';
 import { OrderAllDto } from './dto/order-all.dto';
@@ -20,6 +25,10 @@ import { UpdateArtDto } from './dto/update-art.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { OrderCarouselDto } from './dto/order-carousel.dto';
 import { ImageService } from '../image/image.service';
+import { Image } from '../image/entities/image.entity';
+import { ART_MAX_IMAGES } from '../config/constants';
+
+const FILE_SIZE_LIMIT = 50 * 1024 * 1024;
 
 @Controller('art')
 export class ArtController {
@@ -28,21 +37,96 @@ export class ArtController {
     private imageService: ImageService,
   ) {}
 
+  // Accepts the images as `files` (ordered, first = lead). The legacy single
+  // `file` field is still accepted and is placed first.
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(
-    FileInterceptor('file', { limits: { fileSize: 50 * 1024 * 1024 } }),
+    FileFieldsInterceptor(
+      [
+        { name: 'file', maxCount: 1 },
+        { name: 'files', maxCount: ART_MAX_IMAGES },
+      ],
+      { limits: { fileSize: FILE_SIZE_LIMIT } },
+    ),
   )
   async createArt(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    uploads: { file?: Express.Multer.File[]; files?: Express.Multer.File[] },
     @Body() body: CreateArtDto,
   ) {
-    const image = await this.imageService.createImage(file.buffer);
-    const art = await this.artService.createArt({
-      ...body,
-      image,
-    });
-    return { message: 'Created', art };
+    const files = [...(uploads?.file ?? []), ...(uploads?.files ?? [])];
+    if (files.length === 0) {
+      throw new BadRequestException('At least one image is required');
+    }
+    if (files.length > ART_MAX_IMAGES) {
+      throw new BadRequestException(
+        `An artwork can have at most ${ART_MAX_IMAGES} images`,
+      );
+    }
+    const images = await this.createImages(files);
+    try {
+      const art = await this.artService.createArt({ ...body, images });
+      return { message: 'Created', art };
+    } catch (err) {
+      await this.imageService.deleteMany(images.map((image) => image.id));
+      throw err;
+    }
+  }
+
+  @Post(':id/images')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    FilesInterceptor('files', ART_MAX_IMAGES, {
+      limits: { fileSize: FILE_SIZE_LIMIT },
+    }),
+  )
+  async addArtImages(
+    @Param('id') id: string,
+    @UploadedFiles() files: Express.Multer.File[] = [],
+  ) {
+    // Validate before doing the expensive processing and uploads.
+    await this.artService.assertCanAddImages(id, files.length);
+    const images = await this.createImages(files);
+    try {
+      const art = await this.artService.addImages(id, images);
+      return { message: 'Created', art };
+    } catch (err) {
+      await this.imageService.deleteMany(images.map((image) => image.id));
+      throw err;
+    }
+  }
+
+  @Patch(':id/images/order')
+  @UseGuards(AuthGuard)
+  async reorderArtImages(@Param('id') id: string, @Body() body: OrderAllDto) {
+    const art = await this.artService.reorderImages(id, body.ids);
+    return { message: 'OK', art };
+  }
+
+  @Delete(':id/images/:imageId')
+  @UseGuards(AuthGuard)
+  async deleteArtImage(
+    @Param('id') id: string,
+    @Param('imageId') imageId: string,
+  ) {
+    const art = await this.artService.removeImage(id, imageId);
+    return { message: 'OK', art };
+  }
+
+  // Processes and uploads files in order. If one fails, the ones already
+  // uploaded are removed so no orphaned files are left in storage.
+  private async createImages(files: Express.Multer.File[]): Promise<Image[]> {
+    const images: Image[] = [];
+    try {
+      for (const file of files) {
+        images.push(await this.imageService.createImage(file.buffer));
+      }
+      return images;
+    } catch (err) {
+      await this.imageService.deleteMany(images.map((image) => image.id));
+      throw err;
+    }
   }
 
   /* TODO: Move this to an image controller or refactor it here
