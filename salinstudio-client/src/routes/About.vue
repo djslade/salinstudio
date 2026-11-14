@@ -139,12 +139,12 @@ onMounted(async () => {
                     <h3 class="cv-category-heading">Ryhmänäyttelyt</h3>
                     <div class="cv-category-entry-container">
                       <p class="cv-category-entry">
-                        <span class="entry-year-span">2023</span>
-                        Kouvolan Kohoa Synergiakeskus
-                      </p>
-                      <p class="cv-category-entry">
                         <span class="entry-year-span">2025</span> Kahvila
                         Papulaari
+                      </p>
+                      <p class="cv-category-entry">
+                        <span class="entry-year-span">2023</span>
+                        Kouvolan Kohoa Synergiakeskus
                       </p>
                     </div>
                   </div>
@@ -161,6 +161,10 @@ onMounted(async () => {
                     <h3 class="cv-category-heading">Tilaustyöt</h3>
                     <div class="cv-category-entry-container">
                       <p class="cv-category-entry">
+                        <span class="entry-year-span">2025</span> Muotokuva
+                        öljyvärimaalaus äidistä
+                      </p>
+                      <p class="cv-category-entry">
                         <span class="entry-year-span">2024</span>
                         Muotokuvapiirros pariskunnasta
                       </p>
@@ -168,25 +172,21 @@ onMounted(async () => {
                         <span class="entry-year-span">2024</span>
                         Muotokuvapiirros lemmikistä
                       </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Muotokuva
-                        öljyvärimaalaus äidistä
-                      </p>
                     </div>
                   </div>
                   <div class="cv-category-container">
                     <h3 class="cv-category-heading">Muut osallistumiset</h3>
                     <div class="cv-category-entry-container">
                       <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span> Akryylimaalaus
-                        KooKoon logosta yrittäjän tilaan.
-                      </p>
-                      <p class="cv-category-entry">
                         <span class="entry-year-span">2025</span> Olen ottanut
                         osaa MHAW mielipolun 2025 yhteishyvän projektiin
                         kahdella digitaalisella teoksella. Teoksia käytettiin
                         Kouvolan Ratamon lääkärikeskuksen metsäpolulla
                         potilaiden, sekä muiden hyväksi.
+                      </p>
+                      <p class="cv-category-entry">
+                        <span class="entry-year-span">2024</span> Akryylimaalaus
+                        KooKoon logosta yrittäjän tilaan.
                       </p>
                     </div>
                   </div>
@@ -196,11 +196,11 @@ onMounted(async () => {
                     <h3 class="cv-category-heading">Group Exhibitions</h3>
                     <div class="cv-category-entry-container">
                       <p class="cv-category-entry">
-                        <span class="entry-year-span">2023</span>
-                        Kouvola Kohoa Synergy Center
+                        <span class="entry-year-span">2025</span> Café Papulaari
                       </p>
                       <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Café Papulaari
+                        <span class="entry-year-span">2023</span>
+                        Kouvola Kohoa Synergy Center
                       </p>
                     </div>
                   </div>
@@ -217,6 +217,10 @@ onMounted(async () => {
                     <h3 class="cv-category-heading">Commissioned Works</h3>
                     <div class="cv-category-entry-container">
                       <p class="cv-category-entry">
+                        <span class="entry-year-span">2025</span> Oil portrait
+                        painting of a mother
+                      </p>
+                      <p class="cv-category-entry">
                         <span class="entry-year-span">2024</span>
                         Portrait drawing of a couple
                       </p>
@@ -224,25 +228,21 @@ onMounted(async () => {
                         <span class="entry-year-span">2024</span>
                         Pet portrait drawing
                       </p>
-                      <p class="cv-category-entry">
-                        <span class="entry-year-span">2025</span> Oil portrait
-                        painting of a mother
-                      </p>
                     </div>
                   </div>
                   <div class="cv-category-container">
                     <h3 class="cv-category-heading">Other Participations</h3>
                     <div class="cv-category-entry-container">
                       <p class="cv-category-entry">
-                        <span class="entry-year-span">2024</span> Acrylic
-                        painting of the KooKoo logo for a business space.
-                      </p>
-                      <p class="cv-category-entry">
                         <span class="entry-year-span">2025</span> Participated
                         in the MHAW Mielipolku 2025 community project with two
                         digital artworks. The works were displayed along the
                         forest path at Kouvola Ratamo Medical Center, created
                         for the benefit of patients and visitors alike
+                      </p>
+                      <p class="cv-category-entry">
+                        <span class="entry-year-span">2024</span> Acrylic
+                        painting of the KooKoo logo for a business space.
                       </p>
                     </div>
                   </div>
