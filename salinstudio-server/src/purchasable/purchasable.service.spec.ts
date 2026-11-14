@@ -141,6 +141,23 @@ describe('PurchasableService', () => {
       expect(imageService.delete).not.toHaveBeenCalledWith('img-1');
     });
 
+    it('never deletes images that belong to an artwork', async () => {
+      const extraImage = { id: 'img-extra', galleryArtId: null };
+      const leadImage = { id: 'img-1', galleryArtId: 'art-1' };
+      const secondArtImage = { id: 'img-2', galleryArtId: 'art-1' };
+      const p = makePurchasable({
+        images: [leadImage, secondArtImage, extraImage],
+        art: { id: 'art-1', image: leadImage },
+      });
+      purchasableRepository.findOne.mockResolvedValue(p);
+      purchasableRepository.delete.mockResolvedValue({});
+
+      await service.delete('p-1');
+
+      expect(imageService.delete).toHaveBeenCalledTimes(1);
+      expect(imageService.delete).toHaveBeenCalledWith('img-extra');
+    });
+
     it('skips image deletion when the purchasable has no images', async () => {
       const p = makePurchasable({ images: [] });
       purchasableRepository.findOne.mockResolvedValue(p);

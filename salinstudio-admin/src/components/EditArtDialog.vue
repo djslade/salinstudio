@@ -4,6 +4,7 @@ import Button from "primevue/button";
 import LoadingPanel from "./LoadingPanel.vue";
 import FormControl from "./FormControl.vue";
 import SectionLabel from "./SectionLabel.vue";
+import ArtImagesManager from "./ArtImagesManager.vue";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
 import { useFormUtils } from "../hooks/useFormUtils";
 import type { Art, Collection } from "../types/data";
@@ -120,6 +121,8 @@ const submit = async (evt: FormSubmitEvent) => {
     @submit="submit"
   >
     <div class="flex flex-col gap-6 py-4">
+      <!-- Image changes are saved immediately and independently of this form. -->
+      <ArtImagesManager :artId="art.id" />
       <section class="flex flex-col gap-4">
         <SectionLabel label="Metadata" />
         <FormControl name="category" type="select" label="Category" fluid />

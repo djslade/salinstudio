@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import {
-  FileUpload,
-  Card,
-  type FileUploadSelectEvent,
-  Button,
-  Image,
-  useToast,
-} from "primevue";
-import { ref } from "vue";
+import { Card, Button, useToast } from "primevue";
+import { computed, onUnmounted, ref, useTemplateRef } from "vue";
+import ImageOrderList, { type OrderItem } from "../components/ImageOrderList.vue";
+import { ART_MAX_IMAGES } from "../utils/artImages";
 import { Form, type FormSubmitEvent } from "@primevue/forms";
 import FormControl from "../components/FormControl.vue";
 import SectionLabel from "../components/SectionLabel.vue";
@@ -39,32 +34,83 @@ const {
   descriptionFi: "",
 });
 
-const src = ref<string>("");
-const artImage = ref<Blob | null>(null);
+type LocalImage = OrderItem & { file: File };
+
+// Ordered selection; the first image becomes the lead image.
+const artImages = ref<LocalImage[]>([]);
+const fileInput = useTemplateRef<HTMLInputElement>("fileInput");
+const isDraggingFiles = ref<boolean>(false);
 const router = useRouter();
 const toast = useToast();
 
-const onFileSelect = (event: FileUploadSelectEvent) => {
-  const file = event.files[0];
-  const reader = new FileReader();
+const remaining = computed(() => ART_MAX_IMAGES - artImages.value.length);
 
-  reader.onload = async (e: ProgressEvent<FileReader>) => {
-    src.value = e.target?.result as string;
-    artImage.value = file as Blob;
-  };
-
-  reader.readAsDataURL(file);
+const addFiles = (files: File[]) => {
+  const images = files.filter((file) => file.type.startsWith("image/"));
+  if (images.length < files.length) {
+    toast.add({
+      group: "main",
+      severity: "warn",
+      summary: "File must have a valid image extension (.jpg, .png, etc)",
+      life: 5000,
+    });
+  }
+  const accepted = images.slice(0, remaining.value);
+  if (accepted.length < images.length) {
+    toast.add({
+      group: "main",
+      severity: "warn",
+      summary: `An artwork can have at most ${ART_MAX_IMAGES} images`,
+      life: 5000,
+    });
+  }
+  artImages.value = [
+    ...artImages.value,
+    ...accepted.map((file) => ({
+      id: crypto.randomUUID(),
+      url: URL.createObjectURL(file),
+      file,
+    })),
+  ];
 };
 
-const onFileClear = (cb?: () => void) => {
-  if (cb) cb();
-  src.value = "";
-  artImage.value = null;
+const onFilesChosen = (evt: Event) => {
+  const input = evt.target as HTMLInputElement;
+  addFiles(Array.from(input.files ?? []));
+  input.value = "";
 };
+
+const onFilesDropped = (evt: DragEvent) => {
+  isDraggingFiles.value = false;
+  addFiles(Array.from(evt.dataTransfer?.files ?? []));
+};
+
+const removeImage = (id: string) => {
+  const image = artImages.value.find((i) => i.id === id);
+  if (image) URL.revokeObjectURL(image.url);
+  artImages.value = artImages.value.filter((i) => i.id !== id);
+};
+
+const clearImages = () => {
+  artImages.value.forEach((image) => URL.revokeObjectURL(image.url));
+  artImages.value = [];
+};
+
+onUnmounted(clearImages);
+
+// ImageOrderList works on {id, url}; keep the File attached when reordering.
+const orderItems = computed<OrderItem[]>({
+  get: () => artImages.value,
+  set: (items) => {
+    artImages.value = items
+      .map((item) => artImages.value.find((image) => image.id === item.id))
+      .filter((image): image is LocalImage => image !== undefined);
+  },
+});
 
 const handleCreateArt = async (evt: FormSubmitEvent) => {
   if (!evt.valid) return;
-  if (!artImage.value) return;
+  if (artImages.value.length === 0) return;
   try {
     setStepSubmitting();
     saveFormValues({
@@ -75,7 +121,7 @@ const handleCreateArt = async (evt: FormSubmitEvent) => {
       descriptionFi: evt.values.descriptionFi,
     });
     const formData = new FormData();
-    formData.append("file", artImage.value);
+    artImages.value.forEach((image) => formData.append("files", image.file));
     for (const [key, value] of Object.entries(evt.values)) {
       formData.append(key, value);
     }
@@ -90,8 +136,7 @@ const handleCreateArt = async (evt: FormSubmitEvent) => {
 };
 
 const handlePublishMore = () => {
-  artImage.value = null;
-  src.value = "";
+  clearImages();
   resetFormValues();
   setStepStart();
 };
@@ -110,80 +155,58 @@ const handleGoToList = () => {
       <Card class="w-full flex h-fit">
         <template #content>
           <div class="flex gap-8 w-full">
-            <div class="w-80 shrink-0 flex flex-col gap-3">
-              <SectionLabel label="Image" />
-              <FileUpload
-                :multiple="false"
-                accept="image/*"
-                :file-limit="1"
-                :disabled="artImage !== null"
-                @select="onFileSelect"
-                @clear="onFileClear"
-                :show-upload-button="false"
-                :show-cancel-button="false"
-                invalid-file-type-message="File must have a valid image extension (.jpg, .png, etc)"
+            <div class="w-96 shrink-0 flex flex-col gap-3">
+              <SectionLabel :label="`Images (${artImages.length}/${ART_MAX_IMAGES})`" />
+              <div
+                v-if="artImages.length === 0"
+                class="flex flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed p-8 text-center transition-colors"
+                :class="
+                  isDraggingFiles
+                    ? 'border-primary'
+                    : 'border-surface-200 dark:border-surface-700'
+                "
+                @dragover.prevent="isDraggingFiles = true"
+                @dragleave="isDraggingFiles = false"
+                @drop.prevent="onFilesDropped"
               >
-                <template #header="{ chooseCallback, clearCallback }">
-                  <div
-                    class="flex flex-wrap justify-between items-center flex-1 gap-4 w-full"
-                  >
-                    <div class="flex gap-2 w-full">
-                      <Button
-                        @click="chooseCallback()"
-                        icon="pi pi-images"
-                        rounded
-                        outlined
-                        severity="secondary"
-                        :disabled="artImage !== null"
-                      ></Button>
-                      <Button
-                        @click="() => onFileClear(clearCallback)"
-                        icon="pi pi-times"
-                        rounded
-                        outlined
-                        severity="danger"
-                        :disabled="artImage === null"
-                      ></Button>
-                    </div>
-                  </div>
-                </template>
-                <template #content>
-                  <div class="w-full flex justify-center h-full">
-                    <Image alt="Image" preview>
-                      <template #previewicon>
-                        <i class="pi pi-search"></i>
-                      </template>
-                      <template #image>
-                        <img
-                          :src="src"
-                          :alt="src"
-                          class="aspect-video object-cover max-w-sm w-full"
-                        />
-                      </template>
-                      <template #original="slotProps">
-                        <img
-                          :src="src"
-                          :alt="src"
-                          :style="slotProps.style"
-                          class="max-w-5xl max-h-[90vh]"
-                          @click="slotProps.previewCallback()"
-                        />
-                      </template>
-                    </Image>
-                  </div>
-                </template>
-                <template #empty>
-                  <div
-                    v-if="!artImage"
-                    class="flex items-center justify-center flex-col w-full h-full"
-                  >
-                    <i
-                      class="pi pi-cloud-upload rounded-full text-4xl! text-muted-color"
-                    />
-                    <p class="mt-6 mb-0">Drag and drop files here.</p>
-                  </div>
-                </template>
-              </FileUpload>
+                <i class="pi pi-cloud-upload text-4xl! text-muted-color" />
+                <p class="m-0">
+                  Drag and drop up to {{ ART_MAX_IMAGES }} images here.
+                </p>
+              </div>
+              <template v-else>
+                <p class="m-0 text-sm text-surface-500">
+                  Drag or use the arrows to reorder. The first image leads.
+                </p>
+                <ImageOrderList v-model="orderItems" @remove="removeImage" />
+              </template>
+              <div class="flex gap-2">
+                <Button
+                  label="Add images"
+                  icon="pi pi-images"
+                  size="small"
+                  severity="secondary"
+                  :disabled="remaining <= 0"
+                  @click="fileInput?.click()"
+                />
+                <Button
+                  label="Clear"
+                  icon="pi pi-times"
+                  size="small"
+                  severity="danger"
+                  outlined
+                  :disabled="artImages.length === 0"
+                  @click="clearImages"
+                />
+              </div>
+              <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                multiple
+                class="hidden"
+                @change="onFilesChosen"
+              />
             </div>
             <Form
               v-slot="$form"
@@ -237,7 +260,7 @@ const handleGoToList = () => {
                 fluid
                 label="Submit"
                 type="submit"
-                :disabled="!$form.valid || !src"
+                :disabled="!$form.valid || artImages.length === 0"
               />
             </Form>
           </div>

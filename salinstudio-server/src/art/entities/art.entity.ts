@@ -7,6 +7,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  OneToMany,
   OneToOne,
 } from 'typeorm';
 import { Purchasable } from '../../purchasable/entities/purchasable.entity';
@@ -61,9 +62,15 @@ export class Art extends BaseEntity {
   @JoinTable()
   collections: Collection[];
 
+  // Lead image: always the first entry of `images`. Kept as its own relation
+  // so the gallery grid, hero, collections and SEO only need one join.
   @OneToOne(() => Image)
   @JoinColumn()
   image: Image;
+
+  // All images of this artwork, ordered by Image.galleryIndex.
+  @OneToMany(() => Image, (image) => image.galleryArt)
+  images: Image[];
 
   @OneToOne(() => Purchasable, (purchasable) => purchasable.art)
   purchasable?: Purchasable;

@@ -4,4 +4,5 @@ export type Image = {
   mobileUrl: string;
   thumbUrl: string;
   aspectRatio: number;
+  galleryIndex?: number;
 };

@@ -27,7 +27,7 @@ export class PurchasableService {
       where: { id },
       relations: {
         images: true,
-        art: { image: true, collections: { image: true } },
+        art: { image: true, images: true, collections: { image: true } },
       },
     });
     if (!purchasable) throw new NotFoundException('Purchasable not found');
@@ -167,12 +167,21 @@ export class PurchasableService {
     await this.purchasableRepository.save(purchasable);
   }
 
+  // Art images are shared with the artwork, so store flows must never delete them.
+  isArtImage(image: Image, purchasable: Purchasable): boolean {
+    if (image.galleryArtId) return true;
+    const art = purchasable.art;
+    if (!art) return false;
+    if (art.image?.id === image.id) return true;
+    return (art.images ?? []).some((artImage) => artImage.id === image.id);
+  }
+
   async delete(id: string): Promise<void> {
     const toDelete = await this.findById(id);
     await this.purchasableRepository.delete(id);
     if (toDelete.images.length > 0) {
       for (const image of toDelete.images) {
-        if (image.id === toDelete.art.image.id) continue;
+        if (this.isArtImage(image, toDelete)) continue;
         await this.imageService.delete(image.id);
       }
     }

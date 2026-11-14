@@ -69,8 +69,18 @@ const onPageLoad = async (data?: ArtWithSlugs) => {
   if (!data) return;
 
   const art = data.art;
+  const artImages =
+    art.images && art.images.length > 0
+      ? [...art.images].sort(
+          (a, b) => (a.galleryIndex ?? 0) - (b.galleryIndex ?? 0)
+        )
+      : [art.image];
 
-  await images.preloadAndSet(art.image.desktopUrl);
+  // Only wait for the lead image; the rest load in the background.
+  await images.preloadAndSet(artImages[0].desktopUrl);
+  for (const image of artImages.slice(1)) {
+    images.preloadAndSet(image.desktopUrl).catch(() => {});
+  }
 
   if (art.collections) {
     for (let col of art.collections) {
@@ -78,7 +88,10 @@ const onPageLoad = async (data?: ArtWithSlugs) => {
     }
   }
 
-  galleryItems.value = art.collections ? [art, ...art.collections] : [art];
+  // Each image of the artwork is its own slide (same title and description),
+  // followed by the collections the artwork belongs to.
+  const artSlides: GalleryItem[] = artImages.map((image) => ({ ...art, image }));
+  galleryItems.value = [...artSlides, ...(art.collections ?? [])];
   pageReady.value = true;
 };
 
