@@ -6,7 +6,16 @@ export type OrderItem = { id: string; url: string };
 
 // Ordered list of images; the first one is the lead image of the artwork.
 const items = defineModel<OrderItem[]>({ required: true });
-const { disabled = false } = defineProps<{ disabled?: boolean }>();
+const {
+  disabled = false,
+  leadLabel = "Lead",
+  removeLabel = "Remove image",
+} = defineProps<{
+  disabled?: boolean;
+  // Badge on the first item; pass an empty string to hide it.
+  leadLabel?: string;
+  removeLabel?: string;
+}>();
 const emit = defineEmits<{ remove: [id: string] }>();
 
 const dragIndex = ref<number | null>(null);
@@ -64,10 +73,10 @@ const resetDrag = () => {
           draggable="false"
         />
         <span
-          v-if="index === 0"
+          v-if="index === 0 && leadLabel"
           class="absolute top-1 left-1 rounded bg-primary px-1.5 py-0.5 text-xs font-semibold text-primary-contrast"
         >
-          Lead
+          {{ leadLabel }}
         </span>
       </div>
       <div class="flex justify-between">
@@ -87,7 +96,7 @@ const resetDrag = () => {
           rounded
           size="small"
           severity="danger"
-          aria-label="Remove image"
+          :aria-label="removeLabel"
           :disabled="disabled"
           @click="emit('remove', item.id)"
         />

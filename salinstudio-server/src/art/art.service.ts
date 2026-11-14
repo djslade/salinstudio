@@ -5,13 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ART_MAX_IMAGES, REPOSITORY_NAMES } from '../config/constants';
-import { LessThan, MoreThan, Repository } from 'typeorm';
+import { In, LessThan, MoreThan, Repository } from 'typeorm';
 import { Art, ArtCategory } from './entities/art.entity';
 import { ImageService } from '../image/image.service';
 import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { OrderAllDto } from './dto/order-all.dto';
-import { OrderCarouselDto } from './dto/order-carousel.dto';
+import { SetCarouselDto } from './dto/set-carousel.dto';
 import { nanoid } from 'nanoid';
 import slugify from 'slugify';
 import { Image } from '../image/entities/image.entity';
@@ -74,6 +74,7 @@ export class ArtService {
     return await this.artRepository.find({
       where: { onHomeCarousel: true },
       relations: { image: true },
+      order: { homeCarouselIndex: 'ASC' },
     });
   }
 
@@ -201,13 +202,28 @@ export class ArtService {
     }
   }
 
-  async updateCarouselOrder(body: OrderCarouselDto) {
-    for (let i = 0; i < body.ids.length; i++) {
-      await this.artRepository.update(
-        { id: body.ids[i] },
-        { homeCarouselIndex: i },
+  // Replaces the whole carousel in one transaction: the listed artworks go on
+  // it in list order, every other artwork comes off.
+  async setCarousel(body: SetCarouselDto): Promise<void> {
+    const { ids } = body;
+    await this.artRepository.manager.transaction(async (em) => {
+      if (ids.length > 0) {
+        const found = await em.count(Art, { where: { id: In(ids) } });
+        if (found !== ids.length) throw new NotFoundException('Art not found');
+      }
+      await em.update(
+        Art,
+        { onHomeCarousel: true },
+        { onHomeCarousel: false, homeCarouselIndex: 0 },
       );
-    }
+      for (let i = 0; i < ids.length; i++) {
+        await em.update(
+          Art,
+          { id: ids[i] },
+          { onHomeCarousel: true, homeCarouselIndex: i },
+        );
+      }
+    });
   }
 
   async update(id: string, body: UpdateArtDto): Promise<void> {
@@ -218,6 +234,15 @@ export class ArtService {
     art.titleFi = body.titleFi;
     art.descriptionEn = body.descriptionEn;
     art.descriptionFi = body.descriptionFi;
+    if (body.onHomeCarousel && !art.onHomeCarousel) {
+      // Newly added artworks go to the end of the carousel.
+      const last = await this.artRepository.findOne({
+        where: { onHomeCarousel: true },
+        order: { homeCarouselIndex: 'DESC' },
+      });
+      art.homeCarouselIndex = last ? last.homeCarouselIndex + 1 : 0;
+    }
+    art.onHomeCarousel = body.onHomeCarousel;
     const collections: Collection[] = [];
     for (const id of body.collections) {
       const collection = await this.collectionService.getCollectionById(id);

@@ -1,4 +1,4 @@
-import { IsDefined, IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsDefined, IsNotEmpty } from 'class-validator';
 import { ArtCategory } from '../entities/art.entity';
 
 export class UpdateArtDto {
@@ -17,7 +17,7 @@ export class UpdateArtDto {
   @IsNotEmpty()
   category: ArtCategory;
 
-  @IsNotEmpty()
+  @IsBoolean()
   onHomeCarousel: boolean;
 
   @IsDefined()

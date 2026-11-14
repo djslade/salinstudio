@@ -76,6 +76,7 @@ const updateOnHomeCarousel = async (art: Art, onHomeCarousel: boolean) => {
             descriptionEn: art.descriptionEn,
             descriptionFi: art.descriptionFi,
             onHomeCarousel,
+            collections: art.collections?.map((col) => col.id) || [],
           },
           { accessToken: true }
         )

@@ -14,11 +14,16 @@ const language = useLanguageStore();
 const route = useRoute();
 const router = useRouter();
 
-const frontImageIdx = ref<number>(0);
+// The front slide is the one fading out; the slide after it is the one shown.
+// Starting at the last slide makes the first slide in the list show first.
+const frontImageIdx = ref<number>(Math.max(data.length - 1, 0));
 
 let intervalId: number | undefined;
 
 const getZIndex = (idx: number) => {
+  // The visible slide is the one at z-index 2 (the front one is fading out),
+  // so a single slide must be 2 or it is never shown.
+  if (data.length === 1) return 2;
   if (idx === frontImageIdx.value) return 3;
   if (frontImageIdx.value === data.length - 1 && idx === 0) return 2;
   if (idx === frontImageIdx.value + 1) return 2;
@@ -33,6 +38,7 @@ const goToGallery = () => {
 };
 
 onMounted(async () => {
+  if (data.length < 2) return;
   intervalId = setInterval(() => {
     frontImageIdx.value = (frontImageIdx.value + 1) % data.length;
   }, 10000);

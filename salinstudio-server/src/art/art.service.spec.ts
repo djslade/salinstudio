@@ -8,7 +8,10 @@ import { ArtCategory } from './entities/art.entity';
 
 describe('ArtService', () => {
   let service: ArtService;
-  let artRepository: Record<string, jest.Mock>;
+  let artRepository: Record<string, jest.Mock> & {
+    manager?: { transaction: jest.Mock };
+  };
+  let em: { count: jest.Mock; update: jest.Mock };
   let imageService: jest.Mocked<Pick<ImageService, 'delete' | 'assignToArt'>>;
 
   const makeArt = (overrides: Record<string, unknown> = {}) => ({
@@ -31,6 +34,10 @@ describe('ArtService', () => {
       count: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+    };
+    em = { count: jest.fn(), update: jest.fn() };
+    artRepository.manager = {
+      transaction: jest.fn((cb: (m: typeof em) => unknown) => cb(em)),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -359,6 +366,105 @@ describe('ArtService', () => {
       for (const id of ['a', 'b', 'c']) {
         expect(imageService.delete).toHaveBeenCalledWith(id);
       }
+    });
+  });
+
+  describe('setCarousel', () => {
+    const ids = [
+      '11111111-1111-1111-1111-111111111111',
+      '22222222-2222-2222-2222-222222222222',
+      '33333333-3333-3333-3333-333333333333',
+    ];
+
+    it('clears the carousel, then adds the listed art in order', async () => {
+      em.count.mockResolvedValue(3);
+      await service.setCarousel({ ids });
+
+      expect(em.update).toHaveBeenNthCalledWith(
+        1,
+        expect.anything(),
+        { onHomeCarousel: true },
+        { onHomeCarousel: false, homeCarouselIndex: 0 },
+      );
+      ids.forEach((id, i) => {
+        expect(em.update).toHaveBeenNthCalledWith(
+          i + 2,
+          expect.anything(),
+          { id },
+          { onHomeCarousel: true, homeCarouselIndex: i },
+        );
+      });
+    });
+
+    it('rejects unknown ids without changing anything', async () => {
+      em.count.mockResolvedValue(2);
+      await expect(service.setCarousel({ ids })).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(em.update).not.toHaveBeenCalled();
+    });
+
+    it('allows an empty list, which clears the carousel', async () => {
+      await service.setCarousel({ ids: [] });
+      expect(em.count).not.toHaveBeenCalled();
+      expect(em.update).toHaveBeenCalledTimes(1);
+      expect(em.update).toHaveBeenCalledWith(
+        expect.anything(),
+        { onHomeCarousel: true },
+        { onHomeCarousel: false, homeCarouselIndex: 0 },
+      );
+    });
+  });
+
+  describe('update', () => {
+    const body = {
+      titleEn: 'En',
+      titleFi: 'Fi',
+      descriptionEn: '',
+      descriptionFi: '',
+      category: 'paintings' as ArtCategory,
+      collections: [],
+    };
+
+    it('puts art switched on to the carousel at the end', async () => {
+      artRepository.findOne
+        .mockResolvedValueOnce(makeArt({ onHomeCarousel: false }))
+        .mockResolvedValueOnce(makeArt({ id: 'last', homeCarouselIndex: 4 }));
+      await service.update('art-1', { ...body, onHomeCarousel: true });
+      expect(artRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ onHomeCarousel: true, homeCarouselIndex: 5 }),
+      );
+    });
+
+    it('puts art first when the carousel is empty', async () => {
+      artRepository.findOne
+        .mockResolvedValueOnce(makeArt({ onHomeCarousel: false }))
+        .mockResolvedValueOnce(null);
+      await service.update('art-1', { ...body, onHomeCarousel: true });
+      expect(artRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ onHomeCarousel: true, homeCarouselIndex: 0 }),
+      );
+    });
+
+    it('keeps the position of art already on the carousel', async () => {
+      artRepository.findOne.mockResolvedValueOnce(
+        makeArt({ onHomeCarousel: true, homeCarouselIndex: 2 }),
+      );
+      await service.update('art-1', { ...body, onHomeCarousel: true });
+      expect(artRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(artRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ onHomeCarousel: true, homeCarouselIndex: 2 }),
+      );
+    });
+
+    it('takes art off the carousel', async () => {
+      artRepository.findOne.mockResolvedValueOnce(
+        makeArt({ onHomeCarousel: true, homeCarouselIndex: 2 }),
+      );
+      await service.update('art-1', { ...body, onHomeCarousel: false });
+      expect(artRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ onHomeCarousel: false }),
+      );
     });
   });
 });

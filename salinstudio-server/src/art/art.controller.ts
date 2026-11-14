@@ -23,7 +23,7 @@ import { OrderAllDto } from './dto/order-all.dto';
 import { OrderCategoryDto } from './dto/order-category.dto';
 import { UpdateArtDto } from './dto/update-art.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
-import { OrderCarouselDto } from './dto/order-carousel.dto';
+import { SetCarouselDto } from './dto/set-carousel.dto';
 import { ImageService } from '../image/image.service';
 import { Image } from '../image/entities/image.entity';
 import { ART_MAX_IMAGES } from '../config/constants';
@@ -153,6 +153,13 @@ export class ArtController {
     return { message: 'OK', art };
   }
 
+  @Put('carousel')
+  @UseGuards(AuthGuard)
+  async setCarousel(@Body() body: SetCarouselDto) {
+    await this.artService.setCarousel(body);
+    return { message: 'OK' };
+  }
+
   @Get(':id')
   async getArt(@Param('id') id: string) {
     const art = await this.artService.findArtById(id);
@@ -179,13 +186,6 @@ export class ArtController {
   @UseGuards(AuthGuard)
   async updateAllOrder(@Body() body: OrderAllDto) {
     await this.artService.updateAllOrder(body);
-    return { message: 'OK' };
-  }
-
-  @Patch('order/carousel')
-  @UseGuards(AuthGuard)
-  async updateCarouselOrder(@Body() body: OrderCarouselDto) {
-    await this.artService.updateCarouselOrder(body);
     return { message: 'OK' };
   }
 
